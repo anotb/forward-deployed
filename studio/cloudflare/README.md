@@ -1,4 +1,6 @@
-# Cloudflare deployment
+# Optional standalone Cloudflare deployment
+
+The hosted Forward Deployed service uses [ChatGPT Sites](../sites/README.md). This adapter is an alternative for operators who choose to manage their own Worker, storage and identity integration. It is not used by the hosted service.
 
 The Worker serves the MCP endpoint and website. Work is stateless by default: each request supplies its workspace snapshot and receives the updated snapshot. This path works without a sign-in, database, or Durable Object call. The browser keeps its active snapshot in the current browser session, including through a sign-in round trip.
 
@@ -12,9 +14,9 @@ npx wrangler whoami
 npx wrangler kv namespace create OAUTH_KV
 ```
 
-Set the returned namespace ID in `wrangler.jsonc`. The configured domain is `forward-deployed.unsol.dev`.
+Set the returned namespace ID in `wrangler.jsonc`. Set `APP_ORIGIN` to your own HTTPS origin and add its custom-domain route. The example configuration intentionally contains no production route or existing resource ID.
 
-GitHub identity is the fallback when Sign in with ChatGPT client registration is unavailable. Register a GitHub OAuth app with the homepage `https://forward-deployed.unsol.dev` and callback `https://forward-deployed.unsol.dev/auth/github/callback`. Install its credentials through Worker secrets:
+This standalone adapter uses GitHub identity. Register a GitHub OAuth app with your origin as the homepage and `/auth/github/callback` on that origin as the callback. Install its credentials through Worker secrets:
 
 ```sh
 npx wrangler secret put GITHUB_CLIENT_ID
@@ -22,7 +24,7 @@ npx wrangler secret put GITHUB_CLIENT_SECRET
 npx wrangler deploy
 ```
 
-MCP URL: `https://forward-deployed.unsol.dev/mcp`. Anonymous calls can work on supplied snapshots. Saved operations require sign-in; OAuthProvider publishes protected-resource and authorization-server metadata, dynamic client registration, and PKCE endpoints. The sign-in flow requests no GitHub scopes and discards its upstream token after reading the profile. Sign-in remains unavailable until both credentials are configured; stateless work remains available.
+MCP URL: `/mcp` on your configured origin. Anonymous calls can work on supplied snapshots. Saved operations require sign-in; OAuthProvider publishes protected-resource and authorization-server metadata, dynamic client registration, and PKCE endpoints. The sign-in flow requests no GitHub scopes and discards its upstream token after reading the profile. Sign-in remains unavailable until both credentials are configured; stateless work remains available.
 
 MCP Events subscriptions and pending deliveries are stored in the same account's Durable Object. Alarms deliver signed callbacks and retry failures. Keep `global_fetch_strictly_public` enabled: it provides the runtime DNS boundary for callback delivery and client metadata fetching.
 

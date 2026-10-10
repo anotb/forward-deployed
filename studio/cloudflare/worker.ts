@@ -17,6 +17,7 @@ import { recordTelemetry, type TelemetryEnv } from './telemetry.js';
 export interface Env extends AuthEnv, TelemetryEnv {
   WORKSPACES: DurableObjectNamespace;
   ASSETS: Fetcher;
+  OPENAI_APP_CHALLENGE?: string;
 }
 const ACTOR = 'x-forward-deployed-actor';
 const NAME = 'x-forward-deployed-name';
@@ -138,6 +139,9 @@ const defaultHandler = {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
     if (url.pathname === '/health') return json({ service: 'forward-deployed', status: 'ok', signIn: authConfigured(env) ? 'configured' : 'unconfigured' });
+    if (url.pathname === '/.well-known/openai-apps-challenge' && request.method === 'GET' && env.OPENAI_APP_CHALLENGE) {
+      return new Response(env.OPENAI_APP_CHALLENGE, { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' } });
+    }
     const auth = await authRoutes(request, env); if (auth) return auth;
     if (url.pathname === '/api/engagements' && request.method === 'GET' && url.searchParams.get('storage') !== 'saved') return json({ engagements: [] });
     if ((url.pathname.startsWith('/api/tools/') || url.pathname === '/api/export') && request.method === 'POST') {

@@ -66,6 +66,22 @@ class PackageTests(unittest.TestCase):
         self.assertTrue(any('Missing package file: mcp.json' in value for value in errors))
         self.assertTrue(any('invalid MCP configuration path' in value for value in errors))
 
+    def test_connector_path_cannot_be_replaced_with_the_native_mcp_path(self):
+        for path in ['mcp.json', '.mcp.json']:
+            self.edit_json(path, lambda data: data['mcpServers']['forward-deployed-studio'].update(url='https://forward-deployed.unsol.dev/mcp'))
+        errors = validate_plugin(self.root)
+        self.assertTrue(any(value.startswith('mcp.json: expected only') for value in errors))
+        self.assertTrue(any(value.startswith('.mcp.json: expected only') for value in errors))
+
+    def test_connector_oauth_requires_registered_public_client_and_exact_scopes(self):
+        path = 'mcp.json'
+        original = (self.root / path).read_text(encoding='utf-8')
+        for overrides in [{'type': 'mixed'}, {'type': 'none'}, {'clientSecret': 'not-a-real-secret'}, {'unexpected': True}, {'client': {'mode': 'provided', 'clientId': 'guessed'}}, {'oidcEnabled': True}, {'defaultScopes': ['workspace', 'admin']}]:
+            with self.subTest(overrides=overrides):
+                self.write(path, original)
+                self.edit_json(path, lambda data: data['mcpServers']['forward-deployed-studio']['extensions']['com.openai']['auth'].update(overrides))
+                self.assertTrue(any(value.startswith('mcp.json: expected only') for value in validate_plugin(self.root)))
+
     def test_host_metadata_limits_and_missing_icon_are_rejected(self):
         self.edit_json('plugin.json', lambda data: data['extensions']['com.openai']['interface'].update(shortDescription='x' * 31))
         self.edit_json('.claude-plugin/plugin.json', lambda data: data.update(description='x' * 501))

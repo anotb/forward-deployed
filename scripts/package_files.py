@@ -35,7 +35,7 @@ RUNTIME_RESOURCES = {
 STUDIO_SOURCE = {
     'studio/README.md', 'studio/package.json', 'studio/package-lock.json',
     'studio/tsconfig.json', 'studio/tsconfig.worker.json', 'studio/wrangler.jsonc',
-    'studio/scripts/build.mjs',
+    'studio/scripts/build.mjs', 'studio/scripts/sync-sites.mjs',
     'studio/web/index.html', 'studio/web/main.ts', 'studio/web/style.css',
     'studio/server/events.ts', 'studio/server/events-core.ts', 'studio/server/events-worker.ts',
     'studio/server/export.ts', 'studio/server/lab.ts', 'studio/server/main.ts',
@@ -44,10 +44,16 @@ STUDIO_SOURCE = {
     'studio/server/store-contract.ts', 'studio/server/workspace.ts',
     'studio/cloudflare/README.md', 'studio/cloudflare/auth.ts',
     'studio/cloudflare/store.ts', 'studio/cloudflare/telemetry.ts', 'studio/cloudflare/worker.ts',
+    'studio/sites/README.md', 'studio/sites/handler.ts',
+    'studio/sites/store.ts', 'studio/sites/schema.sql', 'studio/sites/telemetry.ts',
+    'studio/sites/oauth.ts', 'studio/sites/oauth-store.ts',
     'studio/tests/build.test.ts', 'studio/tests/cloudflare-auth.test.ts', 'studio/tests/cloudflare-store.test.ts',
     'studio/tests/cloudflare-telemetry.test.ts', 'studio/tests/events-worker.test.ts',
-    'studio/tests/events.test.ts', 'studio/tests/export.test.ts', 'studio/tests/lab.test.ts',
+    'studio/tests/events.test.ts', 'studio/tests/export.test.ts', 'studio/tests/export-mcp.test.ts', 'studio/tests/lab.test.ts',
     'studio/tests/stateless.test.ts', 'studio/tests/workspace.test.ts',
+    'studio/tests/sites-store.test.ts', 'studio/tests/sites-telemetry.test.ts',
+    'studio/tests/sites-handler.test.ts', 'studio/tests/sites-sync.test.ts',
+    'studio/tests/sites-oauth.test.ts',
 }
 SOURCE_FIXED = RUNTIME_FIXED | STUDIO_SOURCE | {
     '.agents/plugins/marketplace.json', '.claude-plugin/marketplace.json',

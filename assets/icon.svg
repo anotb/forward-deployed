@@ -1,4 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
-  <rect width="128" height="128" rx="28" fill="#183641"/>
-  <path d="M34 28h62v16H52v19h36v16H52v23H34z" fill="#F6F3EB"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title id="title">Forward Deployed</title>
+  <rect width="128" height="128" rx="24" fill="#183641"/>
+  <g fill="none" stroke="#F6F3EB" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 86V42h21M21 63h17"/>
+    <path d="M53 42h7c12 0 17 8 17 22s-5 22-17 22h-7Z"/>
+    <path d="M108 42H89v44h19M89 63h16"/>
+  </g>
 </svg>

@@ -18,7 +18,7 @@ SKILLS = {
     'technical-delivery', 'adoption-and-scale', 'executive-communication', 'field-productization',
 }
 BASE_FIELDS = {'name', 'version', 'description', 'author', 'homepage', 'repository', 'license', 'keywords'}
-STUDIO_URL = 'https://forward-deployed.unsol.dev/mcp'
+STUDIO_URL = 'https://forward-deployed.unsol.dev/connect/mcp'
 LINK = re.compile(r'!?\[[^\]\n]*\]\(([^)\n]+)\)')
 
 
@@ -79,6 +79,16 @@ def validate_plugin(root: Path) -> list[str]:
         expected = {'mcpServers': {'forward-deployed-studio': {'type': transport, 'url': STUDIO_URL}}}
         if relative == 'mcp.json':
             expected['$schema'] = 'https://agent-plugins.org/schemas/1.0.0/mcp.schema.json'
+            expected['mcpServers']['forward-deployed-studio']['extensions'] = {'com.openai': {'auth': {
+                'type': 'oauth',
+                'client': {'mode': 'provided', 'clientId': '0nTE7Sq3GVFJLAs6', 'tokenEndpointAuthMethod': 'none'},
+                'oidcEnabled': False,
+                'authorizationServerBase': 'https://forward-deployed.unsol.dev',
+                'authorizationUrl': 'https://forward-deployed.unsol.dev/connect/authorize',
+                'tokenUrl': 'https://forward-deployed.unsol.dev/connect/token',
+                'resource': STUDIO_URL,
+                'defaultScopes': ['workspace', 'offline_access'],
+            }}}
         check(config == expected, f'{relative}: expected only the hosted Studio MCP endpoint without commands or credentials')
 
     for relative in ('.claude-plugin/marketplace.json', '.agents/plugins/marketplace.json'):

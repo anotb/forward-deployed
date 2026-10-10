@@ -3,7 +3,28 @@
   "mcpServers": {
     "forward-deployed-studio": {
       "type": "streamable-http",
-      "url": "https://forward-deployed.unsol.dev/mcp"
+      "url": "https://forward-deployed.unsol.dev/connect/mcp",
+      "extensions": {
+        "com.openai": {
+          "auth": {
+            "type": "oauth",
+            "client": {
+              "mode": "provided",
+              "clientId": "0nTE7Sq3GVFJLAs6",
+              "tokenEndpointAuthMethod": "none"
+            },
+            "oidcEnabled": false,
+            "authorizationServerBase": "https://forward-deployed.unsol.dev",
+            "authorizationUrl": "https://forward-deployed.unsol.dev/connect/authorize",
+            "tokenUrl": "https://forward-deployed.unsol.dev/connect/token",
+            "resource": "https://forward-deployed.unsol.dev/connect/mcp",
+            "defaultScopes": [
+              "workspace",
+              "offline_access"
+            ]
+          }
+        }
+      }
     }
   }
 }

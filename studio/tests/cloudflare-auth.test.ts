@@ -19,7 +19,7 @@ test('Cloudflare OAuth connects an account end to end and isolates private brows
   const mf = new Miniflare(convertV4MiniflareOptions({
     modules: true, script: bundle.outputFiles[0].text,
     compatibilityDate: '2026-10-09', compatibilityFlags: ['nodejs_compat', 'global_fetch_strictly_public'],
-    bindings: { APP_ORIGIN: origin, GITHUB_CLIENT_ID: 'test-client', GITHUB_CLIENT_SECRET: 'test-secret' },
+    bindings: { APP_ORIGIN: origin, GITHUB_CLIENT_ID: 'test-client', GITHUB_CLIENT_SECRET: 'test-secret', OPENAI_APP_CHALLENGE: 'test-domain-proof' },
     kvNamespaces: ['OAUTH_KV'], durableObjects: { WORKSPACES: { className: 'WorkspaceObject', useSQLite: true } },
     serviceBindings: { ASSETS: async () => new Response('<html>Studio</html>', { headers: { 'Content-Type': 'text/html' } }) },
     outboundService: async request => {
@@ -39,6 +39,7 @@ test('Cloudflare OAuth connects an account end to end and isolates private brows
   }));
   t.after(() => mf.dispose());
   const fetch = (path: string, init?: Parameters<Miniflare['dispatchFetch']>[1]) => mf.dispatchFetch(new URL(path, origin).toString(), { ...init, redirect: 'manual' });
+  assert.equal(await (await fetch('/.well-known/openai-apps-challenge')).text(), 'test-domain-proof');
   assert.equal((await fetch('/api/engagements?storage=saved')).status, 401);
   assert.equal((await fetch('/mcp', { method: 'POST', headers: { Authorization: 'Bearer invalid' } })).status, 401);
   const metadata = await (await fetch('/.well-known/oauth-authorization-server')).json() as any;

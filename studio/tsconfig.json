@@ -4,6 +4,6 @@
     "strict": true, "noEmit": true, "esModuleInterop": true, "skipLibCheck": true,
     "lib": ["ES2023", "DOM"], "types": ["node"]
   },
-  "include": ["server/**/*.ts", "web/**/*.ts", "tests/**/*.ts"],
+  "include": ["server/**/*.ts", "sites/**/*.ts", "web/**/*.ts", "tests/**/*.ts"],
   "exclude": ["tests/cloudflare*.test.ts"]
 }

@@ -49,9 +49,9 @@ The ChatGPT package includes an interactive workspace that opens in the conversa
 
 Field Lab lets the agent try that service. Define its starting state, available actions and outcome checks, then run it through the MCP tools. Fork a point in the timeline to try another approach or change an assumption. For a maintenance service, that might mean comparing a warehouse replacement with a compatible part already at the customer site, including the approval and booking steps each route needs. Runs preserve the scenario and requirement versions they exercised.
 
-Work is stateless by default: the caller carries the workspace between requests. In the browser, it stays in the tab session. Sign in only to save it on the service. You can [export a portable ZIP or prepare files for your own Git repository](docs/export.md). The skills remain useful with your existing tools and records.
+Work is stateless by default: the caller carries the workspace between requests. In the browser, it stays in the tab session. ChatGPT Sites hosts the application and manages ChatGPT sign-in and optional saved storage. The website works without sign-in; MCP connections use ChatGPT authentication. Signing in does not save your workspace. You can [export a portable ZIP or prepare files for your own Git repository](docs/export.md). The skills remain useful with your existing tools and records.
 
-The MCP endpoint is `https://forward-deployed.unsol.dev/mcp`. It serves the same workspace inside compatible hosts, with optional OAuth for saved work. Hosts that support MCP Events can subscribe to saved-workspace updates, so a later conversation can follow a requirement, delivery update or completed run. [Studio source and local setup](https://github.com/anotb/forward-deployed/tree/main/studio) are included for self-hosting.
+The MCP endpoint is `https://forward-deployed.unsol.dev/connect/mcp`. Its OAuth connection uses ChatGPT sign-in and runs within the same Site. [Studio source and local setup](https://github.com/anotb/forward-deployed/tree/main/studio) are included for self-hosting.
 
 ## Installation
 
@@ -73,7 +73,7 @@ codex plugin list --marketplace anotb-forward-deployed --json
 
 You can also install from the desktop app's Plugins Directory after adding the local marketplace. The `forward-deployed-<version>-chatgpt.zip` is the package for OpenAI's plugin import flow.
 
-The ChatGPT directory submission is in progress. OpenAI treats GitHub-imported plugins with MCP configuration as desktop-only; browser and mobile availability requires directory approval. The hosted workspace is available directly, and the [installation guide](docs/installation.md) explains the supported routes.
+The ChatGPT directory submission is in progress. The website is available directly, and the skills can be installed independently. See the [installation guide](docs/installation.md) for the supported routes.
 
 ### Claude Code
 

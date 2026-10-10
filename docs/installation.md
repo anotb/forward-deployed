@@ -1,6 +1,6 @@
 # Installation
 
-The skills are shared across hosts. The plugin also declares an optional hosted Studio at `https://forward-deployed.unsol.dev/mcp` for working with engagement snapshots, Field Lab runs and exports. The build produces a ChatGPT/Codex upload, a Claude Cowork upload, and the complete source package.
+The skills are shared across hosts. The plugin also declares an optional hosted Studio at `https://forward-deployed.unsol.dev/connect/mcp` for working with engagement snapshots, Field Lab runs and exports. The build produces a ChatGPT/Codex upload, a Claude Cowork upload, and the complete source package.
 
 | Package | Contents |
 |---|---|
@@ -55,9 +55,9 @@ See [Claude plugin marketplaces](https://code.claude.com/docs/en/plugin-marketpl
 
 ## Use the optional Studio
 
-Enable the plugin's `forward-deployed-studio` connection in your host to use the hosted tools. The configured endpoint is `https://forward-deployed.unsol.dev/mcp`. A host with MCP Apps support can open the Studio interface; the tools also return structured results for work in chat.
+The configured endpoint is `https://forward-deployed.unsol.dev/connect/mcp`. Enable the plugin's `forward-deployed-studio` connection in your host and sign in with ChatGPT. A connected host with MCP Apps support can open the Studio interface; the tools also return structured results for work in chat. Authentication from Claude hosts has not been verified. The [website](https://forward-deployed.unsol.dev) is also available directly.
 
-Work on a supplied snapshot without signing in, then export it when you finish. Sign in when you want to save workspaces to your account. Connecting the MCP server does not grant it access to a Git repository. [Exporting work](export.md) explains downloads and saving through the host's existing Git access.
+The website supports local work without sign-in. Sign in with ChatGPT to save or reopen account workspaces. MCP connections use ChatGPT authentication, but connected work remains stateless until you explicitly save it: carry the supplied snapshot between requests and export it when you finish. Connecting the MCP server does not grant it access to a Git repository. [Exporting work](export.md) explains downloads and saving through the host's existing Git access.
 
 The skills work without the Studio connection. Leave its MCP server disabled if you only want the methods and references. To use another Agent Skills host, copy the complete `skills/` directory with its bundled references. No Studio code or local Node/Python process is required by an installed plugin.
 

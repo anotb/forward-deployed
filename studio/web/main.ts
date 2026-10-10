@@ -8,6 +8,7 @@ const root = document.querySelector<HTMLDivElement>('#app')!;
 const embedded = window.parent !== window;
 const bridge = new App({ name: 'Forward Deployed Studio', version: '0.5.0' }, {});
 let connected = false;
+let profile: { name: string } | undefined;
 let workspace: Workspace | undefined;
 let engagements: Engagement[] = [];
 let tab: Tab = 'service';
@@ -86,6 +87,12 @@ function unpack(result: unknown): Reply {
   return text ? JSON.parse(text) as Reply : result as Reply;
 }
 
+function keepLocalCopy(message: string): void {
+  if (!workspace) return;
+  accept({ workspace, storage: 'stateless' });
+  notice = message;
+}
+
 async function invoke(name: string, args: Record<string, unknown> = {}, mutation = true): Promise<Reply> {
   const requestedStorage = args.storage ?? (name === 'create_engagement' ? 'stateless' : storage);
   const context = { storage: requestedStorage, telemetry, ...(workspace && name !== 'create_engagement' && (requestedStorage === 'stateless' || name === 'save_engagement') ? { workspace } : {}) };
@@ -98,6 +105,14 @@ async function invoke(name: string, args: Record<string, unknown> = {}, mutation
     const result = await fetch(`/api/tools/${encodeURIComponent(name)}`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...telemetryHeaders() }, body: JSON.stringify(input) });
     const body = await result.json() as { error?: string | { message?: string }; message?: string };
     if (result.status === 401) throw new Error('sign_in_required');
+    if (result.status === 404 && name === 'get_engagement') {
+      const message = 'Local copy. This workspace is not saved to your connected account.';
+      if (requestedStorage === 'saved' && workspace?.engagement.id === args.engagementId) {
+        keepLocalCopy(message);
+        throw new Error(message);
+      }
+      throw new Error('This workspace could not be found in your connected account.');
+    }
     if (!result.ok) throw new Error(typeof body.error === 'string' ? body.error : body.error?.message ?? body.message ?? `Request failed (${result.status}).`);
     response = unpack(body);
   }
@@ -214,14 +229,37 @@ async function downloadExport(): Promise<void> {
   notice = 'Export downloaded.';
 }
 
-function signIn(intent: 'save' | 'list'): void {
+function retainForSignIn(): void {
   remember();
   if (workspace) {
     const retained = JSON.parse(sessionStorage.getItem(sessionKey) ?? 'null') as { current?: Workspace } | null;
     if (retained?.current?.engagement.id !== workspace.engagement.id || retained.current.engagement.revision !== workspace.engagement.revision) throw new Error('This browser could not keep the workspace through sign-in. Download an export before leaving this page.');
   }
+}
+
+function signIn(intent: 'save' | 'list'): void {
+  retainForSignIn();
   try { sessionStorage.setItem(`${sessionKey}.after-sign-in`, intent); } catch { /* Workspace remains in memory until navigation. */ }
   location.assign('/login');
+}
+
+function accountView(): string {
+  if (embedded) return '';
+  return profile
+    ? `<span class="account-name" title="Signed in with ChatGPT"><span class="account-dot" aria-hidden="true"></span>Signed in${profile.name ? ` · ${esc(profile.name)}` : ''}</span>`
+    : '<a class="account-sign-in" href="/signin-with-chatgpt?return_to=%2F" target="_top" data-sign-in>Sign in with ChatGPT</a>';
+}
+
+async function loadProfile(): Promise<void> {
+  try {
+    const response = await fetch('/api/profile', { credentials: 'same-origin', cache: 'no-store' });
+    if (response.ok) {
+      const data = await response.json() as { id?: unknown; name?: unknown };
+      if (typeof data.id === 'string' && data.id) profile = { name: typeof data.name === 'string' && !data.name.includes('@') && data.name !== 'Signed-in user' ? data.name : '' };
+    }
+  } catch { /* The studio works without a signed-in account. */ }
+  const account = root.querySelector('[data-account]');
+  if (account) account.innerHTML = accountView();
 }
 
 async function saveWorkspace(): Promise<void> {
@@ -254,7 +292,7 @@ function render(): void {
   const focusAttributes = ['data-action', 'data-tab', 'data-step', 'data-change', 'data-id']
     .filter(name => active?.hasAttribute(name))
     .map(name => `[${name}="${CSS.escape(active!.getAttribute(name)!)}"]`).join('');
-  root.innerHTML = `${busy ? '<div class="busy-line" role="progressbar" aria-label="Working"></div>' : ''}<header class="topbar"><div class="brand"><svg class="mark" viewBox="0 0 28 28" aria-hidden="true"><path d="M3 4h22v20H3z" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 19V9h12M8 14h9" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>Forward Deployed</div><span class="tag">Studio</span><div class="spacer"></div>${engagements.length ? `<select aria-label="Switch engagement" data-change="engagement">${engagements.map(item => `<option value="${esc(item.id)}" ${item.id === workspace?.engagement.id ? 'selected' : ''}>${esc(item.name)}</option>`).join('')}</select>` : ''}${workspace ? '<button data-action="new-engagement" aria-label="New engagement">New</button>' : ''}</header>${notice ? `<div class="notice ${error ? 'error' : ''}" role="${error ? 'alert' : 'status'}"><span>${esc(notice)}</span><button data-action="dismiss">Dismiss</button></div>` : ''}${workspace ? `<div class="shell"><section class="project-head"><div><div class="customer">${esc(workspace.engagement.customer)}</div><h1>${esc(workspace.engagement.name)}</h1><p>${esc(workspace.engagement.ambition)}</p></div>${exportControls()}</section><nav class="tabs" aria-label="Studio views">${([{ key: 'service', label: 'Service', count: workspace.opportunities.length }, { key: 'evidence', label: 'Sources', count: workspace.evidence.length }, { key: 'delivery', label: 'Delivery', count: workspace.work.length }, { key: 'lab', label: 'Field Lab', count: workspace.scenarios.length }] as const).map(item => `<button class="tab" data-action="tab" data-tab="${item.key}" aria-current="${tab === item.key ? 'page' : 'false'}">${item.label}<span>${item.count || ''}</span></button>`).join('')}</nav>${editorView()}<main class="content">${tab === 'service' ? serviceView() : tab === 'evidence' ? evidenceView() : tab === 'delivery' ? deliveryView() : labView()}${promptView()}</main><footer class="footer"><span>${storage === 'saved' ? 'Saved to Forward Deployed' : embedded ? 'In this chat · Export or save when ready' : 'In this browser · Export or save when ready'}</span><span>Revision ${workspace.engagement.revision} · ${formatDate(workspace.engagement.updatedAt)}</span></footer></div>` : `<main class="welcome"><h1>Create an engagement</h1><p>Develop a service with your agent, track implementation and test the workflow in Field Lab.</p><p class="storage-hint">${embedded ? 'Starts in this chat.' : 'Starts in this browser.'} Export to files or Git, or save online when you choose.</p><div class="welcome-saved">${button('Open saved workspaces', 'saved-workspaces')}</div>${createForm()}${promptView()}</main>`}`;
+  root.innerHTML = `${busy ? '<div class="busy-line" role="progressbar" aria-label="Working"></div>' : ''}<header class="topbar"><div class="brand" title="Forward Deployed"><svg class="mark" viewBox="16 37 97 54" role="img" aria-label="Forward Deployed"><g fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 86V42h21M21 63h17"/><path d="M53 42h7c12 0 17 8 17 22s-5 22-17 22h-7Z"/><path d="M108 42H89v44h19M89 63h16"/></g></svg><span class="studio-label">Studio</span></div><div class="spacer"></div>${engagements.length ? `<select aria-label="Switch engagement" data-change="engagement">${engagements.map(item => `<option value="${esc(item.id)}" ${item.id === workspace?.engagement.id ? 'selected' : ''}>${esc(item.name)}</option>`).join('')}</select>` : ''}${workspace ? '<button data-action="new-engagement" aria-label="New engagement">New</button>' : ''}${embedded ? '' : `<div class="account" data-account>${accountView()}</div>`}</header>${notice ? `<div class="notice ${error ? 'error' : ''}" role="${error ? 'alert' : 'status'}"><span>${esc(notice)}</span><button data-action="dismiss">Dismiss</button></div>` : ''}${workspace ? `<div class="shell"><section class="project-head"><div><div class="customer">${esc(workspace.engagement.customer)}</div><h1>${esc(workspace.engagement.name)}</h1><p>${esc(workspace.engagement.ambition)}</p></div>${exportControls()}</section><nav class="tabs" aria-label="Studio views">${([{ key: 'service', label: 'Service', count: workspace.opportunities.length }, { key: 'evidence', label: 'Sources', count: workspace.evidence.length }, { key: 'delivery', label: 'Delivery', count: workspace.work.length }, { key: 'lab', label: 'Field Lab', count: workspace.scenarios.length }] as const).map(item => `<button class="tab" data-action="tab" data-tab="${item.key}" aria-current="${tab === item.key ? 'page' : 'false'}">${item.label}<span>${item.count || ''}</span></button>`).join('')}</nav>${editorView()}<main class="content">${tab === 'service' ? serviceView() : tab === 'evidence' ? evidenceView() : tab === 'delivery' ? deliveryView() : labView()}${promptView()}</main><footer class="footer"><span>${storage === 'saved' ? 'Saved to Forward Deployed' : embedded ? 'In this chat · Export or save when ready' : 'In this browser · Export or save when ready'}</span><span>Revision ${workspace.engagement.revision} · ${formatDate(workspace.engagement.updatedAt)}</span></footer></div>` : `<main class="welcome"><h1>Create an engagement</h1><p>Develop a service with your agent, track implementation and test the workflow in Field Lab.</p><p class="storage-hint">${embedded ? 'Starts in this chat.' : 'Starts in this browser.'} Export to files or Git, or save online when you choose.</p><div class="welcome-saved">${button('Open saved workspaces', 'saved-workspaces')}</div>${createForm()}${promptView()}</main>`}`;
   if (focusAttributes) root.querySelector<HTMLElement>(focusAttributes)?.focus({ preventScroll: true });
 }
 
@@ -279,6 +317,11 @@ async function prompt(kind: string): Promise<void> {
 }
 
 root.addEventListener('click', event => {
+  if ((event.target as HTMLElement).closest('[data-sign-in]')) {
+    try { retainForSignIn(); }
+    catch (cause) { event.preventDefault(); notice = cause instanceof Error ? cause.message : 'Could not keep this workspace through sign-in.'; error = true; render(); }
+    return;
+  }
   if (!(event.target as HTMLElement).closest('.export-menu')) root.querySelector<HTMLDetailsElement>('.export-menu')?.removeAttribute('open');
   const target = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-action]');
   if (!target || busy) return;
@@ -377,12 +420,19 @@ bridge.ontoolcancelled = () => { notice = 'The host cancelled this request.'; re
 
 async function initialize(): Promise<void> {
   restore();
+  if (!embedded && workspace && storage === 'saved') {
+    try { await invoke('get_engagement', { engagementId: workspace.engagement.id }, false); }
+    catch {
+      if (storage === 'saved') keepLocalCopy('Local copy. Could not verify this workspace with your connected account. Export it or save it online when ready.');
+    }
+  }
   render();
   if (embedded) {
     try { await bridge.connect(); connected = true; render(); }
     catch { notice = 'Could not connect to the host. Reopen the studio from the conversation.'; error = true; render(); }
   } else {
     const requested = new URLSearchParams(location.search).get('engagement');
+    void loadProfile();
     if (requested && localWorkspaces[requested]) accept({ workspace: localWorkspaces[requested], storage: 'stateless' });
     try {
       const afterSignIn = sessionStorage.getItem(`${sessionKey}.after-sign-in`);

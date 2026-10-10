@@ -49,13 +49,13 @@
         ],
         "logo": "./assets/icon.svg",
         "composerIcon": "./assets/icon.svg",
-        "websiteURL": "https://github.com/anotb/forward-deployed",
+        "websiteURL": "https://forward-deployed.unsol.dev",
         "supportURL": "https://github.com/anotb/forward-deployed/issues",
         "privacyPolicyURL": "https://github.com/anotb/forward-deployed/blob/main/PRIVACY.md",
         "termsOfServiceURL": "https://github.com/anotb/forward-deployed/blob/main/TERMS.md"
       }
     }
   },
-  "homepage": "https://github.com/anotb/forward-deployed#readme",
+  "homepage": "https://forward-deployed.unsol.dev",
   "repository": "https://github.com/anotb/forward-deployed"
 }

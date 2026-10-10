@@ -1,4 +1,5 @@
 import { McpServer } from '@modelcontextprotocol/server';
+import { createHash } from 'node:crypto';
 import { registerAppResource, registerAppTool, RESOURCE_MIME_TYPE } from '@modelcontextprotocol/ext-apps/server';
 import { z } from 'zod';
 import { DomainError } from './model.js';
@@ -10,6 +11,9 @@ export interface StudioMcpOptions {
   store: WorkspaceRepository | null; actor: string; html: string; origin: string;
   profile?: { id: string; name?: string };
   authenticated?: boolean;
+  requireAuthentication?: boolean;
+  executeTool?: (name: string, args: Record<string, unknown>) => Promise<Record<string, any>>;
+  authScopes?: string[];
   candidate?: { engagementId: string; runId: string };
   onWrite?: (actor: string, name: string, write: any) => void | Promise<void>;
   attach?: (server: McpServer, actor: string) => void;
@@ -22,7 +26,7 @@ export function createStudioMcp(options: StudioMcpOptions): McpServer {
   const server = new McpServer({ name: 'forward-deployed', version: '0.5.0' }, {
     instructions: candidate
       ? 'Complete the rehearsal goal using the exposed service actions. Observe the service before acting and after an ambiguous result. Finish when the goal is reached or blocked.'
-      : 'Forward Deployed supports creating useful services from customer discovery. Use these tools when a connected workspace or executable rehearsals help. Existing skills and other host tools remain available. Stateless is the default: retain the returned workspace in the conversation or user-owned file and pass it on continuation; it is not saved on the service. Save to Forward Deployed only when the user chooses it. Read selected Meetings sources with the host connector and retain relevant excerpts with references. The agent develops the opportunity and design; these tools exercise the proposed service. Use the current revision for writes. Rehearsal results describe the supplied scenario, not production performance.',
+      : 'Forward Deployed provides engagement records and a declarative workflow simulator. Use the workspace tools to connect supplied source passages, service opportunities, requirements and delivery work. Stateless is the default: retain the returned workspace and pass it on continuation; the service does not save it. Save only when the user chooses it. Use the current revision for writes. Field Lab operates solely on scenario data and simulated state transitions in this workspace. It does not create new MCP tools, execute source code, call external services or perform production business actions. Rehearsal checks describe the supplied model and its recorded trace.',
   });
   if (!candidate) {
     registerAppResource(server, 'forward-deployed-studio', STUDIO_URI, {}, async () => ({ contents: [{
@@ -33,7 +37,7 @@ export function createStudioMcp(options: StudioMcpOptions): McpServer {
       title: 'Connected profile', description: 'Read the identity associated with this connection.',
       inputSchema: z.object({}), outputSchema: output,
       annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true },
-      _meta: { 'openai/isUserProfileTool': true },
+      _meta: { 'openai/profile': true },
     }, async () => {
       if (!options.profile && !store) return { isError: true, content: [{ type: 'text', text: 'No connected account. Stateless work does not require one.' }], structuredContent: { error: 'not_connected' } };
       const profile = options.profile ?? { id: actor };
@@ -45,7 +49,7 @@ export function createStudioMcp(options: StudioMcpOptions): McpServer {
     const [title, description] = toolDescriptions[name];
     let inputSchema = toolSchemas[name];
     if (candidate) inputSchema = inputSchema.omit({ engagementId: true, runId: true, expectedRevision: true, requestId: true, storage: true, workspace: true });
-    const metadata: Record<string, unknown> = { securitySchemes: name === 'save_engagement' ? [{ type: 'oauth2', scopes: ['workspace'] }] : [{ type: 'noauth' }, { type: 'oauth2', scopes: ['workspace'] }] };
+    const metadata: Record<string, unknown> = { securitySchemes: name === 'save_engagement' || options.requireAuthentication ? [{ type: 'oauth2', scopes: options.authScopes ?? ['workspace'] }] : [{ type: 'noauth' }, { type: 'oauth2', scopes: options.authScopes ?? ['workspace'] }] };
     if (name === 'open_studio') metadata.ui = { resourceUri: STUDIO_URI };
     registerAppTool(server, name, {
       title, description, inputSchema, outputSchema: output,
@@ -64,7 +68,7 @@ export function createStudioMcp(options: StudioMcpOptions): McpServer {
           const workspace = store.get(candidate.engagementId, actor);
           input = { ...args, ...candidate, storage: 'saved', expectedRevision: workspace.engagement.revision, requestId: crypto.randomUUID() };
         }
-        const data = executeStudioTool(store, actor, name, input);
+        const data = options.executeTool ? await options.executeTool(name, input) : executeStudioTool(store, actor, name, input);
         if (!readTools.has(name) && data.storage === 'saved') await options.onWrite?.(actor, name, data);
         const structuredContent: Record<string, unknown> = candidate ? {
           engagementId: candidate.engagementId, revision: data.workspace?.engagement.revision, result: data.result,
@@ -77,7 +81,17 @@ export function createStudioMcp(options: StudioMcpOptions): McpServer {
         } : data.export ? { storage: data.storage, result: data.result } : data;
         record('ok');
         return {
-          content: [{ type: 'text' as const, text: JSON.stringify(structuredContent) }], structuredContent,
+          content: [
+            { type: 'text' as const, text: JSON.stringify(structuredContent) },
+            ...(!candidate && data.export ? [{
+              type: 'resource' as const,
+              resource: {
+                // Identifies bytes embedded in this response; it is not a hosted download URL.
+                uri: `forward-deployed-export://sha256/${createHash('sha256').update(Buffer.from(data.export.blob, 'base64')).digest('hex')}/${encodeURIComponent(data.export.filename)}`,
+                mimeType: 'application/zip', blob: data.export.blob as string,
+              },
+            }] : []),
+          ], structuredContent,
           ...(!candidate && (data.workspace || data.export) ? { _meta: { ...(data.workspace ? { workspace: data.workspace } : {}), ...(data.export ? { export: data.export } : {}) } } : {}),
         };
       } catch (error) {

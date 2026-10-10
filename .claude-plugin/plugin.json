@@ -28,7 +28,7 @@
     "chatgpt",
     "codex"
   ],
-  "homepage": "https://github.com/anotb/forward-deployed#readme",
+  "homepage": "https://forward-deployed.unsol.dev",
   "repository": "https://github.com/anotb/forward-deployed",
   "mcpServers": "./.mcp.json"
 }

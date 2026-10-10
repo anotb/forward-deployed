@@ -33,6 +33,6 @@ For OpenAI, check marketplace resolution and skill discovery with the installed 
 
 Check the extracted ChatGPT ZIP through the host parser, with a temporary marketplace outside the package pointing at its root. Confirm the returned version, skill inventory and `forward-deployed-studio` MCP entry. The portable package has no `.codex-plugin` fallback, so this exercises root `plugin.json` and `mcp.json`. Then validate the extracted Cowork manifest and its `.mcp.json`. Neither parser check establishes network connectivity or OAuth behavior.
 
-For Studio source, run `npm ci`, `npm run check`, `npm test` and `npm run build` from `studio/`. Its hosted MCP and browser interface have their own tests. See [Cloudflare deployment](../studio/cloudflare/README.md) for deployment checks and [export behavior](export.md) for the file and Git workflow.
+For Studio source, run `npm ci`, `npm run check`, `npm test` and `npm run build` from `studio/`. Its hosted MCP and browser interface have their own tests. See [Sites deployment](../studio/sites/README.md) for the hosted adapter and [standalone Cloudflare deployment](../studio/cloudflare/README.md) for that optional configuration and [export behavior](export.md) for the file and Git workflow.
 
 In each destination, start a fresh conversation, verify the loaded version, invoke a focused skill and confirm it can read a bundled reference. Use representative tasks to assess behavior after installation.

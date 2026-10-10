@@ -15,7 +15,7 @@ npm start
 
 Open `http://127.0.0.1:4318`. The MCP endpoint is `/mcp`. To use stdio, run `node dist/server/main.js --stdio` from this directory.
 
-The HTTP server binds to loopback. Stateless requests carry their own workspace. Explicit saved operations use SQLite at `~/.forward-deployed/workspace.sqlite`; `FD_DATABASE_PATH` changes that path. `PORT` changes the HTTP port. `FD_ACCESS_TOKEN` optionally protects the local HTTP server. For a hosted, multi-user deployment, use the [Cloudflare adapter](cloudflare/README.md), which supplies account isolation and OAuth.
+The HTTP server binds to loopback. Stateless requests carry their own workspace. Explicit saved operations use SQLite at `~/.forward-deployed/workspace.sqlite`; `FD_DATABASE_PATH` changes that path. `PORT` changes the HTTP port. `FD_ACCESS_TOKEN` optionally protects the local HTTP server. The hosted application uses the [ChatGPT Sites adapter](sites/README.md), with managed sign-in and D1 storage. The [Cloudflare adapter](cloudflare/README.md) is available for deployments that manage their own infrastructure.
 
 ## Work with it
 
@@ -25,7 +25,7 @@ Field Lab scenarios define typed state, observable fields, available actions, pr
 
 The browser and embedded MCP App use the same tools. The host's Meetings connector supplies selected source material when available; this server has no independent access to meeting accounts. [Exports](../docs/export.md) contain readable files, structured data and checksums. A Git handoff prepares files for the host's repository tools and does not push automatically.
 
-Stateless is the default, including on authenticated connections. Pass the returned workspace snapshot on the next call. Saved work requires an explicit storage choice and, on the hosted service, sign-in. Authenticated clients can discover MCP Events and subscribe to account-scoped updates through signed callbacks. Delivery work remains separate from simulated outcome checks.
+Stateless is the default, including on authenticated connections. Pass the returned workspace snapshot on the next call. Saved work requires an explicit storage choice and, on the hosted service, sign-in. The local and standalone Cloudflare adapters support MCP Events with signed callbacks. The Sites adapter does not advertise Events because its supported runtime does not provide an autonomous retry scheduler. Delivery work remains separate from simulated outcome checks.
 
 ## Check the implementation
 
