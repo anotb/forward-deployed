@@ -1,4 +1,4 @@
-# Forward Deployed: FDE skills for AI agents
+# Forward Deployed: The work around the code.
 
 **Skills for forward-deployed engineering (FDE).**
 
