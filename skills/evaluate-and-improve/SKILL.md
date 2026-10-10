@@ -29,6 +29,8 @@ Construct paired cases where one changed fact should change the action. A part b
 
 Add cases that reward discovery. Give the system an incomplete initial plan and enough accessible evidence to find a materially better option, then judge whether the option is feasible and useful. Permit different good answers. A reference answer should describe the material reasoning and outcome constraints; it should not punish a superior approach because it follows a different sequence.
 
+Use Field Lab when its simulated actions and state can answer the evaluation question. Define a rehearsal around the useful outcome and linked requirement versions, then observe and act through the available tools until the case is ready to finish. Inspect the recorded state and checks. Fork a recorded step when a different condition or decision would distinguish the designs; keep the original run for comparison. Give the candidate only the observations available in the case, and report the result as simulation evidence.
+
 For multi-step work, include external state and changing evidence. Interrupt execution after a command may have committed, deliver events out of order, change a plan while approval is pending, or introduce resource contention. The test should examine authoritative resulting state and recovery behavior. A final message saying “completed” is not proof of completion.
 
 Keep outcome knowledge away from candidate inputs. Split repeated entities, near-duplicate documents, and related incidents appropriately so the system does not learn the held-out answer through another route. A historical replay must reflect what was available then; later corrected data can be used by an adjudicator without quietly becoming candidate context.

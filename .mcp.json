@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "forward-deployed-studio": {
+      "type": "http",
+      "url": "https://forward-deployed.unsol.dev/mcp"
+    }
+  }
+}

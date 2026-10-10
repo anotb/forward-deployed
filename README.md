@@ -39,9 +39,19 @@ Give the assistant the business situation, available evidence, and the result yo
 
 The skills encourage exploration of the current environment before settling on a design: inspect available connectors and tools, consult current product documentation, and run a small permitted experiment where it resolves uncertainty. They also use the host's document, presentation, spreadsheet, browser, and coding capabilities when those help deliver the result. No particular companion plugin is required.
 
-The guidance and selected worked references are bundled. There is no helper engine, model service or runtime Python dependency. Each skill can be used directly. References show how source material changes a diagnosis, design, investment or delivery choice; the entrypoints explain when those examples help. They illustrate judgment rather than prescribe a process or output format. The [usage guide](docs/usage.md) explains where each skill helps and what you can ask it to do.
+The guidance and selected worked references are bundled. Each skill can be used directly, without the hosted workspace. References show how source material changes a diagnosis, design, investment or delivery choice; the entrypoints explain when those examples help. They illustrate judgment rather than prescribe a process or output format. The [usage guide](docs/usage.md) explains where each skill helps and what you can ask it to do.
 
-For a feel for the material, read through [a write whose acknowledgement is lost](skills/enterprise-integration/references/uncertain-write.md), [an investigation of an operational regression](skills/evaluate-and-improve/references/diagnosis-from-traces.md), or [a product boundary that has to accommodate different customer rules](skills/field-productization/references/covenant-review-boundary.md).
+## Workspace and Field Lab
+
+The optional [workspace](https://forward-deployed.unsol.dev) connects discovery sources, opportunities, requirements and delivery work. An agent can bring in selected meeting excerpts through the host's Meetings connector, develop a service from that evidence and keep each requirement linked to the passage behind it.
+
+The ChatGPT package includes an interactive workspace that opens in the conversation through MCP Apps. You can inspect the service, update delivery work and run a rehearsal there, then ask the agent to develop the design further. The agent and the interface work on the same workspace. ChatGPT supplies the reasoning and its connected tools; Forward Deployed supplies the project state and executable rehearsal.
+
+Field Lab lets the agent try that service. Define its starting state, available actions and outcome checks, then run it through the MCP tools. Fork a point in the timeline to try another approach or change an assumption. For a maintenance service, that might mean comparing a warehouse replacement with a compatible part already at the customer site, including the approval and booking steps each route needs. Runs preserve the scenario and requirement versions they exercised.
+
+Work is stateless by default: the caller carries the workspace between requests. In the browser, it stays in the tab session. Sign in only to save it on the service. You can [export a portable ZIP or prepare files for your own Git repository](docs/export.md). The skills remain useful with your existing tools and records.
+
+The MCP endpoint is `https://forward-deployed.unsol.dev/mcp`. It serves the same workspace inside compatible hosts, with optional OAuth for saved work. Hosts that support MCP Events can subscribe to saved-workspace updates, so a later conversation can follow a requirement, delivery update or completed run. [Studio source and local setup](https://github.com/anotb/forward-deployed/tree/main/studio) are included for self-hosting.
 
 ## Installation
 
@@ -62,6 +72,8 @@ codex plugin list --marketplace anotb-forward-deployed --json
 ```
 
 You can also install from the desktop app's Plugins Directory after adding the local marketplace. The `forward-deployed-<version>-chatgpt.zip` is the package for OpenAI's plugin import flow.
+
+The ChatGPT directory submission is in progress. OpenAI treats GitHub-imported plugins with MCP configuration as desktop-only; browser and mobile availability requires directory approval. The hosted workspace is available directly, and the [installation guide](docs/installation.md) explains the supported routes.
 
 ### Claude Code
 

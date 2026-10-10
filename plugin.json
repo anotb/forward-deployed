@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "forward-deployed",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "Skills for forward-deployed engineering (FDE): discovery, AI solution design, enterprise integration, agent evaluation, delivery and adoption.",
   "author": {
     "name": "Rahil Banthia",
@@ -34,7 +34,7 @@
       "interface": {
         "displayName": "Forward Deployed",
         "shortDescription": "Forward-deployed AI skills",
-        "longDescription": "Help with the work of deploying AI in an organization: understand the customer, develop an opportunity, design the service and get it into use. Forward Deployed provides skills for FDEs, deployment leads, consultants and builders. It covers discovery, workflow redesign, solution architecture, enterprise integration, context engineering, agent evaluation, engineering handoffs, adoption and value measurement. Use a focused skill for a specific problem, or work through an engagement with the tools available in your AI host.",
+        "longDescription": "Help with the work of deploying AI in an organization: understand the customer, develop an opportunity, design the service and get it into use. Forward Deployed provides skills for FDEs, deployment leads, consultants and builders. It covers discovery, workflow redesign, solution architecture, enterprise integration, context engineering, agent evaluation, engineering handoffs, adoption and value measurement. Use a focused skill for a specific problem, or work through an engagement with the tools available in your AI host. An optional workspace connects engagement evidence, requirements, delivery work and Field Lab rehearsals.",
         "developerName": "Rahil Banthia",
         "category": "Business & Operations",
         "capabilities": [

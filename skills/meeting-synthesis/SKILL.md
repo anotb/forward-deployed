@@ -10,6 +10,8 @@ Make the meeting useful after it ends. Recover what it changes about the busines
 
 Obtain the accessible source material and use the host's available transcription or meeting capabilities when needed. Work from the coverage actually available. Preserve uncertain wording around consequential numbers, negations and commitments; use the recording to resolve ambiguity when possible. An inaccessible recording need not prevent useful synthesis of the notes that exist.
 
+If Meetings is connected, use the host's meeting tools to find and read the notes or transcripts selected for this assignment. When maintaining a Studio engagement, use `add_evidence` for relevant excerpts and retrievable source references; the Studio server does not access Meetings itself. Develop the service possibilities in that material, then connect useful findings to opportunities and concrete requirements. Keep a speaker's stated need distinct from the service you propose, and turn consequential gaps into specific questions for the next conversation.
+
 ## Interpret the conversation in the engagement
 
 Read the existing context before summarizing. Identify the decision the participants were working toward, the assumptions they brought, and what changed. Organize around the implications rather than the order in which people spoke.

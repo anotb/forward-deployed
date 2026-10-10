@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "forward-deployed",
+  "main": "cloudflare/worker.ts",
+  "compatibility_date": "2026-10-09",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "workers_dev": false,
+  "routes": [{ "pattern": "forward-deployed.unsol.dev", "custom_domain": true }],
+  "vars": { "APP_ORIGIN": "https://forward-deployed.unsol.dev" },
+  "assets": { "directory": "dist/assets", "binding": "ASSETS", "run_worker_first": true },
+  "durable_objects": { "bindings": [{ "name": "WORKSPACES", "class_name": "WorkspaceObject" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["WorkspaceObject"] }],
+  "kv_namespaces": [{ "binding": "OAUTH_KV", "id": "bccd9a9c6a1242ada2907ffe08c2044c" }],
+  "analytics_engine_datasets": [{ "binding": "TELEMETRY", "dataset": "forward_deployed_usage" }],
+  "observability": { "enabled": false }
+}

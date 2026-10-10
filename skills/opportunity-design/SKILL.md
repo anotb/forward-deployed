@@ -53,6 +53,8 @@ Develop the promising direction far enough to expose its mechanism. Explain what
 
 Walk through a specific unit of work from arrival to an accepted outcome. Describe what the user sees, what the system does independently, what it asks, what it produces, and what happens next. A concept becomes credible when someone can imagine using it on their own case.
 
+Where Studio is in use, `shape_opportunity` can keep the proposed service and value mechanism connected to its discovery evidence. Field Lab can make a promising concept tangible: construct a case where the proposed service discovers a useful option or completes work that is currently left undone, then perform it. Use the resulting experience to sharpen the concept; a rehearsal is optional, and should earn its place by revealing something the written walkthrough cannot.
+
 Identify the business objects the experience must understand. For a configuration proposal, those might include the customer's requirement, a product variant, an approved engineering revision, available components, and the commercial offer. Explain which relationships and changes matter. A polished interface cannot compensate for confusing an available component with an approved substitute.
 
 Give the intelligence consequential work. It might form and compare explanations, find an applicable precedent, identify a missing constraint, plan a sequence of inquiries, or propose several feasible actions. Explain how calculations, policy, source systems, and experts help it reach an acceptable result. Leave detailed implementation for solution design, but resolve enough behavior to distinguish the concept from “a copilot for the team.”

@@ -48,9 +48,23 @@ class PackageTests(unittest.TestCase):
         self.assertTrue(any('version differs' in value for value in errors))
         self.assertTrue(any('invalid skills discovery path' in value for value in errors))
 
-    def test_runtime_engine_or_connector_metadata_is_rejected(self):
+    def test_portable_manifest_rejects_compatibility_mcp_field(self):
         self.edit_json('plugin.json', lambda data: data.update(mcpServers={'unexpected': {}}))
         self.assertTrue(any('manifest fields differ' in value for value in validate_plugin(self.root)))
+
+    def test_hosted_mcp_configuration_rejects_commands_credentials_and_url_drift(self):
+        self.edit_json('mcp.json', lambda data: data['mcpServers']['forward-deployed-studio'].update(command='node', headers={'Authorization': 'example'}))
+        self.edit_json('.mcp.json', lambda data: data['mcpServers']['forward-deployed-studio'].update(url='http://localhost:3000/mcp'))
+        errors = validate_plugin(self.root)
+        self.assertTrue(any(value.startswith('mcp.json: expected only') for value in errors))
+        self.assertTrue(any(value.startswith('.mcp.json: expected only') for value in errors))
+
+    def test_missing_mcp_configuration_and_wrong_wrapper_path_are_rejected(self):
+        (self.root / 'mcp.json').unlink()
+        self.edit_json('.claude-plugin/plugin.json', lambda data: data.update(mcpServers='./other.json'))
+        errors = validate_plugin(self.root)
+        self.assertTrue(any('Missing package file: mcp.json' in value for value in errors))
+        self.assertTrue(any('invalid MCP configuration path' in value for value in errors))
 
     def test_host_metadata_limits_and_missing_icon_are_rejected(self):
         self.edit_json('plugin.json', lambda data: data['extensions']['com.openai']['interface'].update(shortDescription='x' * 31))
@@ -115,6 +129,8 @@ class PackageTests(unittest.TestCase):
         self.write('examples/sample.md', 'unlisted example\n')
         self.write('tests/notes.md', 'unlisted notes\n')
         self.write('skills/adoption-and-scale/references/unlisted.md', 'unlisted skill material\n')
+        for relative in ['studio/.env', 'studio/.dev.vars', 'studio/.wrangler/state.sqlite', 'studio/node_modules/package/index.js', 'studio/dist/server.js', 'studio/workspace.sqlite', 'studio/workspace.sqlite-wal', 'studio/screenshot.png', 'studio/launch-notes.md', 'studio/server/unreviewed.ts']:
+            self.write(relative, 'not packaged\n')
         outputs = build_release(self.root, Path(self.temp.name) / 'packages')
         chatgpt, cowork, source = outputs[0], outputs[2], outputs[4]
         for host, archive, manifest in [('chatgpt', chatgpt, 'plugin.json'), ('cowork', cowork, '.claude-plugin/plugin.json')]:
@@ -125,9 +141,13 @@ class PackageTests(unittest.TestCase):
                 self.assertEqual(len(names), len(expected))
                 self.assertTrue(all(name.startswith('forward-deployed/') for name in names))
                 self.assertEqual([name for name in names if name.endswith('/plugin.json')], ['forward-deployed/' + manifest])
-                self.assertFalse(any(part in name for name in names for part in ['/scripts/', '/tests/', '/examples/', '/research/', '/schemas/', '/templates/', '/marketplace.json']))
+                self.assertFalse(any(part in name for name in names for part in ['/scripts/', '/tests/', '/examples/', '/research/', '/schemas/', '/templates/', '/marketplace.json', '/studio/']))
                 self.assertIn('forward-deployed/docs/installation.md', names)
                 self.assertIn('forward-deployed/docs/usage.md', names)
+                self.assertIn('forward-deployed/docs/export.md', names)
+                expected_mcp = 'mcp.json' if host == 'chatgpt' else '.mcp.json'
+                self.assertIn('forward-deployed/' + expected_mcp, names)
+                self.assertNotIn('forward-deployed/' + ('.mcp.json' if host == 'chatgpt' else 'mcp.json'), names)
                 self.assertNotIn('forward-deployed/docs/verification.md', names)
                 self.assertIn('forward-deployed/skills/adoption-and-scale/references/workforce-practice.md', names)
                 self.assertNotIn('forward-deployed/skills/adoption-and-scale/references/unlisted.md', names)
@@ -147,6 +167,10 @@ class PackageTests(unittest.TestCase):
             self.assertFalse(any('/.env' in name or '/research/' in name or name.startswith('forward-deployed/references/') for name in names))
             self.assertFalse(any(part in name for name in names for part in ['/examples/', '/docs/unlisted.md', '/tests/notes.md']))
             self.assertIn('forward-deployed/docs/usage.md', names)
+            self.assertIn('forward-deployed/studio/server/mcp.ts', names)
+            self.assertIn('forward-deployed/studio/package-lock.json', names)
+            self.assertIn('forward-deployed/docs/export.md', names)
+            self.assertFalse(any(part in name for name in names for part in ['/.wrangler/', '/node_modules/', '/dist/', '/.dev.vars', '.sqlite', '/screenshot.png', '/launch-notes.md', '/unreviewed.ts']))
         for archive, checksum in zip(outputs[::2], outputs[1::2]):
             self.assertEqual(checksum.read_text().split()[0], hashlib.sha256(archive.read_bytes()).hexdigest())
 

@@ -1,15 +1,17 @@
-"""Explicit source and runtime file selection; no installed executable component."""
+"""Explicit source and runtime selection; installed packages use a hosted MCP."""
 from pathlib import Path
 
 RUNTIME_FIXED = {
     'plugin.json', '.codex-plugin/plugin.json', '.claude-plugin/plugin.json',
     'README.md', 'LICENSE', 'PRIVACY.md', 'TERMS.md',
-    'docs/installation.md', 'docs/usage.md', 'assets/icon.svg',
+    'docs/installation.md', 'docs/usage.md', 'docs/export.md', 'assets/icon.svg',
+    'mcp.json', '.mcp.json',
 }
 HOST_MANIFESTS = {'plugin.json', '.codex-plugin/plugin.json', '.claude-plugin/plugin.json'}
+HOST_MCP_FILES = {'mcp.json', '.mcp.json'}
 HOST_FILES = {
-    'chatgpt': (RUNTIME_FIXED - HOST_MANIFESTS) | {'plugin.json'},
-    'cowork': (RUNTIME_FIXED - HOST_MANIFESTS - {'assets/icon.svg'}) | {'.claude-plugin/plugin.json'},
+    'chatgpt': (RUNTIME_FIXED - HOST_MANIFESTS - HOST_MCP_FILES) | {'plugin.json', 'mcp.json'},
+    'cowork': (RUNTIME_FIXED - HOST_MANIFESTS - HOST_MCP_FILES - {'assets/icon.svg'}) | {'.claude-plugin/plugin.json', '.mcp.json'},
 }
 RUNTIME_RESOURCES = {
     'skills/adoption-and-scale/references/workforce-practice.md',
@@ -30,15 +32,32 @@ RUNTIME_RESOURCES = {
     'skills/use-case-portfolio/references/constrained-allocation.md',
     'skills/value-case/references/service-economics.md',
 }
-SOURCE_FIXED = RUNTIME_FIXED | {
+STUDIO_SOURCE = {
+    'studio/README.md', 'studio/package.json', 'studio/package-lock.json',
+    'studio/tsconfig.json', 'studio/tsconfig.worker.json', 'studio/wrangler.jsonc',
+    'studio/scripts/build.mjs',
+    'studio/web/index.html', 'studio/web/main.ts', 'studio/web/style.css',
+    'studio/server/events.ts', 'studio/server/events-core.ts', 'studio/server/events-worker.ts',
+    'studio/server/export.ts', 'studio/server/lab.ts', 'studio/server/main.ts',
+    'studio/server/mcp.ts', 'studio/server/model.ts', 'studio/server/service.ts',
+    'studio/server/stateless.ts', 'studio/server/store.ts',
+    'studio/server/store-contract.ts', 'studio/server/workspace.ts',
+    'studio/cloudflare/README.md', 'studio/cloudflare/auth.ts',
+    'studio/cloudflare/store.ts', 'studio/cloudflare/telemetry.ts', 'studio/cloudflare/worker.ts',
+    'studio/tests/build.test.ts', 'studio/tests/cloudflare-auth.test.ts', 'studio/tests/cloudflare-store.test.ts',
+    'studio/tests/cloudflare-telemetry.test.ts', 'studio/tests/events-worker.test.ts',
+    'studio/tests/events.test.ts', 'studio/tests/export.test.ts', 'studio/tests/lab.test.ts',
+    'studio/tests/stateless.test.ts', 'studio/tests/workspace.test.ts',
+}
+SOURCE_FIXED = RUNTIME_FIXED | STUDIO_SOURCE | {
     '.agents/plugins/marketplace.json', '.claude-plugin/marketplace.json',
     '.gitignore', '.gitattributes',
     'docs/installation.md', 'docs/usage.md', 'docs/practice.md', 'docs/verification.md',
     'scripts/build_release.py', 'scripts/package_files.py', 'scripts/validate_plugin.py',
     'tests/test_package.py',
 }
-EXCLUDED_PARTS = {'.git', '__pycache__', '.venv', 'node_modules', 'dist', 'work'}
-EXCLUDED_NAMES = {'.env', 'auth.json', 'credentials.json'}
+EXCLUDED_PARTS = {'.git', '__pycache__', '.venv', 'node_modules', 'dist', 'work', '.wrangler', 'coverage', '.cache'}
+EXCLUDED_NAMES = {'.env', '.dev.vars', 'auth.json', 'credentials.json'}
 
 
 def is_runtime_path(path: Path) -> bool:
@@ -56,9 +75,9 @@ def selected_files(root: Path, *, source: bool = False, host: str | None = None)
         relative = path.relative_to(root)
         if any(part in EXCLUDED_PARTS for part in relative.parts):
             continue
-        if path.name in EXCLUDED_NAMES or path.name.startswith('.env.'):
+        if path.name in EXCLUDED_NAMES or path.name.startswith(('.env.', '.dev.vars.')):
             continue
-        if path.suffix.lower() in {'.pyc', '.pyo', '.zip', '.sha256', '.pem', '.key'}:
+        if path.suffix.lower() in {'.pyc', '.pyo', '.zip', '.sha256', '.pem', '.key', '.sqlite', '.sqlite3', '.db'}:
             continue
         include = is_runtime_path(relative) or (source and relative.as_posix() in SOURCE_FIXED)
         if host is not None and relative.as_posix() in RUNTIME_FIXED:

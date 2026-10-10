@@ -18,6 +18,7 @@ SKILLS = {
     'technical-delivery', 'adoption-and-scale', 'executive-communication', 'field-productization',
 }
 BASE_FIELDS = {'name', 'version', 'description', 'author', 'homepage', 'repository', 'license', 'keywords'}
+STUDIO_URL = 'https://forward-deployed.unsol.dev/mcp'
 LINK = re.compile(r'!?\[[^\]\n]*\]\(([^)\n]+)\)')
 
 
@@ -45,7 +46,7 @@ def validate_plugin(root: Path) -> list[str]:
     check(set(portable) == BASE_FIELDS | {'$schema', 'extensions'}, 'Portable manifest fields differ from this package contract')
     check(portable.get('$schema') == 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json', 'Unexpected portable manifest schema')
     check(portable.get('name') == 'forward-deployed', 'Unexpected plugin name')
-    check(portable.get('version') == '0.4.2', 'Unexpected plugin version')
+    check(portable.get('version') == '0.5.0', 'Unexpected plugin version')
     check(portable.get('license') == 'MIT', 'Unexpected plugin license')
     for key in ('description',):
         check(isinstance(portable.get(key), str) and bool(portable.get(key)), f'Missing manifest {key}')
@@ -60,7 +61,7 @@ def validate_plugin(root: Path) -> list[str]:
     prompts = interface.get('defaultPrompt', [])
     check(isinstance(prompts, list) and 1 <= len(prompts) <= 3 and all(isinstance(p, str) and 0 < len(p) <= 128 for p in prompts), 'Invalid OpenAI starter prompts')
 
-    for relative, extra in [('.claude-plugin/plugin.json', set()), ('.codex-plugin/plugin.json', {'skills', 'interface'})]:
+    for relative, extra in [('.claude-plugin/plugin.json', {'mcpServers'}), ('.codex-plugin/plugin.json', {'skills', 'interface', 'mcpServers'})]:
         wrapper = read_json(relative)
         check(set(wrapper) == BASE_FIELDS | extra, f'{relative}: unexpected fields')
         for key in BASE_FIELDS:
@@ -68,9 +69,17 @@ def validate_plugin(root: Path) -> list[str]:
         if relative.startswith('.claude'):
             check(isinstance(wrapper.get('name'), str) and bool(re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', wrapper['name'])) and len(wrapper['name']) <= 64, 'Invalid Claude plugin name')
             check(isinstance(wrapper.get('description'), str) and 0 < len(wrapper['description']) <= 500, 'Claude plugin description must contain 1-500 characters')
-        if extra:
+        check(wrapper.get('mcpServers') == './.mcp.json', f'{relative}: invalid MCP configuration path')
+        if relative.startswith('.codex'):
             check(wrapper.get('skills') == './skills/', f'{relative}: invalid skills discovery path')
             check(wrapper.get('interface') == interface, f'{relative}: interface differs from portable manifest')
+
+    for relative, transport in [('mcp.json', 'streamable-http'), ('.mcp.json', 'http')]:
+        config = read_json(relative)
+        expected = {'mcpServers': {'forward-deployed-studio': {'type': transport, 'url': STUDIO_URL}}}
+        if relative == 'mcp.json':
+            expected['$schema'] = 'https://agent-plugins.org/schemas/1.0.0/mcp.schema.json'
+        check(config == expected, f'{relative}: expected only the hosted Studio MCP endpoint without commands or credentials')
 
     for relative in ('.claude-plugin/marketplace.json', '.agents/plugins/marketplace.json'):
         catalog = read_json(relative)
@@ -153,7 +162,7 @@ def main() -> int:
     if errors:
         print('\n'.join(errors), file=sys.stderr)
         return 1
-    print('Package structure valid: 16 skills, consistent manifests/catalogs, resolved local links, self-contained runtime.')
+    print('Package structure valid: consistent skills, host manifests, hosted MCP configuration and local links.')
     return 0
 
 

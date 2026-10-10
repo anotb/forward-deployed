@@ -8,3 +8,14 @@ dist/
 /internal/
 /research/
 /examples/
+node_modules/
+studio/.data/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+studio/dist/
+.env.local
+.env.*
+.dev.vars*
+.wrangler/
+*.sqlite.events*

@@ -1,14 +1,14 @@
 # Installation
 
-The skills are shared across hosts. The build produces a ChatGPT/Codex upload, a Claude Cowork upload, and the complete source package.
+The skills are shared across hosts. The plugin also declares an optional hosted Studio at `https://forward-deployed.unsol.dev/mcp` for working with engagement snapshots, Field Lab runs and exports. The build produces a ChatGPT/Codex upload, a Claude Cowork upload, and the complete source package.
 
 | Package | Contents |
 |---|---|
-| `forward-deployed-<version>-chatgpt.zip` | Portable `plugin.json` with OpenAI metadata and icon, skills and references, README, usage/installation guides, license and policies |
-| `forward-deployed-<version>-cowork.zip` | `.claude-plugin/plugin.json`, the same skills and references, README, usage/installation guides, license and policies |
-| `forward-deployed-<version>-source.zip` | All host manifests and catalogs, shared content, documentation, and build/validation tools |
+| `forward-deployed-<version>-chatgpt.zip` | Portable `plugin.json`, `mcp.json`, OpenAI metadata and icon, skills and references, user guides, license and policies |
+| `forward-deployed-<version>-cowork.zip` | `.claude-plugin/plugin.json`, `.mcp.json`, the same skills and references, user guides, license and policies |
+| `forward-deployed-<version>-source.zip` | All host manifests and catalogs, shared content, documentation, Studio source, and build/validation tools |
 
-Each ZIP has one `forward-deployed/` root. Upload packages contain no marketplace catalogs, build scripts, tests, generated showcase outputs or internal evaluations. The source repository keeps the host wrappers together; each upload contains only its host's manifest.
+Each ZIP has one `forward-deployed/` root. Upload packages contain no server executable, marketplace catalogs, build scripts or tests. The source repository keeps the host wrappers together; each upload contains its host's manifest and MCP configuration.
 
 ## Claude Cowork
 
@@ -53,8 +53,18 @@ Start a new session. `/forward-deployed:get-started` opens the entry skill. A lo
 
 See [Claude plugin marketplaces](https://code.claude.com/docs/en/plugin-marketplaces).
 
+## Use the optional Studio
+
+Enable the plugin's `forward-deployed-studio` connection in your host to use the hosted tools. The configured endpoint is `https://forward-deployed.unsol.dev/mcp`. A host with MCP Apps support can open the Studio interface; the tools also return structured results for work in chat.
+
+Work on a supplied snapshot without signing in, then export it when you finish. Sign in when you want to save workspaces to your account. Connecting the MCP server does not grant it access to a Git repository. [Exporting work](export.md) explains downloads and saving through the host's existing Git access.
+
+The skills work without the Studio connection. Leave its MCP server disabled if you only want the methods and references. To use another Agent Skills host, copy the complete `skills/` directory with its bundled references. No Studio code or local Node/Python process is required by an installed plugin.
+
+OpenAI's GitHub import route currently marks plugins with bundled MCP configuration as desktop-only. Use the plugin portal's remote MCP connection flow for a hosted ChatGPT distribution. See [OpenAI plugin management](https://learn.chatgpt.com/docs/enterprise/plugin-management) and [remote MCP submission](https://developers.openai.com/plugins/deploy/submission).
+
 ## Confirm the installed copy
 
-Check the displayed version and start a fresh conversation. Ask the assistant to use `get-started`, then try a focused task that uses a bundled reference. Confirm the expected skill is loaded and the reference is accessible. Installation and skill discovery do not establish the quality of every subsequent answer.
+Check the displayed version and start a fresh conversation. Ask the assistant to use `get-started`, then try a focused task that uses a bundled reference. Confirm the expected skill is loaded and the reference is accessible. If using Studio, open a snapshot and export it to check the connection and file flow.
 
 For another Agent Skills host, use its skill-directory installation mechanism. Copy complete skill folders, including references. Install the whole skills directory when using `get-started`, which links to the other skills.

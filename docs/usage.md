@@ -43,6 +43,10 @@ An existing AI product may be sufficient. An integrated service may need enginee
 
 ## Continue from existing work
 
+The optional Studio keeps opportunities, requirements, delivery work and Field Lab runs in an engagement snapshot. Ask the agent to open the Studio when a shared view would help, or continue with its structured tools in chat. Work on a supplied snapshot without an account; sign in to save workspaces between sessions. The skills remain usable with ordinary files and the host's existing tools.
+
+Use [Export](export.md) to download the engagement or prepare its files for a Git repository. The host writes to Git using its existing access and the repository you choose. Studio sign-in does not grant repository permissions.
+
 Provide the current design, relevant meeting material or delivery plan when available. The agent should build on that work and maintain the useful context in the team's established workspace. A change matters when it affects a decision, behavior or commitment; routine discussion does not need a new approval or reporting process.
 
 Use domain examples to examine the solution being developed. If the assignment is to design an AI service for a claims team, the deployment work is discovering the workflow, choosing an approach, equipping engineering and planning adoption. Completing a sample claim may help investigate or test that design, but it does not complete the deployment assignment.
