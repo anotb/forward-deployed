@@ -1,0 +1,33 @@
+{
+  "name": "forward-deployed",
+  "version": "0.4.2",
+  "description": "Skills for forward-deployed engineering (FDE): discovery, AI solution design, enterprise integration, agent evaluation, delivery and adoption.",
+  "author": {
+    "name": "Rahil Banthia",
+    "url": "https://unsol.dev/"
+  },
+  "license": "MIT",
+  "keywords": [
+    "fde",
+    "forward-deployed",
+    "forward-deployed-engineering",
+    "forward-deployed-engineer",
+    "ai-deployment",
+    "enterprise-ai",
+    "agent-skills",
+    "ai-agents",
+    "ai-consulting",
+    "discovery",
+    "solution-architecture",
+    "enterprise-integration",
+    "context-engineering",
+    "agent-evaluation",
+    "ai-adoption",
+    "claude-cowork",
+    "claude-code",
+    "chatgpt",
+    "codex"
+  ],
+  "homepage": "https://github.com/anotb/forward-deployed#readme",
+  "repository": "https://github.com/anotb/forward-deployed"
+}

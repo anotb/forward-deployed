@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+dist/
+.venv/
+.env
+/work/
+/outputs/
+/internal/
+/research/
+/examples/

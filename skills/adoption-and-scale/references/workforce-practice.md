@@ -1,0 +1,25 @@
+# Develop and spread useful AI practice
+
+Enter through roles and consequential tasks. Observe what people research, compare, create, decide, coordinate, and maintain, including work they omit because it takes too long or requires inaccessible expertise. Look beyond the busiest administrative task. An account team may gain more from preparing several credible negotiation strategies than from summarizing its meetings faster; an analyst may use AI to investigate competing explanations they previously lacked time to examine.
+
+Work with employees on unfinished tasks and real work products. Ask them to show where effort or judgment becomes difficult, then try a more capable way of doing that work together. Let participants recognize possibilities through use. A survey of requested use cases captures what people already imagine; hands-on exploration can reveal a different operating possibility.
+
+Explore the AI products and host capabilities available to them now. Inspect the relevant user experience, entitlements, approved context sources, sharing mechanisms, administrative controls, and extension surfaces. Try a demanding piece of the task with the available tools. Discoveries can change the opportunity: a maintained capability may enable richer investigation, reusable context, artifact creation, collaborative review, or a multistep workflow than employees knew was possible. Resolve changing product facts through current exploration rather than teaching a dated feature catalogue.
+
+Use demonstrations that reveal the work, including a correction or new constraint that changes the result. Then have employees apply the approach to another case. This separates an impressive demonstration from a practice they can use independently. Find out which part of the benefit comes from the product, which from expert task framing, and which requires better organizational context.
+
+Combine broad access with focused help where it can teach the organization something. Select participating roles for meaningful differences in work, expertise, and opportunity, not merely enthusiasm or seniority. Leave room for grassroots discoveries and bring domain experts into promising experiments early. A central team can provide access, support, reusable methods, and technical help while local teams decide what useful work looks like. Centralizing every idea into an approval queue can squander the exploration that broad AI access enables.
+
+## Make the practice reproducible
+
+Package local invention so another person can reproduce the useful behavior. Preserve the job it performs, context it needs, consequential choices, examples of good results, and circumstances requiring adaptation. A shared prompt without these assumptions can spread plausible mistakes. A useful reusable asset might be a role-specific skill, a configured agent, a worked investigation, or an embedded workflow; choose the form the available environment supports.
+
+Have a colleague outside the original team apply the practice to their own task and explain what they changed. That transfer reveals hidden expertise and local assumptions. Feed the learning back into the maintained asset and into the organization's view of promising use cases. Promote a practice because it travels and helps, not because a showcase attracts attention. Keep discovery open as products and work change; the goal is an organization that keeps inventing useful applications, not a frozen library of approved prompts.
+
+Develop internal champions who understand both the work and the new capability. Pair skilled AI users with domain experts: one can reveal an unexpected affordance while the other can judge whether it produces useful work. Give them protected time, a direct path to product, technical, and domain owners, and responsibility they can reasonably carry. Their role includes helping colleagues, developing reusable practice, finding new opportunities, and exposing hidden work. Avoid making a few generous experts the permanent unpaid support layer.
+
+## Understand useful adoption and diffusion
+
+For workforce adoption, distinguish access, useful application, independent competence, and diffusion. Examine whether people apply AI to consequential tasks, whether the result is accepted or acted on, whether a practice recurs, and whether other people can adapt it successfully. Use role-appropriate samples of work alongside available aggregate usage patterns. There is no universal productive usage frequency: occasional deep analysis and daily operational assistance can both justify adoption.
+
+Look for changes in the work itself: more alternatives explored, previously neglected customers served, faster decisions, better prepared expert conversations, or a process that no longer needs an old handoff. Track promising local inventions through reuse and continuing ownership. Seats activated, sessions opened, and assets published can explain reach, but they do not establish that useful practice is spreading. An apparent diffusion problem may be an access constraint, a weak practice, or an inability to transfer the expert judgment behind it.

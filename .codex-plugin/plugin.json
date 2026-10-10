@@ -1,0 +1,57 @@
+{
+  "name": "forward-deployed",
+  "version": "0.4.2",
+  "description": "Skills for forward-deployed engineering (FDE): discovery, AI solution design, enterprise integration, agent evaluation, delivery and adoption.",
+  "author": {
+    "name": "Rahil Banthia",
+    "url": "https://unsol.dev/"
+  },
+  "license": "MIT",
+  "keywords": [
+    "fde",
+    "forward-deployed",
+    "forward-deployed-engineering",
+    "forward-deployed-engineer",
+    "ai-deployment",
+    "enterprise-ai",
+    "agent-skills",
+    "ai-agents",
+    "ai-consulting",
+    "discovery",
+    "solution-architecture",
+    "enterprise-integration",
+    "context-engineering",
+    "agent-evaluation",
+    "ai-adoption",
+    "claude-cowork",
+    "claude-code",
+    "chatgpt",
+    "codex"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Forward Deployed",
+    "shortDescription": "Forward-deployed AI skills",
+    "longDescription": "Help with the work of deploying AI in an organization: understand the customer, develop an opportunity, design the service and get it into use. Forward Deployed provides skills for FDEs, deployment leads, consultants and builders. It covers discovery, workflow redesign, solution architecture, enterprise integration, context engineering, agent evaluation, engineering handoffs, adoption and value measurement. Use a focused skill for a specific problem, or work through an engagement with the tools available in your AI host.",
+    "developerName": "Rahil Banthia",
+    "category": "Business & Operations",
+    "capabilities": [
+      "Analyze",
+      "Plan",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Develop valuable AI opportunities and a recommendation from these discovery notes.",
+      "Explore the available capabilities and design a useful solution for this workflow.",
+      "Prepare the engineering handoff and a practical plan for delivery, adoption and value."
+    ],
+    "logo": "./assets/icon.svg",
+    "composerIcon": "./assets/icon.svg",
+    "websiteURL": "https://github.com/anotb/forward-deployed",
+    "supportURL": "https://github.com/anotb/forward-deployed/issues",
+    "privacyPolicyURL": "https://github.com/anotb/forward-deployed/blob/main/PRIVACY.md",
+    "termsOfServiceURL": "https://github.com/anotb/forward-deployed/blob/main/TERMS.md"
+  },
+  "homepage": "https://github.com/anotb/forward-deployed#readme",
+  "repository": "https://github.com/anotb/forward-deployed"
+}
