@@ -8,7 +8,7 @@ import { executeStudioTool, toolSchemas, toolDescriptions, readTools, compactWor
 import { createFormStateCodec, registerNativeForms } from './forms.js';
 import { registerRecordMentions } from './extensions.js';
 
-export const STUDIO_URI = 'ui://forward-deployed/studio-v2.html';
+export const STUDIO_URI = 'ui://forward-deployed/studio-v3.html';
 export interface StudioMcpOptions {
   store: WorkspaceRepository | null; actor: string; html: string; origin: string;
   profile?: { id: string; name?: string };
@@ -27,7 +27,7 @@ const output = z.record(z.string(), z.unknown());
 export function createStudioMcp(options: StudioMcpOptions): McpServer {
   const { store, actor, candidate } = options;
   const formCodec = createFormStateCodec(options);
-  const server = new McpServer({ name: 'forward-deployed', version: '0.6.1' }, {
+  const server = new McpServer({ name: 'forward-deployed', version: '0.6.2' }, {
     ...(formCodec ? { requestState: { verify: formCodec.verify } } : {}),
     ...(!candidate ? { capabilities: { extensions: { 'openai/mentions': { searchTool: 'search_records' } } } } : {}),
     instructions: candidate
@@ -36,7 +36,7 @@ export function createStudioMcp(options: StudioMcpOptions): McpServer {
   });
   if (!candidate) {
     // Keep the previous URI readable for installed clients with cached v0.5 descriptors.
-    for (const uri of [STUDIO_URI, 'ui://forward-deployed/studio-v1.html']) registerAppResource(server, uri === STUDIO_URI ? 'forward-deployed-studio' : 'forward-deployed-studio-legacy', uri, {}, async () => ({ contents: [{
+    for (const uri of [STUDIO_URI, 'ui://forward-deployed/studio-v2.html', 'ui://forward-deployed/studio-v1.html']) registerAppResource(server, uri === STUDIO_URI ? 'forward-deployed-studio' : `forward-deployed-${uri.split('/').at(-1)}`, uri, {}, async () => ({ contents: [{
       uri, mimeType: RESOURCE_MIME_TYPE, text: options.html,
       _meta: { ui: { prefersBorder: false, domain: options.origin, csp: { connectDomains: [], resourceDomains: [] } } },
     }] }));

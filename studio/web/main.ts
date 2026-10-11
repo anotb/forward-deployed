@@ -1,4 +1,5 @@
 import { App } from '@modelcontextprotocol/ext-apps';
+import { initializeStudioTheme, applyStudioHostContext } from './theme.js';
 import { sampleWorkspace } from './sample.js';
 import { reviewView, reviewKey, editableFields, currentReviewChoices, type ReviewChoices } from './review.js';
 import { decisionForm, type DecisionForm } from './forms.js';
@@ -10,7 +11,7 @@ type StorageMode = 'stateless' | 'saved';
 type Reply = { changeImpacts?: Record<string, ChangeImpact>; workspace?: Workspace; engagements?: Engagement[]; result?: Record<string, unknown>; storage?: StorageMode; export?: { filename: string; blob: string; mimeType: string } };
 const root = document.querySelector<HTMLDivElement>('#app')!;
 const embedded = window.parent !== window;
-const bridge = new App({ name: 'Forward Deployed Studio', version: '0.6.1' }, {});
+const bridge = new App({ name: 'Forward Deployed Studio', version: '0.6.2' }, {});
 let connected = false;
 let profile: { name: string } | undefined;
 let workspace: Workspace | undefined;
@@ -170,7 +171,7 @@ async function task(operation: () => Promise<void>, message = ''): Promise<void>
 }
 
 function createForm(): string {
-  return `<form data-form="create"><div class="form-grid">${field('Engagement', 'name', 'Project name')}${field('Customer or team', 'customer', 'Team or organization')}${textArea('Goal', 'ambition', 'Describe the service and the problem it should solve.')}</div><div class="actions"><button class="button primary" type="submit">Create engagement</button>${workspace ? button('Cancel', 'close-editor') : ''}</div></form>`;
+  return `<form data-form="create"><div class="form-grid">${field('Engagement', 'name', 'Project name')}${field('Customer or team', 'customer', 'Team or organization')}${textArea('Goal', 'ambition', 'What should AI help this team achieve, and what needs to change?')}</div><div class="actions"><button class="button primary" type="submit">Create engagement</button>${workspace ? button('Cancel', 'close-editor') : ''}</div></form>`;
 }
 
 function evidenceForm(): string {
@@ -380,7 +381,7 @@ function render(): void {
   const focusAttributes = ['data-action', 'data-tab', 'data-step', 'data-change', 'data-id', 'data-kind', 'data-proposal', 'data-change-id', 'data-decision']
     .filter(name => active?.hasAttribute(name))
     .map(name => `[${name}="${CSS.escape(active!.getAttribute(name)!)}"]`).join('');
-  root.innerHTML = `${busy ? '<div class="busy-line" role="progressbar" aria-label="Working"></div>' : ''}<header class="topbar"><div class="brand" title="Forward Deployed"><svg class="mark" viewBox="16 37 97 54" role="img" aria-label="Forward Deployed"><g fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 86V42h21M21 63h17"/><path d="M53 42h7c12 0 17 8 17 22s-5 22-17 22h-7Z"/><path d="M108 42H89v44h19M89 63h16"/></g></svg><span class="studio-label">Studio</span></div><div class="spacer"></div>${engagements.length ? `<select aria-label="Switch engagement" data-change="engagement">${engagements.map(item => `<option value="${esc(item.id)}" ${item.id === workspace?.engagement.id ? 'selected' : ''}>${esc(item.name)}</option>`).join('')}</select>` : ''}${engagements.length ? '<button data-action="library">Engagements</button>' : ''}${workspace ? '<button data-action="new-engagement" aria-label="New engagement">New</button>' : ''}${embedded ? '' : `<div class="account" data-account>${accountView()}</div>`}</header>${notice ? `<div class="notice ${error ? 'error' : ''}" role="${error ? 'alert' : 'status'}"><span>${esc(notice)}</span><button data-action="dismiss">Dismiss</button></div>` : ''}${library ? libraryView() : workspace ? `<div class="shell"><section class="project-head"><div><div class="customer">${esc(workspace.engagement.customer)}</div><h1>${esc(workspace.engagement.name)}</h1><p>${esc(workspace.engagement.ambition)}</p></div>${exportControls()}</section><nav class="tabs" aria-label="Studio views">${([{ key: 'service', label: 'Service', count: workspace.opportunities.length }, { key: 'evidence', label: 'Sources', count: workspace.evidence.length }, { key: 'delivery', label: 'Delivery', count: workspace.work.length }, { key: 'lab', label: 'Field Lab', count: workspace.scenarios.length }, { key: 'review', label: 'Review', count: (workspace.changeProposals ?? []).flatMap(p => p.changes).filter(c => c.status === 'pending').length }] as const).map(item => `<button class="tab" data-action="tab" data-tab="${item.key}" aria-current="${tab === item.key ? 'page' : 'false'}">${item.label}<span>${item.count || ''}</span></button>`).join('')}</nav>${selectionBar()}${editorView()}<main class="content">${tab === 'service' ? serviceView() : tab === 'evidence' ? evidenceView() : tab === 'delivery' ? deliveryView() : tab === 'review' ? reviewView(workspace, impacts, reviewChoices, editingChange, busy, embedded) : labView()}${promptView()}</main><footer class="footer"><span>${storage === 'saved' ? 'Saved to Forward Deployed' : embedded ? 'In this chat · Export or save when ready' : 'In this browser · Export or save when ready'}</span><span>Revision ${workspace.engagement.revision} · ${formatDate(workspace.engagement.updatedAt)}</span></footer></div>` : `<main class="welcome"><h1>Create an engagement</h1><p>Develop a service with your agent, track implementation and test the workflow in Field Lab.</p><p class="storage-hint">${embedded ? 'Starts in this chat.' : 'Starts in this browser.'} Export to files or Git, or save online when you choose.</p><div class="welcome-saved actions">${button('Try a sample', 'try-sample')}${button('Open saved workspaces', 'saved-workspaces')}</div><p class="storage-hint">The editable sample uses fictional field service notes and starts with a change to review.</p>${createForm()}${promptView()}</main>`}`;
+  root.innerHTML = `${busy ? '<div class="busy-line" role="progressbar" aria-label="Working"></div>' : ''}<header class="topbar"><div class="brand" title="Forward Deployed"><svg class="mark" viewBox="16 37 97 54" role="img" aria-label="Forward Deployed"><g fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 86V42h21M21 63h17"/><path d="M53 42h7c12 0 17 8 17 22s-5 22-17 22h-7Z"/><path d="M108 42H89v44h19M89 63h16"/></g></svg><span class="studio-label">Studio</span></div><div class="spacer"></div>${engagements.length ? `<select aria-label="Switch engagement" data-change="engagement">${engagements.map(item => `<option value="${esc(item.id)}" ${item.id === workspace?.engagement.id ? 'selected' : ''}>${esc(item.name)}</option>`).join('')}</select>` : ''}${engagements.length ? '<button data-action="library">Engagements</button>' : ''}${workspace ? '<button data-action="new-engagement" aria-label="New engagement">New</button>' : ''}${embedded ? '' : `<div class="account" data-account>${accountView()}</div>`}</header>${notice ? `<div class="notice ${error ? 'error' : ''}" role="${error ? 'alert' : 'status'}"><span>${esc(notice)}</span><button data-action="dismiss">Dismiss</button></div>` : ''}${library ? libraryView() : workspace ? `<div class="shell"><section class="project-head"><div><div class="customer">${esc(workspace.engagement.customer)}</div><h1>${esc(workspace.engagement.name)}</h1><p>${esc(workspace.engagement.ambition)}</p></div>${exportControls()}</section><nav class="tabs" aria-label="Studio views">${([{ key: 'service', label: 'Service', count: workspace.opportunities.length }, { key: 'evidence', label: 'Sources', count: workspace.evidence.length }, { key: 'delivery', label: 'Delivery', count: workspace.work.length }, { key: 'lab', label: 'Field Lab', count: workspace.scenarios.length }, { key: 'review', label: 'Review', count: (workspace.changeProposals ?? []).flatMap(p => p.changes).filter(c => c.status === 'pending').length }] as const).map(item => `<button class="tab" data-action="tab" data-tab="${item.key}" aria-current="${tab === item.key ? 'page' : 'false'}">${item.label}<span>${item.count || ''}</span></button>`).join('')}</nav>${selectionBar()}${editorView()}<main class="content">${tab === 'service' ? serviceView() : tab === 'evidence' ? evidenceView() : tab === 'delivery' ? deliveryView() : tab === 'review' ? reviewView(workspace, impacts, reviewChoices, editingChange, busy, embedded) : labView()}${promptView()}</main><footer class="footer"><span>${storage === 'saved' ? 'Saved to Forward Deployed' : embedded ? 'In this chat · Export or save when ready' : 'In this browser · Export or save when ready'}</span><span>Revision ${workspace.engagement.revision} · ${formatDate(workspace.engagement.updatedAt)}</span></footer></div>` : `<main class="welcome"><h1>Build valuable AI use cases</h1><p>Work with your agent from customer discovery to solution design, engineering delivery and adoption.</p><p class="storage-hint">${embedded ? 'Starts in this chat.' : 'Starts in this browser.'} Export to files or Git, or save online when you choose.</p><div class="welcome-saved actions">${button('Try a sample', 'try-sample')}${button('Open saved workspaces', 'saved-workspaces')}</div><p class="storage-hint">Explore an AI credit-monitoring engagement: discovery, solution design, data integration and a supervised pilot.</p>${createForm()}${promptView()}</main>`}`;
   if (focusAttributes) root.querySelector<HTMLElement>(focusAttributes)?.focus({ preventScroll: true });
 }
 
@@ -440,7 +441,7 @@ root.addEventListener('click', event => {
   else if (action === 'download-export') void task(downloadExport);
   else if (action === 'save-workspace') void task(saveWorkspace);
   else if (action === 'saved-workspaces') void task(savedWorkspaces);
-  else if (action === 'try-sample' && !workspace) void task(async () => { const sample = sampleWorkspace(); await invoke('get_engagement', { storage: 'stateless', workspace: sample, engagementId: sample.engagement.id }, false); tab = 'review'; editor = undefined; library = false; }, 'Fictional sample opened. Edit it freely; nothing is saved online.');
+  else if (action === 'try-sample' && !workspace) void task(async () => { const sample = sampleWorkspace(); await invoke('get_engagement', { storage: 'stateless', workspace: sample, engagementId: sample.engagement.id }, false); tab = 'service'; editor = undefined; library = false; }, 'AI deployment sample opened. Explore the solution, sources, delivery work and proposed design change.');
   else if (action === 'refresh') void task(async () => { await invoke('get_engagement', { engagementId: workspace!.engagement.id }, false); }, 'Workspace refreshed.');
   else if (action === 'step') { selectedStep = Number(target.dataset.step); selection = { kind: 'run', id: runId, step: selectedStep }; editor = undefined; render(); void syncSelection().catch(() => {}); }
   else if (action === 'fork-run') { editor = 'fork'; render(); root.querySelector<HTMLTextAreaElement>('input[name^="fork:"]')?.focus(); }
@@ -534,9 +535,10 @@ root.addEventListener('submit', event => {
 
 bridge.ontoolresult = result => { try { const data = unpack(result); accept(data); if (!data.workspace && data.engagements) library = true; render(); } catch (cause) { notice = cause instanceof Error ? cause.message : 'Could not read the tool result.'; error = true; render(); } };
 bridge.ontoolcancelled = () => { notice = 'The host cancelled this request.'; render(); };
-bridge.onhostcontextchanged = context => { if (connected) void openDeepLink(context); };
+bridge.onhostcontextchanged = context => { applyStudioHostContext(bridge.getHostContext()); if (connected) void openDeepLink(context); };
 
 async function initialize(): Promise<void> {
+  initializeStudioTheme(embedded);
   restore();
   if (!embedded && workspace && storage === 'saved') {
     try { await invoke('get_engagement', { engagementId: workspace.engagement.id }, false); }
@@ -546,7 +548,7 @@ async function initialize(): Promise<void> {
   }
   render();
   if (embedded) {
-    try { await bridge.connect(); connected = true; await syncSelection(); await openDeepLink(bridge.getHostContext()); render(); }
+    try { await bridge.connect(); connected = true; applyStudioHostContext(bridge.getHostContext()); await syncSelection(); await openDeepLink(bridge.getHostContext()); render(); }
     catch { notice = 'Could not connect to the host. Reopen the studio from the conversation.'; error = true; render(); }
   } else {
     const requested = new URLSearchParams(location.search).get('engagement');

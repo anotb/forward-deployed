@@ -38,7 +38,7 @@ STUDIO_SOURCE = {
     'studio/scripts/build.mjs', 'studio/scripts/sync-sites.mjs',
     'studio/web/index.html', 'studio/web/main.ts', 'studio/web/style.css',
     'studio/web/forms.ts', 'studio/web/review.ts', 'studio/web/selection.ts',
-    'studio/web/sample.ts', 'studio/tests/sample.test.ts',
+    'studio/web/sample.ts', 'studio/tests/sample.test.ts', 'studio/web/theme.ts', 'studio/tests/theme.test.ts',
     'studio/server/events.ts', 'studio/server/events-core.ts', 'studio/server/events-worker.ts',
     'studio/server/export.ts', 'studio/server/lab.ts', 'studio/server/main.ts',
     'studio/server/mcp.ts', 'studio/server/model.ts', 'studio/server/service.ts',

@@ -11,7 +11,11 @@ test('fictional sample validates without hosted storage and its pending proposal
   assert.equal(opened.workspace.work[0].status, 'planned');
   assert.equal(opened.workspace.work[0].evidence, '');
   assert.match(opened.workspace.engagement.name, /fictional/);
-  assert.deepEqual(opened.changeImpacts['sample-proposal'].work, ['sample-delivery']);
+  assert.equal(opened.workspace.requirements.length, 2);
+  assert.equal(opened.workspace.work.length, 2);
+  assert.ok(opened.workspace.opportunities[0].measures.every((measure: { baseline?: number; target?: number }) => measure.baseline === undefined && measure.target === undefined));
+  assert.match(opened.workspace.changeProposals[0].reason, /scope choice/);
+  assert.deepEqual(opened.changeImpacts['sample-proposal'].work, ['sample-data-build', 'sample-pilot']);
   const reviewed = executeStudioTool(null, 'anonymous', 'review_changes', { storage: 'stateless', workspace: opened.workspace, engagementId: workspace.engagement.id, expectedRevision: 1, requestId: 'accept-sample', proposalId: 'sample-proposal', expectedProposalVersion: 1, decisions: [{ changeId: 'sample-change', decision: 'accept' }] });
   assert.equal(reviewed.workspace.changeProposals[0].status, 'resolved');
   assert.equal(reviewed.workspace.requirements[0].version, 2);
