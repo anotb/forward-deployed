@@ -16,6 +16,10 @@ Enter where the user is. An inherited application may need diagnosis rather than
 
 ## Find the relevant expertise
 
+When invoked just after installation without an assignment, explain the available starting points briefly: bring discovery notes, continue an engagement, or open Studio and try its editable sample. If the user chooses the sample, help them change one service behavior and inspect the consequences. Do not require sign-in, saved storage or an intake questionnaire to begin. For an existing assignment, continue directly with the work.
+
+In a connected Studio, use selected-record context to keep discussion attached to the relevant service or requirement. For changes the user wants to compare before applying, stage a proposal and open its review. Use native forms when supported and useful, with the workspace controls as a fallback. Routine edits and skill-only work do not need this review step.
+
 | Work | Skill |
 | --- | --- |
 | Develop a customer point of view and shape or advance an engagement | [enterprise-engagement](../enterprise-engagement/SKILL.md) |

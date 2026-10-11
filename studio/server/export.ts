@@ -23,6 +23,8 @@ const opportunity: Shape = {
 const requirement: Shape = {
   ...fields('id', 'opportunityId', 'title', 'behavior', 'acceptanceCriteria', 'status', 'version'), evidenceRefs: [reference],
 };
+const work: Shape = fields('id', 'opportunityId', 'requirementIds', 'title', 'owner', 'status', 'outcome', 'evidence', 'version');
+const changeRecord: Shape = { ...evidence as object, ...opportunity as object, ...requirement as object, ...work as object };
 const operand: Shape = fields('literal', 'input', 'state');
 const condition: Shape = { ...fields('field', 'operator'), value: operand };
 const scenario: Shape = {
@@ -38,7 +40,12 @@ const shape: Shape = {
   engagement: fields('id', 'name', 'ambition', 'customer', 'revision', 'createdAt', 'updatedAt'),
   evidence: [evidence], evidenceHistory: [evidence], opportunities: [opportunity], opportunityHistory: [opportunity],
   requirements: [requirement], requirementHistory: [requirement],
-  work: [fields('id', 'opportunityId', 'requirementIds', 'title', 'owner', 'status', 'outcome', 'evidence', 'version')],
+  work: [work], workHistory: [work],
+  changeProposals: [{
+    ...fields('id', 'title', 'reason', 'version', 'baseRevision', 'status', 'createdAt', 'updatedAt'),
+    changes: [{ ...fields('id', 'kind', 'operation', 'recordId', 'expectedVersion', 'status', 'reviewedAt', 'note'), fields: changeRecord, before: changeRecord }],
+    reviews: [{ ...fields('at', 'changeId', 'decision', 'note'), previousFields: changeRecord }],
+  }],
   scenarios: [scenario], runs: [{
     ...fields('id', 'scenarioId', 'scenarioVersion', 'status', 'parentRunId', 'forkedAtStep', 'createdAt', 'finishedAt'),
     scenario, initialState: 'state', state: 'state', checks: [check], steps: [{
@@ -93,7 +100,10 @@ export function buildExport(workspace: Workspace, options: ExportOptions = {}) {
     for (const item of [...data.opportunities, ...(data.opportunityHistory ?? []), ...data.requirements, ...(data.requirementHistory ?? [])]) {
       for (const ref of item.evidenceRefs) ref.quote = '';
     }
-    for (const item of data.work) item.evidence = '';
+    for (const item of [...data.work, ...(data.workHistory ?? [])]) item.evidence = '';
+    // Review notes and original records can repeat source passages. Omit the full
+    // review history from evidence-free exports rather than leak those passages.
+    delete data.changeProposals;
   }
   const directory = `forward-deployed/${segment(data.engagement.id)}`;
   const files: Record<string, string> = {};
@@ -101,10 +111,11 @@ export function buildExport(workspace: Workspace, options: ExportOptions = {}) {
   const source = { engagementId: data.engagement.id, revision: data.engagement.revision, sha256: sha256(json(data)) };
   put('.gitattributes', '# Preserve exported bytes so manifest checksums survive Git checkout.\n* -text\n');
   put('workspace.json', json(data));
-  put('README.md', `# ${md(data.engagement.name)}\n\n${md(data.engagement.ambition)}\n\nCustomer: ${md(data.engagement.customer)}\n\nWorkspace revision: ${data.engagement.revision}\n\n- [Opportunities](opportunities.md): the service to build and the result it should deliver.\n- [Requirements](requirements.md): expected behavior, acceptance criteria and sources.\n- [Delivery](delivery.md): owners, work and recorded results.\n- [Evidence](evidence.md): ${includeEvidence ? 'evidence saved in this workspace, including retained versions.' : 'source IDs only; saved passages are excluded.'}\n- [workspace.json](workspace.json): the complete exported domain data.\n- [scenarios/](scenarios/): executable rehearsal definitions.\n- [runs/](runs/): recorded steps, state and checks.\n\nSource IDs and versions connect requirements, evidence and rehearsals. A rehearsal records behavior under its saved conditions. It does not establish production performance.\n\nThe manifest records SHA-256 checksums for every other file. This export contains no application source, account settings or Git credentials. Saved evidence is limited to this workspace; no meeting connector history is fetched. Review the saved content before sharing.\n`);
+  put('README.md', `# ${md(data.engagement.name)}\n\n${md(data.engagement.ambition)}\n\nCustomer: ${md(data.engagement.customer)}\n\nWorkspace revision: ${data.engagement.revision}\n\n- [Opportunities](opportunities.md): the service to build and the result it should deliver.\n- [Requirements](requirements.md): expected behavior, acceptance criteria and sources.\n- [Delivery](delivery.md): owners, work and recorded results.\n- [Evidence](evidence.md): ${includeEvidence ? 'evidence saved in this workspace, including retained versions.' : 'source IDs only; saved passages and change-review history are excluded.'}\n- [workspace.json](workspace.json): the complete exported domain data.\n- [scenarios/](scenarios/): executable rehearsal definitions.\n- [runs/](runs/): recorded steps, state and checks.\n\nSource IDs and versions connect requirements, evidence and rehearsals. A rehearsal records behavior under its saved conditions. It does not establish production performance.\n\nThe manifest records SHA-256 checksums for every other file. This export contains no application source, account settings or Git credentials. Saved evidence is limited to this workspace; no meeting connector history is fetched. Review the saved content before sharing.\n`);
   put('opportunities.md', '# Opportunities\n\n' + data.opportunities.map(item => `## ${md(item.title)}\n\nID: ${md(item.id)} · version ${item.version}\n\nFor: ${md(item.beneficiary)}\n\nCurrent workflow: ${md(item.currentWorkflow)}\n\nProposed service: ${md(item.proposedService)}\n\nResult: ${md(item.whyItMatters)}\n\n${item.measures.map(measure => `- ${md(measure.name)} (${md(measure.unit)}): baseline ${measure.baseline ?? 'unrecorded'}, target ${measure.target ?? 'unrecorded'}. ${md(measure.basis)}`).join('\n')}\n\n${item.assumptions.length ? 'Assumptions:\n' + item.assumptions.map(item => `- ${md(item)}`).join('\n') : ''}\n\n${refs(item.evidenceRefs, includeEvidence)}`).join('\n\n'));
   put('requirements.md', '# Requirements\n\n' + data.requirements.map(item => `## ${md(item.title)}\n\nID: ${md(item.id)} · version ${item.version} · ${item.status}\n\nOpportunity: ${md(item.opportunityId)}\n\n${md(item.behavior)}\n\n${item.acceptanceCriteria.map(item => `- ${md(item)}`).join('\n')}\n\n${refs(item.evidenceRefs, includeEvidence)}`).join('\n\n'));
   put('delivery.md', '# Delivery\n\n' + data.work.map(item => `## ${md(item.title)}\n\nID: ${md(item.id)} · version ${item.version} · ${item.status}\n\nOwner: ${md(item.owner || 'Unassigned')}\n\nOpportunity: ${md(item.opportunityId)}\n\nRequirements: ${item.requirementIds.map(md).join(', ') || 'None linked'}\n\nOutcome: ${md(item.outcome)}\n\n${item.evidence ? `Recorded evidence: ${md(item.evidence)}` : ''}`).join('\n\n'));
+  if (includeEvidence && data.changeProposals?.length) put('changes.md', '# Change review\n\n' + data.changeProposals.map(proposal => `## ${md(proposal.title)}\n\n${md(proposal.reason)}\n\nStatus: ${proposal.status} · version ${proposal.version}\n\n${proposal.changes.map(change => `- ${md(change.kind)} ${md(change.recordId)}: ${change.operation}, ${change.status}${change.note ? `: ${md(change.note)}` : ''}`).join('\n')}\n\nFull before/after fields and review history are retained in workspace.json.`).join('\n\n'));
   put('evidence.md', '# Evidence\n\n' + (includeEvidence ? [...data.evidence, ...(data.evidenceHistory ?? [])].map(item => `## ${md(item.title)}\n\nID: ${md(item.id)} · version ${item.version} · ${item.status}\n\n${item.originId ? `Source ID: ${md(item.originId)}\n\n` : ''}${item.uri ? `Source URL: ${md(item.uri)}\n\n` : ''}${item.occurredAt ? `Date: ${md(item.occurredAt)}\n\n` : ''}${md(item.content)}`).join('\n\n') : 'Saved evidence and quoted passages were excluded from this export. Source IDs and version references remain in workspace.json.'));
   for (const item of data.scenarios) put(`scenarios/${segment(item.id)}.json`, json(item));
   for (const item of data.runs) put(`runs/${segment(item.id)}.json`, json(item));

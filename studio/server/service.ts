@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { WorkspaceService, inputSchemas } from './workspace.js';
+import { executeReview, reviewInputSchemas, changeImpacts } from './review.js';
 import { executeLab, labInputSchemas } from './lab.js';
 import { DomainError, type Workspace } from './model.js';
 import type { WorkspaceRepository } from './store-contract.js';
@@ -14,6 +15,7 @@ const transaction = {
 };
 const baseSchemas: Record<string, z.ZodObject<any>> = {
   ...inputSchemas,
+  ...reviewInputSchemas,
   list_engagements: z.object({}),
   get_engagement: z.object({ engagementId: id }),
   open_studio: z.object({ engagementId: id.optional() }),
@@ -33,6 +35,8 @@ export const toolSchemas = Object.fromEntries(Object.entries(baseSchemas).map(([
 })])) as Record<string, z.ZodObject<any>>;
 
 export const toolDescriptions: Record<string, [string, string]> = {
+  propose_changes: ['Propose engagement changes', 'Stage explicit changes to discovery evidence, opportunities, requirements or delivery work for user review. Include stable IDs for new records and current versions for updates. No proposed record is applied until accepted.'],
+  review_changes: ['Review proposed changes', 'Apply only the user-selected changes, reject them, or revise their fields for another review. Accepted changes apply together and preserve earlier versions. Read current proposal and engagement versions first.'],
   create_engagement: ['Start an engagement', 'Use when the user wants a persistent workspace for developing a useful service. Record the ambition and customer. A short standalone question does not need an engagement.'],
   add_evidence: ['Add meeting or discovery evidence', 'Use to retain selected meeting notes, source passages or operator observations in this engagement. Read authorized Meetings or other sources through the host first; this tool does not access meetings itself. Preserve source links, origin IDs and preliminary/final status.'],
   shape_opportunity: ['Develop a service opportunity', 'Use to save or refine a concrete service: who benefits, how work happens today, what becomes possible and how to judge it. Link exact source passages; keep proposed targets and assumptions explicit. The host supplies the analysis.'],
@@ -72,18 +76,20 @@ export function executeStudioTool(repository: WorkspaceRepository | null, actor:
   }
   const store = args.storage === 'stateless' ? new StatelessWorkspaceStore(args.workspace === undefined ? undefined : validatedSnapshot(args.workspace)) : repository;
   if (!store) throw new DomainError('authentication_required', 'Sign in to open saved work, or use stateless mode.');
-  const reply = (data: Record<string, any>) => ({ ...data, storage: args.storage });
+  const reply = (data: Record<string, any>) => ({ ...data, ...(data.workspace ? { changeImpacts: changeImpacts(data.workspace) } : {}), storage: args.storage });
   // The domain receives only its own fields. State transport is outside its mutation contract.
   const { storage: _storage, workspace: _snapshot, telemetry: _telemetry, ...domainArgs } = args;
   const service = new WorkspaceService(store);
+  if (Object.hasOwn(reviewInputSchemas, name)) return reply(executeReview(service, name as keyof typeof reviewInputSchemas, domainArgs, actor));
   if (name in inputSchemas) return reply(service.execute(name, domainArgs, actor));
   if (name === 'list_engagements') return reply({ engagements: service.list(actor) });
-  if (name === 'open_studio') return {
-    storage: args.storage,
-    engagements: service.list(actor),
-    ...(args.engagementId ? { workspace: service.get(args.engagementId, actor) } : {}),
-  };
-  if (name === 'get_engagement') return reply({ workspace: service.get(args.engagementId, actor) });
+  if (name === 'open_studio' || name === 'get_engagement') {
+    const workspace = args.engagementId ? service.get(args.engagementId, actor) : undefined;
+    return reply({
+      ...(name === 'open_studio' ? { engagements: service.list(actor) } : {}),
+      ...(workspace ? { workspace } : {}),
+    });
+  }
   if (name === 'export_engagement' || name === 'prepare_git_export') {
     const workspace = service.get(args.engagementId, actor);
     if (name === 'prepare_git_export') return reply({ result: prepareGitExport(workspace, { includeEvidence: args.includeEvidence }) });
@@ -115,6 +121,7 @@ export function executeStudioTool(repository: WorkspaceRepository | null, actor:
 export function compactWorkspace(workspace: Workspace) {
   return {
     engagement: workspace.engagement, evidence: workspace.evidence,
+    changeProposals: workspace.changeProposals ?? [], changeImpacts: changeImpacts(workspace),
     opportunities: workspace.opportunities, requirements: workspace.requirements, work: workspace.work,
     scenarios: workspace.scenarios.map(({ id, title, goal, opportunityId, version, assumptions }) => ({ id, title, goal, opportunityId, version, assumptions })),
     runs: workspace.runs.map(({ id, scenarioId, scenarioVersion, status, parentRunId, checks }) => ({ id, scenarioId, scenarioVersion, status, parentRunId, checks })),

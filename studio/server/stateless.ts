@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { changeProposalSchema } from './review.js';
 import { DomainError, type Scenario, type State, type Workspace } from './model.js';
 import type { WorkspaceRepository, WorkspaceWrite } from './store-contract.js';
 
@@ -48,15 +49,25 @@ export const workspaceSnapshotSchema = z.object({
   engagement: z.object({ id, name: short, ambition: text, customer: short, revision: version, createdAt: date, updatedAt: date }).strict(),
   evidence: z.array(evidence).max(200), opportunities: z.array(opportunity).max(200), requirements: z.array(requirement).max(500),
   work: z.array(work).max(500), scenarios: z.array(scenario).max(100), runs: z.array(run).max(100),
+  changeProposals: z.array(changeProposalSchema).max(100).optional(), workHistory: z.array(work).max(1_000).optional(),
   evidenceHistory: z.array(evidence).max(500).optional(), requirementHistory: z.array(requirement).max(1_000).optional(), opportunityHistory: z.array(opportunity).max(500).optional(),
 }).strict().superRefine((workspace, context) => {
   const problem = (message: string) => context.addIssue({ code: 'custom', message });
   const unique = (values: string[], label: string) => { if (new Set(values).size !== values.length) problem(`${label} must be unique.`); };
   for (const name of ['evidence', 'opportunities', 'requirements', 'work', 'scenarios', 'runs'] as const) unique(workspace[name].map(item => item.id), `${name} IDs`);
-  const histories = [[workspace.evidence, workspace.evidenceHistory ?? []], [workspace.opportunities, workspace.opportunityHistory ?? []], [workspace.requirements, workspace.requirementHistory ?? []]] as const;
+  const histories = [[workspace.evidence, workspace.evidenceHistory ?? []], [workspace.opportunities, workspace.opportunityHistory ?? []], [workspace.requirements, workspace.requirementHistory ?? []], [workspace.work, workspace.workHistory ?? []]] as const;
   for (const [current, history] of histories) {
     unique([...current, ...history].map(item => `${item.id}:${item.version}`), 'Record versions');
     for (const old of history) if (!current.some(item => item.id === old.id && item.version > old.version)) problem(`History ${old.id} must precede its current record.`);
+  }
+  unique((workspace.changeProposals ?? []).map(item => item.id), 'Proposal IDs');
+  for (const proposal of workspace.changeProposals ?? []) {
+    for (const change of proposal.changes) {
+      if (change.before) {
+        const schema = { evidence, opportunity, requirement, work }[change.kind];
+        if (!schema.safeParse(change.before).success || change.before.id !== change.recordId || change.before.version !== change.expectedVersion) problem('Proposal original record must match its kind, target and expected version.');
+      }
+    }
   }
   const sources = new Map([...workspace.evidence, ...(workspace.evidenceHistory ?? [])].map(item => [`${item.id}:${item.version}`, item]));
   for (const item of [...workspace.opportunities, ...(workspace.opportunityHistory ?? []), ...workspace.requirements, ...(workspace.requirementHistory ?? [])]) {
@@ -68,7 +79,7 @@ export const workspaceSnapshotSchema = z.object({
   const opportunities = new Set(workspace.opportunities.map(item => item.id));
   const requirements = new Map(workspace.requirements.map(item => [item.id, item]));
   const requirementVersions = new Map([...workspace.requirements, ...(workspace.requirementHistory ?? [])].map(item => [`${item.id}:${item.version}`, item]));
-  for (const item of [...workspace.requirements, ...(workspace.requirementHistory ?? []), ...workspace.work, ...workspace.scenarios]) if (!opportunities.has(item.opportunityId)) problem(`Opportunity ${item.opportunityId} is missing.`);
+  for (const item of [...workspace.requirements, ...(workspace.requirementHistory ?? []), ...workspace.work, ...(workspace.workHistory ?? []), ...workspace.scenarios]) if (!opportunities.has(item.opportunityId)) problem(`Opportunity ${item.opportunityId} is missing.`);
   for (const item of workspace.work) for (const requirementId of item.requirementIds) if (requirements.get(requirementId)?.opportunityId !== item.opportunityId) problem(`Work requirement ${requirementId} must belong to the selected opportunity.`);
   function scenarioLinks(definition: Scenario): void {
     if (!opportunities.has(definition.opportunityId)) problem(`Scenario opportunity ${definition.opportunityId} is missing.`);
@@ -163,7 +174,7 @@ export function validatedSnapshot(raw: unknown): Workspace {
   if (new TextEncoder().encode(JSON.stringify(raw)).byteLength > 1_048_576) throw new DomainError('snapshot_too_large', 'Workspace snapshots support at most 1 MiB. Start a separate engagement or export a smaller working copy.');
   const parsed = workspaceSnapshotSchema.safeParse(raw);
   if (!parsed.success) throw new DomainError('invalid_snapshot', parsed.error.issues.slice(0, 8).map(issue => `${issue.path.join('.') || 'workspace'}: ${issue.message}`).join('; '));
-  return parsed.data;
+  return parsed.data as Workspace;
 }
 
 function identifier(value: string, label: string): void {

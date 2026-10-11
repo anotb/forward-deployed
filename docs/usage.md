@@ -41,7 +41,17 @@ The skills contribute methods and judgment. The agent host supplies research, co
 
 An existing AI product may be sufficient. An integrated service may need engineering. In that case, the library helps define the outcome, examine technical choices and prepare a brief for engineers or a coding agent such as Codex. Implementation feedback can refine the design and delivery plan. The assignment can also finish at the brief when that is the requested result.
 
-## Continue from existing work
+## Native interactions
+
+In a supported OpenAI host, open Forward Deployed beside the conversation. Select a source, service, requirement or delivery item, then use **Discuss with agent** to work from that selection. The interface supplies the selected record and its relevant links as context. The agent can still read the wider engagement when the assignment needs it.
+
+For a customer change, ask: “Propose the updated requirement and delivery work, and show me what it affects.” A proposal preserves the existing records until you accept it. Review shows before and after values, linked work and rehearsals, and checks that may need rerunning. Accept selected changes, reject them or revise their fields. Revised changes remain pending. These are effects derived from workspace links, not a prediction of financial value.
+
+Native review forms collect accept or reject choices; native experiment forms choose the point to fork and the changed assumptions. Cancelling a form leaves the engagement unchanged. Hosts must support OpenAI extended elicitation and MCP multi-round requests for these forms. Other hosts use the workspace controls. Sidebar entrypoints, conversation panels and composer mentions depend on the host's extension support; mentions are currently desktop-only.
+
+The structured tools remain available: `propose_changes` stages changes, `review_changes` applies explicit decisions, `review_with_form` requests a native review, and `experiment_with_form` requests an experiment fork. Ordinary edits do not require a proposal. Use review when comparing a consequential change helps the user decide.
+
+## Continuing work
 
 The optional Studio keeps opportunities, requirements, delivery work and Field Lab runs in an engagement snapshot. Ask the agent to open the Studio when a shared view would help, or continue with its structured tools in chat. Work on a supplied snapshot without an account; sign in to save workspaces between sessions. The skills remain usable with ordinary files and the host's existing tools.
 

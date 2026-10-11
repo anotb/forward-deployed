@@ -27,7 +27,13 @@ The browser and embedded MCP App use the same tools. The host's Meetings connect
 
 Stateless is the default, including on authenticated connections. Pass the returned workspace snapshot on the next call. Saved work requires an explicit storage choice and, on the hosted service, sign-in. The local and standalone Cloudflare adapters support MCP Events with signed callbacks. The Sites adapter does not advertise Events because its supported runtime does not provide an autonomous retry scheduler. Delivery work remains separate from simulated outcome checks.
 
-## Check the implementation
+## Native host extensions
+
+The MCP server declares workspace entrypoints, selection context, saved-record mentions and deep links. `review_with_form` and `experiment_with_form` use MCP multi-round elicitation with OpenAI extended forms when advertised by the client. Otherwise they return the workspace interface. Protocol tests verify continuation handling; rendering and availability depend on the connected host.
+
+Set `FD_FORMS_STATE_SECRET` to a random secret of at least 32 bytes in hosted runtime settings. Use the same value across instances. It signs form continuations, binds them to the actor and request, and is never sent to the UI. Rotating it expires pending forms. The local Node server generates an ephemeral process key if the variable is absent; hosted adapters fall back to workspace controls without a configured secret.
+
+## Verification
 
 ```sh
 npm run check

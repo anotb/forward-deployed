@@ -10,7 +10,7 @@ const hosting = JSON.parse(await readFile(resolve(target, '.openai/hosting.json'
 if (typeof hosting.project_id !== 'string' || !hosting.project_id.trim()) throw new Error('Initialize this checkout through Sites before syncing application source.');
 await readFile(resolve(target, 'package.json'), 'utf8');
 
-const domain = ['model.ts', 'store-contract.ts', 'workspace.ts', 'stateless.ts', 'lab.ts', 'service.ts', 'export.ts', 'mcp.ts'];
+const domain = ['model.ts', 'store-contract.ts', 'workspace.ts', 'stateless.ts', 'lab.ts', 'service.ts', 'export.ts', 'mcp.ts', 'review.ts', 'forms.ts', 'extensions.ts'];
 const adapter = ['handler.ts', 'store.ts', 'telemetry.ts', 'oauth.ts', 'oauth-store.ts', 'schema.sql'];
 const destinationRoot = resolve(target, 'lib/forward-deployed');
 

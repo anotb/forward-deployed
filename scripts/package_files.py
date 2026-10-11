@@ -37,9 +37,11 @@ STUDIO_SOURCE = {
     'studio/tsconfig.json', 'studio/tsconfig.worker.json', 'studio/wrangler.jsonc',
     'studio/scripts/build.mjs', 'studio/scripts/sync-sites.mjs',
     'studio/web/index.html', 'studio/web/main.ts', 'studio/web/style.css',
+    'studio/web/forms.ts', 'studio/web/review.ts', 'studio/web/selection.ts',
     'studio/server/events.ts', 'studio/server/events-core.ts', 'studio/server/events-worker.ts',
     'studio/server/export.ts', 'studio/server/lab.ts', 'studio/server/main.ts',
     'studio/server/mcp.ts', 'studio/server/model.ts', 'studio/server/service.ts',
+    'studio/server/review.ts', 'studio/server/forms.ts', 'studio/server/extensions.ts',
     'studio/server/stateless.ts', 'studio/server/store.ts',
     'studio/server/store-contract.ts', 'studio/server/workspace.ts',
     'studio/cloudflare/README.md', 'studio/cloudflare/auth.ts',
@@ -53,7 +55,8 @@ STUDIO_SOURCE = {
     'studio/tests/stateless.test.ts', 'studio/tests/workspace.test.ts',
     'studio/tests/sites-store.test.ts', 'studio/tests/sites-telemetry.test.ts',
     'studio/tests/sites-handler.test.ts', 'studio/tests/sites-sync.test.ts',
-    'studio/tests/sites-oauth.test.ts',
+    'studio/tests/sites-oauth.test.ts', 'studio/tests/review.test.ts',
+    'studio/tests/web-interactions.test.ts', 'studio/tests/native-forms.test.ts',
 }
 SOURCE_FIXED = RUNTIME_FIXED | STUDIO_SOURCE | {
     '.agents/plugins/marketplace.json', '.claude-plugin/marketplace.json',

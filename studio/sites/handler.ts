@@ -37,7 +37,7 @@ function zip(bundle: ReturnType<typeof buildExport>): Response {
   return new Response(Uint8Array.from(bundle.zip).buffer, { headers: { 'Content-Type': 'application/zip', 'Content-Disposition': `attachment; filename="${bundle.filename}"`, 'Cache-Control': 'no-store' } });
 }
 
-export interface SitesEnv { DB?: SitesDatabase; FD_TELEMETRY?: string; OPENAI_APP_CHALLENGE?: string }
+export interface SitesEnv { DB?: SitesDatabase; FD_TELEMETRY?: string; OPENAI_APP_CHALLENGE?: string; FD_FORMS_STATE_SECRET?: string }
 
 export async function handleSitesRequest(request: Request, env: SitesEnv, html: string): Promise<Response> {
   const profile = identity(request);
@@ -90,6 +90,7 @@ async function handleInternalRequest(request: Request, env: SitesEnv, html: stri
     return createMcpHandler(() => createStudioMcp({
       store: null, actor: profile?.id ?? 'anonymous', html, origin: url.origin,
       profile, authenticated: Boolean(profile), requireAuthentication: true, authScopes, executeTool: execute,
+      formStateSecret: env.FD_FORMS_STATE_SECRET,
     })).fetch(request);
   }
   if (url.pathname === '/health') return json({ service: 'forward-deployed', hosting: 'sites', signIn: 'chatgpt', storage: 'stateless', savedStorage: env.DB ? 'd1' : 'unavailable' });

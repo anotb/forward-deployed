@@ -18,6 +18,7 @@ export interface Env extends AuthEnv, TelemetryEnv {
   WORKSPACES: DurableObjectNamespace;
   ASSETS: Fetcher;
   OPENAI_APP_CHALLENGE?: string;
+  FD_FORMS_STATE_SECRET?: string;
 }
 const ACTOR = 'x-forward-deployed-actor';
 const NAME = 'x-forward-deployed-name';
@@ -51,7 +52,7 @@ async function readJson(request: Request): Promise<Record<string, any>> {
 async function statelessMcp(request: Request, env: Env, profile?: Profile): Promise<Response> {
   const html = await (await env.ASSETS.fetch(new Request(`${env.APP_ORIGIN}/studio.html`))).text();
   return createMcpHandler(() => createStudioMcp({
-    store: null, actor: profile?.id ?? 'anonymous', html, origin: env.APP_ORIGIN, profile, authenticated: Boolean(profile),
+    store: null, actor: profile?.id ?? 'anonymous', html, origin: env.APP_ORIGIN, profile, authenticated: Boolean(profile), formStateSecret: env.FD_FORMS_STATE_SECRET,
     onResult: event => recordTelemetry(env, request, event),
     // Discovery does not need storage. Authenticated events/* requests are routed
     // separately to this account's Durable Object and its subscription handlers.
@@ -96,7 +97,7 @@ export class WorkspaceObject extends DurableObject<Env> {
       if (url.pathname === '/mcp') {
         const html = await (await this.env.ASSETS.fetch(new Request(`${this.env.APP_ORIGIN}/studio.html`))).text();
         return createMcpHandler(() => createStudioMcp({
-          store: this.store, actor, html, origin: this.env.APP_ORIGIN, profile, authenticated: true,
+          store: this.store, actor, html, origin: this.env.APP_ORIGIN, profile, authenticated: true, formStateSecret: this.env.FD_FORMS_STATE_SECRET,
           attach: (mcp, identity) => attachEvents(mcp, this.events, identity),
           onWrite: async (identity, name, write) => { this.events.publishWorkspaceWrite(identity, name, write); await this.scheduleEvents(); },
           onResult: event => recordTelemetry(this.env, request, event),

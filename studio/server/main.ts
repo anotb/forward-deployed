@@ -2,7 +2,7 @@ import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import { resolve } from 'node:path';
-import { timingSafeEqual } from 'node:crypto';
+import { randomBytes, timingSafeEqual } from 'node:crypto';
 import { createMcpHandler } from '@modelcontextprotocol/server';
 import { toNodeHandler, localhostHostValidation } from '@modelcontextprotocol/node';
 import { StdioServerTransport } from '@modelcontextprotocol/server/stdio';
@@ -19,13 +19,14 @@ const events = new EventService({ databasePath: `${databasePath}.events`, store 
 const stopEvents = events.start();
 const port = Number(process.env.PORT ?? 4318);
 const origin = `http://127.0.0.1:${port}`;
+const formStateSecret = process.env.FD_FORMS_STATE_SECRET ?? randomBytes(32).toString('base64url');
 let html: string;
 try { html = await readFile(new URL('../studio.html', import.meta.url), 'utf8'); }
 catch { html = await readFile(new URL('../dist/studio.html', import.meta.url), 'utf8'); }
 const candidate = process.env.FD_CANDIDATE_RUN && process.env.FD_CANDIDATE_ENGAGEMENT
   ? { engagementId: process.env.FD_CANDIDATE_ENGAGEMENT, runId: process.env.FD_CANDIDATE_RUN } : undefined;
 const create = () => createStudioMcp({
-  store, actor: 'local', html, origin, candidate,
+  store, actor: 'local', html, origin, candidate, formStateSecret,
   attach: (server, actor) => attachEvents(server, events, actor),
   onWrite: (actor, name, write) => { events.publishWorkspaceWrite(actor, name, write); },
 });

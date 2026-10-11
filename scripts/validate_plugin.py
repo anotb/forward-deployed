@@ -46,12 +46,14 @@ def validate_plugin(root: Path) -> list[str]:
     check(set(portable) == BASE_FIELDS | {'$schema', 'extensions'}, 'Portable manifest fields differ from this package contract')
     check(portable.get('$schema') == 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json', 'Unexpected portable manifest schema')
     check(portable.get('name') == 'forward-deployed', 'Unexpected plugin name')
-    check(portable.get('version') == '0.5.0', 'Unexpected plugin version')
+    check(portable.get('version') == '0.6.0', 'Unexpected plugin version')
     check(portable.get('license') == 'MIT', 'Unexpected plugin license')
     for key in ('description',):
         check(isinstance(portable.get(key), str) and bool(portable.get(key)), f'Missing manifest {key}')
     extensions = portable.get('extensions', {})
     interface = extensions.get('com.openai', {}).get('interface', {}) if isinstance(extensions, dict) else {}
+    onboarding = {'com.openai': {'onboardingSkill': './skills/get-started/SKILL.md'}}
+    check(extensions.get('com.openai', {}).get('onboardingSkill') == onboarding['com.openai']['onboardingSkill'], 'Invalid OpenAI onboarding skill')
     check(isinstance(interface, dict) and bool(interface.get('displayName')), 'Missing OpenAI interface metadata')
     for field, limit in [('displayName', 30), ('shortDescription', 30), ('longDescription', 4000), ('developerName', 80)]:
         value = interface.get(field)
@@ -61,7 +63,7 @@ def validate_plugin(root: Path) -> list[str]:
     prompts = interface.get('defaultPrompt', [])
     check(isinstance(prompts, list) and 1 <= len(prompts) <= 3 and all(isinstance(p, str) and 0 < len(p) <= 128 for p in prompts), 'Invalid OpenAI starter prompts')
 
-    for relative, extra in [('.claude-plugin/plugin.json', {'mcpServers'}), ('.codex-plugin/plugin.json', {'skills', 'interface', 'mcpServers'})]:
+    for relative, extra in [('.claude-plugin/plugin.json', {'mcpServers'}), ('.codex-plugin/plugin.json', {'skills', 'interface', 'mcpServers', 'extensions'})]:
         wrapper = read_json(relative)
         check(set(wrapper) == BASE_FIELDS | extra, f'{relative}: unexpected fields')
         for key in BASE_FIELDS:
@@ -71,6 +73,7 @@ def validate_plugin(root: Path) -> list[str]:
             check(isinstance(wrapper.get('description'), str) and 0 < len(wrapper['description']) <= 500, 'Claude plugin description must contain 1-500 characters')
         check(wrapper.get('mcpServers') == './.mcp.json', f'{relative}: invalid MCP configuration path')
         if relative.startswith('.codex'):
+            check(wrapper.get('extensions') == onboarding, f'{relative}: onboarding differs from portable manifest')
             check(wrapper.get('skills') == './skills/', f'{relative}: invalid skills discovery path')
             check(wrapper.get('interface') == interface, f'{relative}: interface differs from portable manifest')
 

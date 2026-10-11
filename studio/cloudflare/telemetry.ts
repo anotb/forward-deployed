@@ -4,7 +4,7 @@ export interface TelemetryEnv {
   TELEMETRY?: { writeDataPoint(point: { blobs: string[]; doubles: number[] }): void };
 }
 const names = new Set([
-  'create_engagement', 'save_engagement', 'add_evidence', 'shape_opportunity', 'define_requirement', 'plan_delivery',
+  'propose_changes', 'review_changes', 'create_engagement', 'save_engagement', 'add_evidence', 'shape_opportunity', 'define_requirement', 'plan_delivery',
   'list_engagements', 'get_engagement', 'open_studio', 'search', 'fetch', 'get_profile', 'export_engagement', 'prepare_git_export',
   'define_rehearsal', 'start_rehearsal', 'observe_rehearsal', 'act_in_rehearsal', 'fork_rehearsal', 'finish_rehearsal',
 ]);

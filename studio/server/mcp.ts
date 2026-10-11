@@ -5,8 +5,10 @@ import { z } from 'zod';
 import { DomainError } from './model.js';
 import type { WorkspaceRepository } from './store-contract.js';
 import { executeStudioTool, toolSchemas, toolDescriptions, readTools, compactWorkspace } from './service.js';
+import { createFormStateCodec, registerNativeForms } from './forms.js';
+import { registerRecordMentions } from './extensions.js';
 
-export const STUDIO_URI = 'ui://forward-deployed/studio-v1.html';
+export const STUDIO_URI = 'ui://forward-deployed/studio-v2.html';
 export interface StudioMcpOptions {
   store: WorkspaceRepository | null; actor: string; html: string; origin: string;
   profile?: { id: string; name?: string };
@@ -14,6 +16,7 @@ export interface StudioMcpOptions {
   requireAuthentication?: boolean;
   executeTool?: (name: string, args: Record<string, unknown>) => Promise<Record<string, any>>;
   authScopes?: string[];
+  formStateSecret?: string;
   candidate?: { engagementId: string; runId: string };
   onWrite?: (actor: string, name: string, write: any) => void | Promise<void>;
   attach?: (server: McpServer, actor: string) => void;
@@ -23,14 +26,18 @@ const output = z.record(z.string(), z.unknown());
 
 export function createStudioMcp(options: StudioMcpOptions): McpServer {
   const { store, actor, candidate } = options;
-  const server = new McpServer({ name: 'forward-deployed', version: '0.5.0' }, {
+  const formCodec = createFormStateCodec(options);
+  const server = new McpServer({ name: 'forward-deployed', version: '0.6.0' }, {
+    ...(formCodec ? { requestState: { verify: formCodec.verify } } : {}),
+    ...(!candidate ? { capabilities: { extensions: { 'openai/mentions': { searchTool: 'search_records' } } } } : {}),
     instructions: candidate
       ? 'Complete the rehearsal goal using the exposed service actions. Observe the service before acting and after an ambiguous result. Finish when the goal is reached or blocked.'
       : 'Forward Deployed provides engagement records and a declarative workflow simulator. Use the workspace tools to connect supplied source passages, service opportunities, requirements and delivery work. Stateless is the default: retain the returned workspace and pass it on continuation; the service does not save it. Save only when the user chooses it. Use the current revision for writes. Field Lab operates solely on scenario data and simulated state transitions in this workspace. It does not create new MCP tools, execute source code, call external services or perform production business actions. Rehearsal checks describe the supplied model and its recorded trace.',
   });
   if (!candidate) {
-    registerAppResource(server, 'forward-deployed-studio', STUDIO_URI, {}, async () => ({ contents: [{
-      uri: STUDIO_URI, mimeType: RESOURCE_MIME_TYPE, text: options.html,
+    // Keep the previous URI readable for installed clients with cached v0.5 descriptors.
+    for (const uri of [STUDIO_URI, 'ui://forward-deployed/studio-v1.html']) registerAppResource(server, uri === STUDIO_URI ? 'forward-deployed-studio' : 'forward-deployed-studio-legacy', uri, {}, async () => ({ contents: [{
+      uri, mimeType: RESOURCE_MIME_TYPE, text: options.html,
       _meta: { ui: { prefersBorder: false, domain: options.origin, csp: { connectDomains: [], resourceDomains: [] } } },
     }] }));
     server.registerTool('get_profile', {
@@ -50,7 +57,10 @@ export function createStudioMcp(options: StudioMcpOptions): McpServer {
     let inputSchema = toolSchemas[name];
     if (candidate) inputSchema = inputSchema.omit({ engagementId: true, runId: true, expectedRevision: true, requestId: true, storage: true, workspace: true });
     const metadata: Record<string, unknown> = { securitySchemes: name === 'save_engagement' || options.requireAuthentication ? [{ type: 'oauth2', scopes: options.authScopes ?? ['workspace'] }] : [{ type: 'noauth' }, { type: 'oauth2', scopes: options.authScopes ?? ['workspace'] }] };
-    if (name === 'open_studio') metadata.ui = { resourceUri: STUDIO_URI };
+    if (name === 'open_studio') {
+      metadata.ui = { resourceUri: STUDIO_URI };
+      metadata['openai/ui'] = { entrypoints: [{ type: 'thread' }, { type: 'global' }] };
+    }
     registerAppTool(server, name, {
       title, description, inputSchema, outputSchema: output,
       annotations: { readOnlyHint: readTools.has(name), destructiveHint: false, openWorldHint: false, idempotentHint: readTools.has(name) },
@@ -92,7 +102,7 @@ export function createStudioMcp(options: StudioMcpOptions): McpServer {
               },
             }] : []),
           ], structuredContent,
-          ...(!candidate && (data.workspace || data.export) ? { _meta: { ...(data.workspace ? { workspace: data.workspace } : {}), ...(data.export ? { export: data.export } : {}) } } : {}),
+          ...(!candidate && (data.workspace || data.export) ? { _meta: { ...(data.workspace ? { workspace: data.workspace, ...(data.changeImpacts ? { changeImpacts: data.changeImpacts } : {}) } : {}), ...(data.export ? { export: data.export } : {}) } } : {}),
         };
       } catch (error) {
         record(error instanceof DomainError && error.code === 'authentication_required' ? 'auth_required' : 'error');
@@ -102,6 +112,10 @@ export function createStudioMcp(options: StudioMcpOptions): McpServer {
         };
       }
     });
+  }
+  if (!candidate) {
+    registerNativeForms(server, options, STUDIO_URI, formCodec);
+    registerRecordMentions(server, options);
   }
   options.attach?.(server, actor);
   return server;

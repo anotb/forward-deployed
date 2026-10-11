@@ -87,17 +87,23 @@ export class WorkspaceService {
     }
     const envelope = data as { engagementId: string; expectedRevision: number; requestId: string };
     return this.store.mutate(actor, envelope.engagementId, envelope.requestId, envelope.expectedRevision, { tool: name, args: data }, workspace => {
-      if (name === 'add_evidence') return this.addEvidence(workspace, data as z.infer<typeof inputSchemas.add_evidence>);
-      if (name === 'shape_opportunity') return this.shapeOpportunity(workspace, data as z.infer<typeof inputSchemas.shape_opportunity>);
-      if (name === 'define_requirement') return this.defineRequirement(workspace, data as z.infer<typeof inputSchemas.define_requirement>);
-      return this.planDelivery(workspace, data as z.infer<typeof inputSchemas.plan_delivery>);
+      return this.applyChange(workspace, name, data);
     });
   }
 
-  private addEvidence(workspace: Workspace, input: z.infer<typeof inputSchemas.add_evidence>): WorkspaceWrite {
+  /** Apply a validated domain change inside an existing repository transaction. */
+  applyChange(workspace: Workspace, name: string, data: unknown, createId?: string): WorkspaceWrite {
+    if (name === 'add_evidence') return this.addEvidence(workspace, data as z.infer<typeof inputSchemas.add_evidence>, createId);
+    if (name === 'shape_opportunity') return this.shapeOpportunity(workspace, data as z.infer<typeof inputSchemas.shape_opportunity>, createId);
+    if (name === 'define_requirement') return this.defineRequirement(workspace, data as z.infer<typeof inputSchemas.define_requirement>, createId);
+    if (name === 'plan_delivery') return this.planDelivery(workspace, data as z.infer<typeof inputSchemas.plan_delivery>, createId);
+    throw new DomainError('unknown_tool', 'Unsupported workspace change.');
+  }
+
+  private addEvidence(workspace: Workspace, input: z.infer<typeof inputSchemas.add_evidence>, createId?: string): WorkspaceWrite {
     const old = prior(workspace.evidence, input.id);
     const evidence: Evidence = {
-      id: old?.id ?? randomUUID(), title: required(input.title ?? old?.title, 'title'),
+      id: old?.id ?? createId ?? randomUUID(), title: required(input.title ?? old?.title, 'title'),
       kind: required(input.kind ?? old?.kind, 'kind'), content: required(input.content ?? old?.content, 'content'),
       status: input.status ?? old?.status ?? 'preliminary', participants: input.participants ?? old?.participants ?? [],
       version: (old?.version ?? 0) + 1,
@@ -113,10 +119,10 @@ export class WorkspaceService {
     return { workspace, result: { evidence } };
   }
 
-  private shapeOpportunity(workspace: Workspace, input: z.infer<typeof inputSchemas.shape_opportunity>): WorkspaceWrite {
+  private shapeOpportunity(workspace: Workspace, input: z.infer<typeof inputSchemas.shape_opportunity>, createId?: string): WorkspaceWrite {
     const old = prior(workspace.opportunities, input.id);
     const opportunity: Opportunity = {
-      id: old?.id ?? randomUUID(), title: required(input.title ?? old?.title, 'title'),
+      id: old?.id ?? createId ?? randomUUID(), title: required(input.title ?? old?.title, 'title'),
       beneficiary: required(input.beneficiary ?? old?.beneficiary, 'beneficiary'),
       currentWorkflow: required(input.currentWorkflow ?? old?.currentWorkflow, 'currentWorkflow'),
       proposedService: required(input.proposedService ?? old?.proposedService, 'proposedService'),
@@ -130,10 +136,10 @@ export class WorkspaceService {
     return { workspace, result: { opportunity } };
   }
 
-  private defineRequirement(workspace: Workspace, input: z.infer<typeof inputSchemas.define_requirement>): WorkspaceWrite {
+  private defineRequirement(workspace: Workspace, input: z.infer<typeof inputSchemas.define_requirement>, createId?: string): WorkspaceWrite {
     const old = prior(workspace.requirements, input.id);
     const requirement: Requirement = {
-      id: old?.id ?? randomUUID(), opportunityId: required(input.opportunityId ?? old?.opportunityId, 'opportunityId'),
+      id: old?.id ?? createId ?? randomUUID(), opportunityId: required(input.opportunityId ?? old?.opportunityId, 'opportunityId'),
       title: required(input.title ?? old?.title, 'title'), behavior: required(input.behavior ?? old?.behavior, 'behavior'),
       acceptanceCriteria: required(input.acceptanceCriteria ?? old?.acceptanceCriteria, 'acceptanceCriteria'),
       evidenceRefs: input.evidenceRefs ?? old?.evidenceRefs ?? [], status: input.status ?? old?.status ?? 'proposed', version: (old?.version ?? 0) + 1,
@@ -146,10 +152,10 @@ export class WorkspaceService {
     return { workspace, result: { requirement } };
   }
 
-  private planDelivery(workspace: Workspace, input: z.infer<typeof inputSchemas.plan_delivery>): WorkspaceWrite {
+  private planDelivery(workspace: Workspace, input: z.infer<typeof inputSchemas.plan_delivery>, createId?: string): WorkspaceWrite {
     const old = prior(workspace.work, input.id);
     const work: WorkItem = {
-      id: old?.id ?? randomUUID(), opportunityId: required(input.opportunityId ?? old?.opportunityId, 'opportunityId'),
+      id: old?.id ?? createId ?? randomUUID(), opportunityId: required(input.opportunityId ?? old?.opportunityId, 'opportunityId'),
       requirementIds: [...new Set(input.requirementIds ?? old?.requirementIds ?? [])], title: required(input.title ?? old?.title, 'title'),
       owner: input.owner ?? old?.owner ?? '', status: input.status ?? old?.status ?? 'planned',
       outcome: required(input.outcome ?? old?.outcome, 'outcome'), evidence: input.evidence ?? old?.evidence ?? '', version: (old?.version ?? 0) + 1,
@@ -160,6 +166,7 @@ export class WorkspaceService {
       if (requirement.opportunityId !== work.opportunityId) throw new DomainError('invalid_reference', 'Delivery requirements must belong to the selected opportunity.');
     }
     // Delivery status records work completion; only the lab computes rehearsal outcomes.
+    if (old) (workspace.workHistory ??= []).push(old);
     replace(workspace.work, work);
     return { workspace, result: { work } };
   }

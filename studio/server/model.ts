@@ -61,6 +61,30 @@ export interface Workspace {
   engagement: Engagement; evidence: Evidence[]; opportunities: Opportunity[];
   requirements: Requirement[]; work: WorkItem[]; scenarios: Scenario[]; runs: Run[];
   evidenceHistory?: Evidence[]; requirementHistory?: Requirement[]; opportunityHistory?: Opportunity[];
+  workHistory?: WorkItem[]; changeProposals?: ChangeProposal[];
+}
+export type ChangeKind = 'evidence' | 'opportunity' | 'requirement' | 'work';
+export type ChangeFields = Partial<Omit<Evidence, 'id' | 'version'>> | Partial<Omit<Opportunity, 'id' | 'version'>> | Partial<Omit<Requirement, 'id' | 'version'>> | Partial<Omit<WorkItem, 'id' | 'version'>>;
+export interface ProposedChange {
+  id: string; kind: ChangeKind; operation: 'create' | 'update'; recordId: string; expectedVersion?: number;
+  fields: ChangeFields; status: 'pending' | 'accepted' | 'rejected';
+  before?: Evidence | Opportunity | Requirement | WorkItem;
+  reviewedAt?: string; note?: string;
+}
+export interface ChangeReviewEvent {
+  at: string; changeId: string; decision: 'accept' | 'reject' | 'revise'; note?: string;
+  previousFields?: ChangeFields;
+}
+export interface ChangeImpact {
+  requirements: string[]; work: string[]; scenarios: string[]; runs: string[];
+  staleChecks: { scenarioId: string; requirementId: string; testedVersion: number; proposedVersion: number }[];
+  staleEvidenceRefs: { kind: 'opportunity' | 'requirement'; recordId: string; evidenceId: string; citedVersion: number; proposedVersion: number }[];
+  conflicts: { changeId: string; message: string }[];
+}
+export interface ChangeProposal {
+  id: string; title: string; reason: string; version: number; baseRevision: number;
+  status: 'pending' | 'resolved'; createdAt: string; updatedAt: string;
+  changes: ProposedChange[]; reviews: ChangeReviewEvent[];
 }
 export class DomainError extends Error {
   constructor(public code: string, message: string) { super(message); this.name = 'DomainError'; }

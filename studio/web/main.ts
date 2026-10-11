@@ -1,18 +1,29 @@
 import { App } from '@modelcontextprotocol/ext-apps';
-import type { Engagement, Workspace, EvidenceRef, Run, State, Value, RehearsalAction } from '../server/model.js';
+import { reviewView, reviewKey, editableFields, currentReviewChoices, type ReviewChoices } from './review.js';
+import { decisionForm, type DecisionForm } from './forms.js';
+import { selectedRecord, selectionContext, type Selection } from './selection.js';
+import type { ChangeImpact, Engagement, Workspace, EvidenceRef, Run, State, Value, RehearsalAction } from '../server/model.js';
 
-type Tab = 'service' | 'evidence' | 'delivery' | 'lab';
+type Tab = 'service' | 'evidence' | 'delivery' | 'lab' | 'review';
 type StorageMode = 'stateless' | 'saved';
-type Reply = { workspace?: Workspace; engagements?: Engagement[]; result?: Record<string, unknown>; storage?: StorageMode; export?: { filename: string; blob: string; mimeType: string } };
+type Reply = { changeImpacts?: Record<string, ChangeImpact>; workspace?: Workspace; engagements?: Engagement[]; result?: Record<string, unknown>; storage?: StorageMode; export?: { filename: string; blob: string; mimeType: string } };
 const root = document.querySelector<HTMLDivElement>('#app')!;
 const embedded = window.parent !== window;
-const bridge = new App({ name: 'Forward Deployed Studio', version: '0.5.0' }, {});
+const bridge = new App({ name: 'Forward Deployed Studio', version: '0.6.0' }, {});
 let connected = false;
 let profile: { name: string } | undefined;
 let workspace: Workspace | undefined;
 let engagements: Engagement[] = [];
 let tab: Tab = 'service';
-let editor: 'create' | 'evidence' | 'fork' | undefined;
+let editor: 'create' | 'evidence' | 'fork' | DecisionForm | undefined;
+let selection: Selection | undefined;
+let contextFingerprint = '';
+let impacts: Record<string, ChangeImpact> = {};
+let reviewChoices: ReviewChoices = {};
+let editingChange = '';
+let formWorkId = '';
+let library = false;
+let lastDeepLink = '';
 let busy = false;
 let notice = '';
 let error = false;
@@ -61,6 +72,19 @@ const safeUri = (uri?: string): string | undefined => { try { const url = new UR
 const formatDate = (iso: string): string => new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 
 function accept(data: Reply): void {
+  if (data.workspace) {
+    reviewChoices = currentReviewChoices(workspace, data.workspace, reviewChoices);
+    for (const proposal of data.workspace.changeProposals ?? []) {
+      const prior = workspace?.changeProposals?.find(item => item.id === proposal.id);
+      if (prior?.version !== proposal.version) {
+        if (editingChange.startsWith(`${proposal.id}:`)) editingChange = '';
+      }
+    }
+    if (workspace?.engagement.revision !== data.workspace.engagement.revision) impacts = {};
+  }
+  if (data.changeImpacts) impacts = data.changeImpacts;
+  const proposal = data.result?.proposal as { id?: string } | undefined;
+  if (proposal?.id && (data.result?.pendingImpact || data.result?.impact)) impacts[proposal.id] = (data.result.pendingImpact ?? data.result.impact) as ChangeImpact;
   if (data.workspace && data.storage && storage !== data.storage) {
     storage = data.storage;
     engagements = storage === 'stateless' ? Object.values(localWorkspaces).map(item => item.engagement) : [];
@@ -69,20 +93,27 @@ function accept(data: Reply): void {
   if (data.workspace) {
     const changed = workspace?.engagement.id !== data.workspace.engagement.id;
     workspace = data.workspace;
-    if (changed) { opportunityId = ''; scenarioId = ''; runId = ''; selectedStep = -1; actionId = ''; }
+    if (changed) { selection = undefined; contextFingerprint = '';reviewChoices = {}; editingChange = ''; library = false; opportunityId = ''; scenarioId = ''; runId = ''; selectedStep = -1; actionId = ''; }
     const index = engagements.findIndex(item => item.id === workspace!.engagement.id);
     if (index >= 0) engagements[index] = workspace.engagement; else engagements.push(workspace.engagement);
     if (!workspace.opportunities.some(item => item.id === opportunityId)) opportunityId = workspace.opportunities[0]?.id ?? '';
     if (!workspace.scenarios.some(item => item.id === scenarioId)) scenarioId = workspace.scenarios[0]?.id ?? '';
     if (!workspace.runs.some(item => item.id === runId)) runId = workspace.runs.filter(item => item.scenarioId === scenarioId).at(-1)?.id ?? '';
   }
+  if (workspace && selection && !selectedRecord(workspace, selection)) selection = undefined;
+  const form = data.result?.form as { kind?: string; proposalId?: string; runId?: string; supported?: boolean; completed?: boolean } | undefined;
+  if (form?.kind === 'review') tab = 'review';
+  if (form?.kind === 'experiment' && (form.completed || form.supported === false)) { tab = 'lab'; runId = String(data.result?.runId ?? form.runId ?? runId); scenarioId = workspace?.runs.find(item => item.id === runId)?.scenarioId ?? scenarioId; selectedStep = -1; actionId = ''; editor = form.completed ? undefined : 'fork'; }
+  const requestedSelection = data.result?.selection as Selection | undefined;
+  if (workspace && requestedSelection && selectedRecord(workspace, requestedSelection)) navigateSelection(requestedSelection);
   remember();
+  void syncSelection().catch(() => { /* Unsupported hosts still support the explicit Discuss action. */ });
 }
 
 function unpack(result: unknown): Reply {
-  const raw = result as { isError?: boolean; structuredContent?: Reply; _meta?: { workspace?: Workspace; export?: Reply['export'] }; content?: { type: string; text?: string }[] };
+  const raw = result as { isError?: boolean; structuredContent?: Reply; _meta?: { workspace?: Workspace; changeImpacts?: Record<string, ChangeImpact>; export?: Reply['export'] }; content?: { type: string; text?: string }[] };
   if (raw.isError) throw new Error(raw.content?.find(item => item.type === 'text')?.text ?? 'The tool could not complete this action.');
-  if (raw.structuredContent) return { ...raw.structuredContent, ...(raw._meta?.workspace ? { workspace: raw._meta.workspace } : {}), ...(raw._meta?.export ? { export: raw._meta.export } : {}) };
+  if (raw.structuredContent) return { ...raw.structuredContent, ...(raw._meta?.workspace ? { workspace: raw._meta.workspace } : {}), ...(raw._meta?.changeImpacts ? { changeImpacts: raw._meta.changeImpacts } : {}), ...(raw._meta?.export ? { export: raw._meta.export } : {}) };
   const text = raw.content?.find(item => item.type === 'text')?.text;
   return text ? JSON.parse(text) as Reply : result as Reply;
 }
@@ -122,7 +153,7 @@ async function invoke(name: string, args: Record<string, unknown> = {}, mutation
 
 async function task(operation: () => Promise<void>, message = ''): Promise<void> {
   if (busy) return;
-  const draft = Array.from(root.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>('form [name]')).map(element => ({ name: element.name, value: element.value }));
+  const draft = Array.from(root.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>('form [name]')).map(element => ({ name: element.name, value: element.value, checked: element instanceof HTMLInputElement ? element.checked : undefined }));
   busy = true; notice = ''; error = false;
   root.querySelectorAll<HTMLButtonElement>('button[type="submit"], button[data-action], select[data-change]').forEach(element => { element.disabled = true; });
   const loading = document.createElement('div'); loading.className = 'busy-line'; loading.setAttribute('role', 'progressbar'); loading.setAttribute('aria-label', 'Saving'); root.prepend(loading);
@@ -132,7 +163,7 @@ async function task(operation: () => Promise<void>, message = ''): Promise<void>
     busy = false; render();
     if (error) for (const field of draft) {
       const element = root.querySelector<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(`form [name="${CSS.escape(field.name)}"]`);
-      if (element) element.value = field.value;
+      if (element) { element.value = field.value; if (element instanceof HTMLInputElement && field.checked !== undefined) element.checked = field.checked; }
     }
   }
 }
@@ -147,6 +178,7 @@ function evidenceForm(): string {
 
 function editorView(): string {
   if (!editor || editor === 'fork') return '';
+  if (['discovery', 'service', 'delivery'].includes(editor) && workspace) return `<section class="editor">${decisionForm(editor as DecisionForm, workspace, opportunityId, formWorkId)}</section>`;
   return `<section class="editor" aria-label="${editor === 'create' ? 'New engagement' : 'Add source'}"><div class="editor-inner"><h2>${editor === 'create' ? 'New engagement' : 'Add source'}</h2>${editor === 'create' ? createForm() : evidenceForm()}</div></section>`;
 }
 
@@ -159,15 +191,15 @@ function serviceView(): string {
   const opportunity = workspace!.opportunities.find(item => item.id === opportunityId);
   if (!opportunity) return `<section class="empty"><h2>Define the service</h2><p>Add notes or a sample case. Your agent can use them to develop the service design and save it here.</p><div class="actions">${button('Add source', 'add-evidence', true)}${button('Define service', 'prompt-service')}</div></section>`;
   const requirements = workspace!.requirements.filter(item => item.opportunityId === opportunity.id);
-  return `${workspace!.opportunities.length > 1 ? `<div class="service-select"><label>Service<select data-change="opportunity">${workspace!.opportunities.map(item => `<option value="${esc(item.id)}" ${item.id === opportunity.id ? 'selected' : ''}>${esc(item.title)}</option>`).join('')}</select></label></div>` : ''}<div class="split"><div><article class="service"><h2>${esc(opportunity.title)}</h2><p class="proposition">${esc(opportunity.proposedService)}</p><p class="meta">For ${esc(opportunity.beneficiary)}</p><div class="workflow"><section><h3>Current process</h3><p>${esc(opportunity.currentWorkflow)}</p></section><section><h3>Expected benefit</h3><p>${esc(opportunity.whyItMatters)}</p></section></div>${sources(opportunity.evidenceRefs)}${opportunity.measures.length ? `<section class="service-note"><h3>Measures</h3><table class="ledger"><thead><tr><th>Measure</th><th>Today</th><th>Target</th></tr></thead><tbody>${opportunity.measures.map(measure => `<tr><td>${esc(measure.name)}<div class="meta">${esc(measure.basis)}</div></td><td>${measure.baseline === undefined ? 'Not measured' : `${esc(measure.baseline)} ${esc(measure.unit)}`}</td><td>${measure.target === undefined ? 'To define' : `${esc(measure.target)} ${esc(measure.unit)}`}</td></tr>`).join('')}</tbody></table></section>` : ''}</article><div class="actions">${button('Develop the service', 'prompt-service')}${button('Build a rehearsal', 'prompt-rehearsal', true)}</div></div><aside class="aside"><section><div class="row-head"><h3>Requirements</h3>${badge(`${requirements.length} ${requirements.length === 1 ? 'requirement' : 'requirements'}`, 'neutral')}</div>${requirements.length ? requirements.map(requirement => `<article class="requirement"><div class="row-head"><h3>${esc(requirement.title)}</h3>${badge(requirement.status)}</div><p>${esc(requirement.behavior)}</p><details><summary>Acceptance criteria</summary><ul>${requirement.acceptanceCriteria.map(item => `<li>${esc(item)}</li>`).join('')}</ul></details>${sources(requirement.evidenceRefs)}</article>`).join('') : '<p class="muted">Describe the expected behavior and how it will be tested.</p>'}${button('Develop requirements', 'prompt-requirements')}</section>${opportunity.assumptions.length ? `<section><h3>Working assumptions</h3><ul>${opportunity.assumptions.map(item => `<li>${esc(item)}</li>`).join('')}</ul></section>` : ''}</aside></div>`;
+  return `${workspace!.opportunities.length > 1 ? `<div class="service-select"><label>Service<select data-change="opportunity">${workspace!.opportunities.map(item => `<option value="${esc(item.id)}" ${item.id === opportunity.id ? 'selected' : ''}>${esc(item.title)}</option>`).join('')}</select></label></div>` : ''}<div class="split"><div><article class="service"><div class="row-head"><h2>${esc(opportunity.title)}</h2>${selectButton('opportunity', opportunity.id)}</div><p class="proposition">${esc(opportunity.proposedService)}</p><p class="meta">For ${esc(opportunity.beneficiary)}</p><div class="workflow"><section><h3>Current process</h3><p>${esc(opportunity.currentWorkflow)}</p></section><section><h3>Expected benefit</h3><p>${esc(opportunity.whyItMatters)}</p></section></div>${sources(opportunity.evidenceRefs)}${opportunity.measures.length ? `<section class="service-note"><h3>Measures</h3><table class="ledger"><thead><tr><th>Measure</th><th>Today</th><th>Target</th></tr></thead><tbody>${opportunity.measures.map(measure => `<tr><td>${esc(measure.name)}<div class="meta">${esc(measure.basis)}</div></td><td>${measure.baseline === undefined ? 'Not measured' : `${esc(measure.baseline)} ${esc(measure.unit)}`}</td><td>${measure.target === undefined ? 'To define' : `${esc(measure.target)} ${esc(measure.unit)}`}</td></tr>`).join('')}</tbody></table></section>` : ''}</article><div class="actions">${button('Refine service', 'form-service')}${button('Develop the service', 'prompt-service')}${button('Build a rehearsal', 'prompt-rehearsal', true)}</div></div><aside class="aside"><section><div class="row-head"><h3>Requirements</h3>${badge(`${requirements.length} ${requirements.length === 1 ? 'requirement' : 'requirements'}`, 'neutral')}</div>${requirements.length ? requirements.map(requirement => `<article class="requirement"><div class="row-head"><h3>${selectTitle('requirement', requirement.id, requirement.title)}</h3>${badge(requirement.status)}</div><p>${esc(requirement.behavior)}</p><details><summary>Acceptance criteria</summary><ul>${requirement.acceptanceCriteria.map(item => `<li>${esc(item)}</li>`).join('')}</ul></details>${sources(requirement.evidenceRefs)}</article>`).join('') : '<p class="muted">Describe the expected behavior and how it will be tested.</p>'}${button('Develop requirements', 'prompt-requirements')}</section>${opportunity.assumptions.length ? `<section><h3>Working assumptions</h3><ul>${opportunity.assumptions.map(item => `<li>${esc(item)}</li>`).join('')}</ul></section>` : ''}</aside></div>`;
 }
 
 function evidenceView(): string {
-  return `<div class="section-head"><div><h2>Notes and documents</h2><p>Source material used in the service design.</p></div><div class="actions">${button('Find a meeting', 'prompt-meetings')}${button('Add source', 'add-evidence', true)}</div></div>${workspace!.evidence.length ? workspace!.evidence.map(item => { const uri = safeUri(item.uri); return `<article class="evidence-row"><div class="row-head"><h3>${esc(item.title)}</h3>${badge(item.kind, 'neutral')}</div><div class="meta">${esc(item.status)} · v${item.version}${item.occurredAt ? ` · ${formatDate(item.occurredAt)}` : ''}${item.participants.length ? ` · ${esc(item.participants.join(', '))}` : ''}${uri ? ` · <a href="${esc(uri)}" target="_blank" rel="noopener noreferrer">Open source</a>` : ''}</div><div class="source-body">${esc(item.content)}</div></article>`; }).join('') : '<section class="empty"><h2>Add source material</h2><p>Paste meeting notes, a document excerpt or a sample case. Your agent can also find records through the Meetings connector.</p></section>'}`;
+  return `<div class="section-head"><div><h2>Notes and documents</h2><p>Source material used in the service design.</p></div><div class="actions">${button('Review discovery', 'form-discovery')}${button('Find a meeting', 'prompt-meetings')}${button('Add source', 'add-evidence', true)}</div></div>${workspace!.evidence.length ? workspace!.evidence.map(item => { const uri = safeUri(item.uri); return `<article class="evidence-row"><div class="row-head"><h3>${selectTitle('evidence', item.id, item.title)}</h3>${badge(item.kind, 'neutral')}</div><div class="meta">${esc(item.status)} · v${item.version}${item.occurredAt ? ` · ${formatDate(item.occurredAt)}` : ''}${item.participants.length ? ` · ${esc(item.participants.join(', '))}` : ''}${uri ? ` · <a href="${esc(uri)}" target="_blank" rel="noopener noreferrer">Open source</a>` : ''}</div><div class="source-body">${esc(item.content)}</div></article>`; }).join('') : '<section class="empty"><h2>Add source material</h2><p>Paste meeting notes, a document excerpt or a sample case. Your agent can also find records through the Meetings connector.</p></section>'}`;
 }
 
 function deliveryView(): string {
-  return `<div class="section-head"><div><h2>Delivery work</h2></div>${button('Plan delivery', 'prompt-delivery', true)}</div>${workspace!.work.length ? workspace!.work.map(item => `<article class="work-row"><div><h3>${esc(item.title)}</h3><p>${esc(item.outcome)}</p>${item.requirementIds.length ? `<details><summary>Requirements</summary><ul>${item.requirementIds.map(id => `<li>${esc(workspace!.requirements.find(requirement => requirement.id === id)?.title ?? id)}</li>`).join('')}</ul></details>` : ''}${item.evidence ? `<details><summary>Completion notes</summary><p>${esc(item.evidence)}</p></details>` : ''}</div><div class="work-owner"><small>Owner</small><p>${esc(item.owner || 'Unassigned')}</p></div><label><span class="sr-only">Status for ${esc(item.title)}</span><select data-change="work-status" data-id="${esc(item.id)}">${['planned', 'active', 'blocked', 'done'].map(status => `<option value="${status}" ${status === item.status ? 'selected' : ''}>${status[0].toUpperCase() + status.slice(1)}</option>`).join('')}</select></label></article>`).join('') : '<section class="empty"><h2>Plan the implementation</h2><p>Ask your agent to define the tasks, assign owners and link the work to requirements.</p></section>'}`;
+  return `<div class="section-head"><div><h2>Delivery work</h2></div><div class="actions">${workspace!.work.length ? button('Prepare delivery', 'form-delivery') : ''}${button('Plan delivery', 'prompt-delivery', true)}</div></div>${workspace!.work.length ? workspace!.work.map(item => `<article class="work-row"><div><h3>${selectTitle('work', item.id, item.title)}</h3><p>${esc(item.outcome)}</p>${item.requirementIds.length ? `<details><summary>Requirements</summary><ul>${item.requirementIds.map(id => `<li>${esc(workspace!.requirements.find(requirement => requirement.id === id)?.title ?? id)}</li>`).join('')}</ul></details>` : ''}${item.evidence ? `<details><summary>Completion notes</summary><p>${esc(item.evidence)}</p></details>` : ''}</div><div class="work-owner"><small>Owner</small><p>${esc(item.owner || 'Unassigned')}</p></div><label><span class="sr-only">Status for ${esc(item.title)}</span><select data-change="work-status" data-id="${esc(item.id)}">${['planned', 'active', 'blocked', 'done'].map(status => `<option value="${status}" ${status === item.status ? 'selected' : ''}>${status[0].toUpperCase() + status.slice(1)}</option>`).join('')}</select></label></article>`).join('') : '<section class="empty"><h2>Plan the implementation</h2><p>Ask your agent to define the tasks, assign owners and link the work to requirements.</p></section>'}`;
 }
 
 function currentRun(): Run | undefined { return workspace?.runs.find(item => item.id === runId); }
@@ -195,7 +227,7 @@ function labView(): string {
   const retryControl = run?.status === 'running' && lastStep?.status === 'timeout' ? button('Retry action', 'retry-action') : '';
   const selectedAction = activeScenario.actions.find(item => item.id === actionId) ?? activeScenario.actions[0];
   if (selectedAction) actionId = selectedAction.id;
-  return `<div class="section-head lab-head"><div><h2>Field Lab</h2><p>Test the workflow using simulated records and actions.</p></div><div class="actions">${button('Develop rehearsal', 'prompt-rehearsal')}${button('New run', 'start-run', true)}</div></div><div class="run-picker" style="margin-bottom:18px"><label>Rehearsal<select data-change="scenario">${workspace!.scenarios.map(item => `<option value="${esc(item.id)}" ${item.id === scenario.id ? 'selected' : ''}>${esc(item.title)}</option>`).join('')}</select></label>${runs.length ? `<label>Run<select data-change="run">${runs.map((item, offset) => `<option value="${esc(item.id)}" ${item.id === run?.id ? 'selected' : ''}>Run ${offset + 1}${item.parentRunId ? ` · fork at ${item.forkedAtStep}` : ''} · ${item.status}</option>`).join('')}</select></label>` : ''}</div><section class="lab-surface"><div class="lab-goal"><div><h3>${esc(activeScenario.title)}</h3><p>${esc(activeScenario.goal)}</p></div><div>${badge(run?.status ?? 'Ready', run?.status === 'finished' ? 'neutral' : '')}</div></div><div class="lab-layout"><div class="lab-main"><div class="trace" aria-label="Action timeline">${[{ index: 0, title: 'Starting state', status: '' }, ...(run?.steps ?? []).map(item => ({ index: item.index, title: item.actionId === '$' + 'fork' ? 'Branch conditions' : activeScenario.actions.find(action => action.id === item.actionId)?.title ?? humanize(item.actionId), status: item.status }))].map(item => `<button class="trace-step" data-action="step" data-step="${item.index}" aria-pressed="${index === item.index}"><span class="step-node">${item.index}</span><strong>${esc(item.title)}</strong><small>${esc(item.status)}</small></button>`).join('')}</div><div class="state-panel"><div class="section-head"><h3>${index === 0 ? 'Starting state' : `After action ${index}`}</h3>${run ? button('Fork from here', 'fork-run') : ''}</div>${step ? `<p class="meta">${esc(step.message)}</p>` : ''}<table class="ledger"><thead><tr><th>Record</th><th>Value</th></tr></thead><tbody>${Object.entries(state).filter(([key]) => activeScenario.observableKeys.includes(key)).map(([key, value]) => { const changed = before && JSON.stringify(before[key]) !== JSON.stringify(value); return `<tr><td>${esc(humanize(key))}</td><td class="${changed ? 'changed' : ''}">${changed ? `<span class="old-value">${esc(typeof before[key] === 'boolean' ? before[key] ? 'Yes' : 'No' : display(before[key]))}</span>` : ''}${esc(typeof value === 'boolean' ? value ? 'Yes' : 'No' : display(value))}</td></tr>`; }).join('')}</tbody></table>${step ? `<details><summary>Technical details</summary><pre>${esc(JSON.stringify({ intentId: step.intentId, inputs: step.inputs }, null, 2))}</pre></details>` : ''}${editor === 'fork' && run ? `<form data-form="fork" class="prompt-box"><h3>Branch from step ${index}</h3><p>Adjust the conditions and continue from here. The original run is kept.</p><div class="form-grid">${forkFields(state, activeScenario.observableKeys)}</div><div class="actions"><button class="button primary" type="submit">Create fork</button>${button('Cancel', 'close-editor')}</div></form>` : ''}</div></div><aside class="action-panel">${!run ? `<h3>Start a run</h3><p>Use the available actions to work through this scenario.</p>${button('Start rehearsal', 'start-run', true)}` : run.status === 'finished' ? `<h3>Run complete</h3><p>Review the checks below. To test a different approach, select a step and create a branch.</p>${button('Discuss this run', 'prompt-run')}` : `<h3>Next action</h3><p>${index < run.steps.length ? 'You are inspecting an earlier step. Actions continue from the latest state.' : 'Choose an action, or ask your agent to run the scenario.'}</p><form data-form="act"><label>Action<select data-change="action" name="actionId">${activeScenario.actions.map(item => `<option value="${esc(item.id)}" ${selectedAction?.id === item.id ? 'selected' : ''}>${esc(item.title)}</option>`).join('')}</select></label>${selectedAction ? `<p>${esc(selectedAction.description)}</p>${parameters(selectedAction)}<div class="actions"><button type="submit" class="button primary">Run action</button></div>` : ''}</form><div class="actions">${retryControl}${button('Run with agent', 'prompt-run')}${button('Finish & check', 'finish-run')}</div>`}</aside></div>${run?.status === 'finished' ? `<section class="checks"><h3>Results</h3>${run.checks.map(check => `<div class="check"><div>${esc(check.label)}<small>${check.kind === 'invariant' ? 'Checked throughout the run' : 'Final state'}${check.requirementId ? ` · ${esc(workspace!.requirements.find(item => item.id === check.requirementId)?.title ?? check.requirementId)} v${check.requirementVersion}` : ''}</small></div>${badge(check.passed ? 'Passed' : 'Failed', check.passed ? 'pass' : 'fail')}</div>`).join('')}</section>` : ''}</section><details><summary>Rehearsal assumptions</summary><ul>${activeScenario.assumptions.map(item => `<li>${esc(item)}</li>`).join('')}</ul></details>`;
+  return `<div class="section-head lab-head"><div><h2>Field Lab</h2><p>Test the workflow using simulated records and actions.</p></div><div class="actions">${button('Develop rehearsal', 'prompt-rehearsal')}${button('New run', 'start-run', true)}</div></div><div class="run-picker" style="margin-bottom:18px"><label>Rehearsal<select data-change="scenario">${workspace!.scenarios.map(item => `<option value="${esc(item.id)}" ${item.id === scenario.id ? 'selected' : ''}>${esc(item.title)}</option>`).join('')}</select></label>${runs.length ? `<label>Run<select data-change="run">${runs.map((item, offset) => `<option value="${esc(item.id)}" ${item.id === run?.id ? 'selected' : ''}>Run ${offset + 1}${item.parentRunId ? ` · fork at ${item.forkedAtStep}` : ''} · ${item.status}</option>`).join('')}</select></label>` : ''}</div><section class="lab-surface"><div class="lab-goal"><div><h3>${esc(activeScenario.title)}</h3><p>${esc(activeScenario.goal)}</p></div><div>${badge(run?.status ?? 'Ready', run?.status === 'finished' ? 'neutral' : '')}</div></div><div class="lab-layout"><div class="lab-main"><div class="trace" aria-label="Action timeline">${[{ index: 0, title: 'Starting state', status: '' }, ...(run?.steps ?? []).map(item => ({ index: item.index, title: item.actionId === '$' + 'fork' ? 'Branch conditions' : activeScenario.actions.find(action => action.id === item.actionId)?.title ?? humanize(item.actionId), status: item.status }))].map(item => `<button class="trace-step" data-action="step" data-step="${item.index}" aria-pressed="${index === item.index}"><span class="step-node">${item.index}</span><strong>${esc(item.title)}</strong><small>${esc(item.status)}</small></button>`).join('')}</div><div class="state-panel"><div class="section-head"><h3>${index === 0 ? 'Starting state' : `After action ${index}`}</h3>${run ? `<div class="actions">${selectButton('run', run.id)}${button('Design experiment', 'fork-run')}</div>` : ''}</div>${step ? `<p class="meta">${esc(step.message)}</p>` : ''}<table class="ledger"><thead><tr><th>Record</th><th>Value</th></tr></thead><tbody>${Object.entries(state).filter(([key]) => activeScenario.observableKeys.includes(key)).map(([key, value]) => { const changed = before && JSON.stringify(before[key]) !== JSON.stringify(value); return `<tr><td>${esc(humanize(key))}</td><td class="${changed ? 'changed' : ''}">${changed ? `<span class="old-value">${esc(typeof before[key] === 'boolean' ? before[key] ? 'Yes' : 'No' : display(before[key]))}</span>` : ''}${esc(typeof value === 'boolean' ? value ? 'Yes' : 'No' : display(value))}</td></tr>`; }).join('')}</tbody></table>${step ? `<details><summary>Technical details</summary><pre>${esc(JSON.stringify({ intentId: step.intentId, inputs: step.inputs }, null, 2))}</pre></details>` : ''}${editor === 'fork' && run ? `<form data-form="fork" class="prompt-box"><div class="section-head"><h3>Design an experiment from step ${index}</h3>${embedded ? button('Open in chat form', 'native-experiment') : ''}</div><p>Adjust the conditions and continue from here. The original run is kept.</p><p class="meta">Checks: ${esc(activeScenario.checks.map(check => check.label).join(' · '))}</p><div class="form-grid">${forkFields(state, activeScenario.observableKeys)}</div><div class="actions"><button class="button primary" type="submit">Create fork</button>${button('Cancel', 'close-editor')}</div></form>` : ''}</div></div><aside class="action-panel">${!run ? `<h3>Start a run</h3><p>Use the available actions to work through this scenario.</p>${button('Start rehearsal', 'start-run', true)}` : run.status === 'finished' ? `<h3>Run complete</h3><p>Review the checks below. To test a different approach, select a step and create a branch.</p>${button('Discuss this run', 'prompt-run')}` : `<h3>Next action</h3><p>${index < run.steps.length ? 'You are inspecting an earlier step. Actions continue from the latest state.' : 'Choose an action, or ask your agent to run the scenario.'}</p><form data-form="act"><label>Action<select data-change="action" name="actionId">${activeScenario.actions.map(item => `<option value="${esc(item.id)}" ${selectedAction?.id === item.id ? 'selected' : ''}>${esc(item.title)}</option>`).join('')}</select></label>${selectedAction ? `<p>${esc(selectedAction.description)}</p>${parameters(selectedAction)}<div class="actions"><button type="submit" class="button primary">Run action</button></div>` : ''}</form><div class="actions">${retryControl}${button('Run with agent', 'prompt-run')}${button('Finish & check', 'finish-run')}</div>`}</aside></div>${run?.status === 'finished' ? `<section class="checks"><h3>Results</h3>${run.checks.map(check => `<div class="check"><div>${esc(check.label)}<small>${check.kind === 'invariant' ? 'Checked throughout the run' : 'Final state'}${check.requirementId ? ` · ${esc(workspace!.requirements.find(item => item.id === check.requirementId)?.title ?? check.requirementId)} v${check.requirementVersion}` : ''}</small></div>${badge(check.passed ? 'Passed' : 'Failed', check.passed ? 'pass' : 'fail')}</div>`).join('')}</section>` : ''}</section><details><summary>Rehearsal assumptions</summary><ul>${activeScenario.assumptions.map(item => `<li>${esc(item)}</li>`).join('')}</ul></details>`;
 }
 
 function promptView(): string {
@@ -250,6 +282,62 @@ function accountView(): string {
     : '<a class="account-sign-in" href="/signin-with-chatgpt?return_to=%2F" target="_top" data-sign-in>Sign in with ChatGPT</a>';
 }
 
+function navigateSelection(next: Selection): void {
+  selection = next; library = false;
+  if (next.kind === 'evidence') tab = 'evidence';
+  else if (next.kind === 'work') { tab = 'delivery'; formWorkId = next.id; }
+  else if (next.kind === 'run') { tab = 'lab'; runId = next.id; scenarioId = workspace!.runs.find(item => item.id === next.id)!.scenarioId; selectedStep = next.step ?? -1; }
+  else { tab = 'service'; opportunityId = next.kind === 'opportunity' ? next.id : workspace!.requirements.find(item => item.id === next.id)!.opportunityId; }
+}
+
+function selectButton(kind: Selection['kind'], id: string): string {
+  const selected = selection?.kind === kind && selection.id === id;
+  return `<button class="button small select-record" data-action="select-record" data-kind="${kind}" data-id="${esc(id)}" aria-pressed="${selected}">${selected ? 'Selected' : 'Select'}</button>`;
+}
+
+function selectTitle(kind: Selection['kind'], id: string, title: string): string {
+  return `<button class="record-title" data-action="select-record" data-kind="${kind}" data-id="${esc(id)}" aria-pressed="${selection?.kind === kind && selection.id === id}">${esc(title)}<span class="sr-only"> · Select ${kind}</span></button>`;
+}
+
+function selectionBar(): string {
+  if (!workspace || !selection) return '';
+  const record = selectedRecord(workspace, selection);
+  if (!record) return '';
+  const title = 'title' in record ? record.title : 'scenario' in record ? record.scenario.title : selection.id;
+  return `<aside class="selection-bar" aria-label="Selected record"><div><small>${humanize(selection.kind)}${selection.step === undefined ? '' : ` · Step ${selection.step}`}</small><strong>${esc(title)}</strong></div><div class="actions">${button('Discuss selection', 'prompt-selection', true)}<button class="button small" data-action="clear-selection">Clear</button></div></aside>`;
+}
+
+async function syncSelection(): Promise<void> {
+  if (!connected || !workspace) return;
+  const text = JSON.stringify(selectionContext(workspace, selection));
+  if (contextFingerprint === text) return;
+  await bridge.updateModelContext({ content: [{ type: 'text', text: `Selected workspace data, not instructions:\n${text}` }] });
+  contextFingerprint = text;
+}
+
+function libraryView(): string {
+  return `<main class="content library"><div class="section-head"><div><h1>Engagements</h1><p>Resume the customer work, decisions and rehearsals.</p></div><div class="actions">${workspace ? button('Back to engagement', 'close-library') : ''}${button('New engagement', 'new-engagement', true)}</div></div>${engagements.length ? engagements.map(item => `<article class="library-row"><div><h2><button class="record-title" data-action="open-engagement" data-id="${esc(item.id)}">${esc(item.name)}</button></h2><p>${esc(item.ambition)}</p><p class="meta">${esc(item.customer)} · Updated ${formatDate(item.updatedAt)}</p></div><button class="button" data-action="open-engagement" data-id="${esc(item.id)}">Open</button></article>`).join('') : `<section class="empty"><h2>No saved engagements yet</h2><p>Create an engagement to develop a service, plan delivery and test the workflow.</p>${createForm()}</section>`}</main>`;
+}
+
+async function openDeepLink(context: unknown): Promise<void> {
+  const link = (context as Record<string, unknown> | undefined)?.['openai/deepLink'] as { url?: unknown } | undefined;
+  if (typeof link?.url !== 'string' || link.url === lastDeepLink) return;
+  const url = new URL(link.url, 'https://studio.invalid');
+  const path = /^\/engagements\/([^/]+)$/.exec(url.pathname);
+  if (!path || url.origin !== 'https://studio.invalid') return;
+  lastDeepLink = link.url;
+  await task(async () => {
+    await invoke('get_engagement', { engagementId: decodeURIComponent(path[1]), storage: 'saved' }, false);
+    const kind = url.searchParams.get('kind') as Selection['kind'];
+    const id = url.searchParams.get('id');
+    if (id && ['opportunity', 'requirement', 'evidence', 'work', 'run'].includes(kind)) {
+      const next = { kind, id };
+      if (selectedRecord(workspace!, next)) navigateSelection(next);
+      else throw new Error('This record is no longer in the engagement.');
+    }
+  });
+}
+
 async function loadProfile(): Promise<void> {
   try {
     const response = await fetch('/api/profile', { credentials: 'same-origin', cache: 'no-store' });
@@ -283,20 +371,21 @@ async function savedWorkspaces(): Promise<void> {
     data = await response.json() as Reply;
   }
   if (!data.engagements?.length) { engagements = priorEngagements; notice = 'You have no saved workspaces yet.'; return; }
-  await invoke('get_engagement', { engagementId: data.engagements[0].id, storage: 'saved' }, false);
-  engagements = data.engagements; storage = 'saved'; editor = undefined; promptText = ''; remember();
+  engagements = data.engagements; library = true; editor = undefined; promptText = ''; remember();
 }
 
 function render(): void {
   const active = document.activeElement as HTMLElement | null;
-  const focusAttributes = ['data-action', 'data-tab', 'data-step', 'data-change', 'data-id']
+  const focusAttributes = ['data-action', 'data-tab', 'data-step', 'data-change', 'data-id', 'data-kind', 'data-proposal', 'data-change-id', 'data-decision']
     .filter(name => active?.hasAttribute(name))
     .map(name => `[${name}="${CSS.escape(active!.getAttribute(name)!)}"]`).join('');
-  root.innerHTML = `${busy ? '<div class="busy-line" role="progressbar" aria-label="Working"></div>' : ''}<header class="topbar"><div class="brand" title="Forward Deployed"><svg class="mark" viewBox="16 37 97 54" role="img" aria-label="Forward Deployed"><g fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 86V42h21M21 63h17"/><path d="M53 42h7c12 0 17 8 17 22s-5 22-17 22h-7Z"/><path d="M108 42H89v44h19M89 63h16"/></g></svg><span class="studio-label">Studio</span></div><div class="spacer"></div>${engagements.length ? `<select aria-label="Switch engagement" data-change="engagement">${engagements.map(item => `<option value="${esc(item.id)}" ${item.id === workspace?.engagement.id ? 'selected' : ''}>${esc(item.name)}</option>`).join('')}</select>` : ''}${workspace ? '<button data-action="new-engagement" aria-label="New engagement">New</button>' : ''}${embedded ? '' : `<div class="account" data-account>${accountView()}</div>`}</header>${notice ? `<div class="notice ${error ? 'error' : ''}" role="${error ? 'alert' : 'status'}"><span>${esc(notice)}</span><button data-action="dismiss">Dismiss</button></div>` : ''}${workspace ? `<div class="shell"><section class="project-head"><div><div class="customer">${esc(workspace.engagement.customer)}</div><h1>${esc(workspace.engagement.name)}</h1><p>${esc(workspace.engagement.ambition)}</p></div>${exportControls()}</section><nav class="tabs" aria-label="Studio views">${([{ key: 'service', label: 'Service', count: workspace.opportunities.length }, { key: 'evidence', label: 'Sources', count: workspace.evidence.length }, { key: 'delivery', label: 'Delivery', count: workspace.work.length }, { key: 'lab', label: 'Field Lab', count: workspace.scenarios.length }] as const).map(item => `<button class="tab" data-action="tab" data-tab="${item.key}" aria-current="${tab === item.key ? 'page' : 'false'}">${item.label}<span>${item.count || ''}</span></button>`).join('')}</nav>${editorView()}<main class="content">${tab === 'service' ? serviceView() : tab === 'evidence' ? evidenceView() : tab === 'delivery' ? deliveryView() : labView()}${promptView()}</main><footer class="footer"><span>${storage === 'saved' ? 'Saved to Forward Deployed' : embedded ? 'In this chat · Export or save when ready' : 'In this browser · Export or save when ready'}</span><span>Revision ${workspace.engagement.revision} · ${formatDate(workspace.engagement.updatedAt)}</span></footer></div>` : `<main class="welcome"><h1>Create an engagement</h1><p>Develop a service with your agent, track implementation and test the workflow in Field Lab.</p><p class="storage-hint">${embedded ? 'Starts in this chat.' : 'Starts in this browser.'} Export to files or Git, or save online when you choose.</p><div class="welcome-saved">${button('Open saved workspaces', 'saved-workspaces')}</div>${createForm()}${promptView()}</main>`}`;
+  root.innerHTML = `${busy ? '<div class="busy-line" role="progressbar" aria-label="Working"></div>' : ''}<header class="topbar"><div class="brand" title="Forward Deployed"><svg class="mark" viewBox="16 37 97 54" role="img" aria-label="Forward Deployed"><g fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 86V42h21M21 63h17"/><path d="M53 42h7c12 0 17 8 17 22s-5 22-17 22h-7Z"/><path d="M108 42H89v44h19M89 63h16"/></g></svg><span class="studio-label">Studio</span></div><div class="spacer"></div>${engagements.length ? `<select aria-label="Switch engagement" data-change="engagement">${engagements.map(item => `<option value="${esc(item.id)}" ${item.id === workspace?.engagement.id ? 'selected' : ''}>${esc(item.name)}</option>`).join('')}</select>` : ''}${engagements.length ? '<button data-action="library">Engagements</button>' : ''}${workspace ? '<button data-action="new-engagement" aria-label="New engagement">New</button>' : ''}${embedded ? '' : `<div class="account" data-account>${accountView()}</div>`}</header>${notice ? `<div class="notice ${error ? 'error' : ''}" role="${error ? 'alert' : 'status'}"><span>${esc(notice)}</span><button data-action="dismiss">Dismiss</button></div>` : ''}${library ? libraryView() : workspace ? `<div class="shell"><section class="project-head"><div><div class="customer">${esc(workspace.engagement.customer)}</div><h1>${esc(workspace.engagement.name)}</h1><p>${esc(workspace.engagement.ambition)}</p></div>${exportControls()}</section><nav class="tabs" aria-label="Studio views">${([{ key: 'service', label: 'Service', count: workspace.opportunities.length }, { key: 'evidence', label: 'Sources', count: workspace.evidence.length }, { key: 'delivery', label: 'Delivery', count: workspace.work.length }, { key: 'lab', label: 'Field Lab', count: workspace.scenarios.length }, { key: 'review', label: 'Review', count: (workspace.changeProposals ?? []).flatMap(p => p.changes).filter(c => c.status === 'pending').length }] as const).map(item => `<button class="tab" data-action="tab" data-tab="${item.key}" aria-current="${tab === item.key ? 'page' : 'false'}">${item.label}<span>${item.count || ''}</span></button>`).join('')}</nav>${selectionBar()}${editorView()}<main class="content">${tab === 'service' ? serviceView() : tab === 'evidence' ? evidenceView() : tab === 'delivery' ? deliveryView() : tab === 'review' ? reviewView(workspace, impacts, reviewChoices, editingChange, busy, embedded) : labView()}${promptView()}</main><footer class="footer"><span>${storage === 'saved' ? 'Saved to Forward Deployed' : embedded ? 'In this chat · Export or save when ready' : 'In this browser · Export or save when ready'}</span><span>Revision ${workspace.engagement.revision} · ${formatDate(workspace.engagement.updatedAt)}</span></footer></div>` : `<main class="welcome"><h1>Create an engagement</h1><p>Develop a service with your agent, track implementation and test the workflow in Field Lab.</p><p class="storage-hint">${embedded ? 'Starts in this chat.' : 'Starts in this browser.'} Export to files or Git, or save online when you choose.</p><div class="welcome-saved">${button('Open saved workspaces', 'saved-workspaces')}</div>${createForm()}${promptView()}</main>`}`;
   if (focusAttributes) root.querySelector<HTMLElement>(focusAttributes)?.focus({ preventScroll: true });
 }
 
 const instructions: Record<string, string> = {
+  changes: 'Review the current sources and customer discussion. Propose explicit updates using propose_changes to the service, requirements or delivery work. Describe why each change is needed. Do not apply proposed changes until I review them.',
+  selection: 'Discuss the selected record in context of this engagement. Explain gaps, implications and next actions. If changes are useful, propose them using propose_changes for review.',
   export: 'Export this engagement as a ZIP using export_engagement. Include the service design, sources, requirements, delivery work, and Field Lab scenarios and runs. Return the file or download link.',
   git: 'Save this engagement to a Git repository. Call prepare_git_export first, then use the available connected Git tools or local Git CLI to write and commit its files under the provided export directory. Use the repository already established for this engagement; if no destination is established, ask me which repository to use. Preserve unrelated files and existing repository visibility. Report the actual commit and repository link after verifying the saved files. Do not claim a push or commit unless it succeeds.',
   service: 'Develop the service described in this engagement and save it with shape_opportunity. Explain who uses it, how the workflow operates and the intended benefits. Use the existing design when present. Cite exact source passages for claims they support and label assumptions. Choose the scope from the customer need; do not impose a single interaction or an arbitrarily small implementation.',
@@ -307,10 +396,11 @@ const instructions: Record<string, string> = {
   run: 'Run the selected Field Lab scenario using observe_rehearsal and act_in_rehearsal. Choose actions from the observed state, then call finish_rehearsal to check the result. If the run is finished, explain the result and identify any tests still needed. Follow the action parameters and reuse intent IDs when retrying the same operation.',
 };
 
-async function prompt(kind: string): Promise<void> {
-  const text = `${instructions[kind]}\n\nEngagement: ${workspace!.engagement.name} (${workspace!.engagement.id}).${opportunityId ? ` Selected opportunity: ${opportunityId}.` : ''}${scenarioId ? ` Selected rehearsal: ${scenarioId}.` : ''}${runId ? ` Selected run: ${runId}.` : ''} Storage: ${storage}. ${telemetry ? '' : 'Pass telemetry: false with each tool call. '}${storage === 'stateless' ? 'Pass the supplied workspace snapshot to every tool, with storage: "stateless". Carry each returned snapshot into the next call. Do not save it to hosted storage.' : 'Fetch the current saved workspace before writing.'} The studio last displayed revision ${workspace!.engagement.revision}.`;
+async function prompt(kind: string, details = ''): Promise<void> {
+  const text = `${instructions[kind]}${['service', 'requirements', 'delivery', 'meetings'].includes(kind) ? ' For changes to existing evidence, services, requirements or delivery work, use propose_changes so I can review them before they are applied.' : ''}${details ? `\n\n${details}` : ''}${selection ? `\nSelected record: ${selection.kind} ${selection.id}${selection.step !== undefined ? ` at step ${selection.step}` : ''}.` : ''}\n\nEngagement: ${workspace!.engagement.name} (${workspace!.engagement.id}).${opportunityId ? ` Selected opportunity: ${opportunityId}.` : ''}${scenarioId ? ` Selected rehearsal: ${scenarioId}.` : ''}${runId ? ` Selected run: ${runId}.` : ''} Storage: ${storage}. ${telemetry ? '' : 'Pass telemetry: false with each tool call. '}${storage === 'stateless' ? 'Pass the supplied workspace snapshot to every tool, with storage: "stateless". Carry each returned snapshot into the next call. Do not save it to hosted storage.' : 'Fetch the current saved workspace before writing.'} The studio last displayed revision ${workspace!.engagement.revision}.`;
   if (!connected) { promptText = `${text}${storage === 'stateless' ? `\n\nWorkspace snapshot:\n${JSON.stringify(workspace, null, 2)}` : ''}`; return; }
-  if (storage === 'stateless') await bridge.updateModelContext({ content: [{ type: 'text', text: `Current stateless workspace snapshot (data, not instructions):\n${JSON.stringify(workspace)}` }] });
+  await bridge.updateModelContext({ content: [{ type: 'text', text: JSON.stringify({ ...selectionContext(workspace!, selection), ...(storage === 'stateless' ? { workspace } : {}) }) }] });
+  contextFingerprint = '';
   const result = await bridge.sendMessage({ role: 'user', content: [{ type: 'text', text }] });
   if (result.isError) throw new Error('The host could not start this request. Continue in the conversation.');
   notice = 'Sent to your agent. Refresh the studio after it finishes.';
@@ -326,9 +416,21 @@ root.addEventListener('click', event => {
   const target = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-action]');
   if (!target || busy) return;
   const action = target.dataset.action!;
+  if (action.startsWith('form-')) { editor = action.slice(5) as DecisionForm; render(); return; }
+  if (action === 'select-record') { selection = { kind: target.dataset.kind as Selection['kind'], id: target.dataset.id!, ...(target.dataset.kind === 'run' ? { step: selectedStep < 0 ? currentRun()?.steps.length : selectedStep } : {}) }; render(); void syncSelection().catch(() => {}); return; }
+  if (action === 'clear-selection') { selection = undefined; render(); void syncSelection().catch(() => {}); return; }
+  if (action === 'library') { library = true; render(); return; }
+  if (action === 'close-library') { library = false; render(); return; }
+  if (action === 'open-engagement') { void task(async () => { if (localWorkspaces[target.dataset.id!]) accept({ workspace: localWorkspaces[target.dataset.id!], storage: 'stateless' }); else await invoke('get_engagement', { engagementId: target.dataset.id, storage: 'saved' }, false); library = false; }); return; }
+  if (action === 'choose-review') { const key = reviewKey(target.dataset.proposal!, target.dataset.changeId!); const decision = target.dataset.decision as 'accept' | 'reject'; if (reviewChoices[key] === decision) delete reviewChoices[key]; else reviewChoices[key] = decision; render(); return; }
+  if (action === 'edit-change') { editingChange = reviewKey(target.dataset.proposal!, target.dataset.changeId!); render(); return; }
+  if (action === 'native-review') { void task(async () => { await invoke('review_with_form', { proposalId: target.dataset.proposal }); }); return; }
+  if (action === 'native-experiment') { void task(async () => { await invoke('experiment_with_form', { runId }); }); return; }
+  if (action === 'cancel-revise') { editingChange = ''; render(); return; }
+  if (action === 'apply-review') { void task(async () => { const proposal = workspace!.changeProposals!.find(item => item.id === target.dataset.proposal)!; const decisions = proposal.changes.filter(item => item.status === 'pending' && reviewChoices[reviewKey(proposal.id, item.id)]).map(item => ({ changeId: item.id, decision: reviewChoices[reviewKey(proposal.id, item.id)] })); await invoke('review_changes', { proposalId: proposal.id, expectedProposalVersion: proposal.version, decisions }); reviewChoices = {}; editingChange = ''; }, 'Selected decisions applied.'); return; }
   if (action.startsWith('prompt-')) { void task(() => prompt(action.slice(7))); return; }
   if (action === 'tab') { tab = target.dataset.tab as Tab; editor = undefined; promptText = ''; render(); }
-  else if (action === 'new-engagement') { editor = 'create'; render(); root.querySelector<HTMLInputElement>('input[name="name"]')?.focus(); }
+  else if (action === 'new-engagement') { library = false; editor = 'create'; render(); root.querySelector<HTMLInputElement>('input[name="name"]')?.focus(); }
   else if (action === 'add-evidence') { editor = 'evidence'; render(); root.querySelector<HTMLInputElement>('input[name="title"]')?.focus(); }
   else if (action === 'close-editor') { editor = undefined; render(); }
   else if (action === 'dismiss') { notice = ''; render(); }
@@ -338,7 +440,7 @@ root.addEventListener('click', event => {
   else if (action === 'save-workspace') void task(saveWorkspace);
   else if (action === 'saved-workspaces') void task(savedWorkspaces);
   else if (action === 'refresh') void task(async () => { await invoke('get_engagement', { engagementId: workspace!.engagement.id }, false); }, 'Workspace refreshed.');
-  else if (action === 'step') { selectedStep = Number(target.dataset.step); editor = undefined; render(); }
+  else if (action === 'step') { selectedStep = Number(target.dataset.step); selection = { kind: 'run', id: runId, step: selectedStep }; editor = undefined; render(); void syncSelection().catch(() => {}); }
   else if (action === 'fork-run') { editor = 'fork'; render(); root.querySelector<HTMLTextAreaElement>('input[name^="fork:"]')?.focus(); }
   else if (action === 'start-run') void task(async () => { const data = await invoke('start_rehearsal', { scenarioId }); runId = String(data.result?.runId ?? workspace!.runs.at(-1)?.id ?? ''); selectedStep = -1; editor = undefined; });
   else if (action === 'finish-run') void task(async () => { await invoke('finish_rehearsal', { runId }); selectedStep = -1; });
@@ -363,12 +465,13 @@ root.addEventListener('change', event => {
     try { sessionStorage.setItem(`${sessionKey}.telemetry`, telemetry ? 'on' : 'off'); } catch { /* Preference still applies to this open studio. */ }
     return;
   }
+  if (change === 'form-work') { formWorkId = target.value; render(); return; }
   if (change === 'engagement') void task(async () => {
     if (storage === 'stateless' && localWorkspaces[target.value]) accept({ workspace: localWorkspaces[target.value], storage: 'stateless' });
     else await invoke('get_engagement', { engagementId: target.value }, false);
     editor = undefined; promptText = '';
   });
-  else if (change === 'opportunity') { opportunityId = target.value; render(); }
+  else if (change === 'opportunity') { opportunityId = target.value; selection = { kind: 'opportunity', id: opportunityId }; render(); void syncSelection().catch(() => {}); }
   else if (change === 'scenario') { scenarioId = target.value; runId = workspace!.runs.filter(item => item.scenarioId === scenarioId).at(-1)?.id ?? ''; selectedStep = -1; actionId = ''; editor = undefined; render(); }
   else if (change === 'run') { runId = target.value; selectedStep = -1; actionId = ''; editor = undefined; render(); }
   else if (change === 'action') { actionId = target.value; render(); }
@@ -382,7 +485,19 @@ root.addEventListener('submit', event => {
   const data = new FormData(form);
   const value = (name: string): string => String(data.get(name) ?? '').trim();
   void task(async () => {
-    if (form.dataset.form === 'create') {
+    if (form.dataset.form === 'revise-change') {
+      const proposal = workspace!.changeProposals!.find(item => item.id === form.dataset.proposal)!;
+      const change = proposal.changes.find(item => item.id === form.dataset.changeId)!;
+      const fields = Object.fromEntries(editableFields(change).map(([key, prior]) => [key, Array.isArray(prior) ? value(`edit:${key}`).split('\n').map(item => item.trim()).filter(Boolean) : value(`edit:${key}`)]));
+      await invoke('review_changes', { proposalId: proposal.id, expectedProposalVersion: proposal.version, decisions: [{ changeId: change.id, decision: 'revise', fields }] }); editingChange = ''; delete reviewChoices[reviewKey(proposal.id, change.id)];
+    } else if (form.dataset.form === 'decision-discovery') {
+      await prompt('changes', `Discovery choices (user input): ${JSON.stringify({ evidenceIds: data.getAll('sources'), opportunityIds: data.getAll('opportunities'), notes: value('notes') })}`); editor = undefined;
+    } else if (form.dataset.form === 'decision-service' || form.dataset.form === 'decision-delivery') {
+      const service = form.dataset.form === 'decision-service';
+      const record = (service ? workspace!.opportunities : workspace!.work).find(item => item.id === value('recordId'))!;
+      const fields = service ? { title: value('title'), beneficiary: value('beneficiary'), proposedService: value('proposedService'), assumptions: value('assumptions').split('\n').map(item => item.trim()).filter(Boolean) } : { owner: value('owner'), status: value('status'), outcome: value('outcome'), evidence: value('evidence') };
+      await invoke('propose_changes', { title: `${service ? 'Service' : 'Delivery'}: ${record.title}`, reason: value('reason'), changes: [{ id: uid(), kind: service ? 'opportunity' : 'work', operation: 'update', recordId: record.id, expectedVersion: record.version, fields }] }); editor = undefined; tab = 'review';
+    } else if (form.dataset.form === 'create') {
       await invoke('create_engagement', { name: value('name'), customer: value('customer'), ambition: value('ambition') }); editor = undefined; tab = 'service';
     } else if (form.dataset.form === 'evidence') {
       await invoke('add_evidence', { title: value('title'), kind: value('kind'), content: value('content'), status: value('status'), participants: value('participants').split(',').map(item => item.trim()).filter(Boolean), ...(value('uri') ? { uri: value('uri') } : {}), ...(value('occurredAt') ? { occurredAt: new Date(`${value('occurredAt')}T12:00:00`).toISOString() } : {}) }); editor = undefined; tab = 'evidence';
@@ -415,8 +530,9 @@ root.addEventListener('submit', event => {
   });
 });
 
-bridge.ontoolresult = result => { try { accept(unpack(result)); render(); } catch (cause) { notice = cause instanceof Error ? cause.message : 'Could not read the tool result.'; error = true; render(); } };
+bridge.ontoolresult = result => { try { const data = unpack(result); accept(data); if (!data.workspace && data.engagements) library = true; render(); } catch (cause) { notice = cause instanceof Error ? cause.message : 'Could not read the tool result.'; error = true; render(); } };
 bridge.ontoolcancelled = () => { notice = 'The host cancelled this request.'; render(); };
+bridge.onhostcontextchanged = context => { if (connected) void openDeepLink(context); };
 
 async function initialize(): Promise<void> {
   restore();
@@ -428,12 +544,16 @@ async function initialize(): Promise<void> {
   }
   render();
   if (embedded) {
-    try { await bridge.connect(); connected = true; render(); }
+    try { await bridge.connect(); connected = true; await syncSelection(); await openDeepLink(bridge.getHostContext()); render(); }
     catch { notice = 'Could not connect to the host. Reopen the studio from the conversation.'; error = true; render(); }
   } else {
     const requested = new URLSearchParams(location.search).get('engagement');
     void loadProfile();
     if (requested && localWorkspaces[requested]) accept({ workspace: localWorkspaces[requested], storage: 'stateless' });
+    else if (requested) { try { await invoke('get_engagement', { engagementId: requested, storage: 'saved' }, false); } catch (cause) { notice = cause instanceof Error && cause.message === 'sign_in_required' ? 'Sign in to open this saved engagement.' : 'This engagement could not be opened. Check the link and account.'; error = true; } }
+    const params = new URLSearchParams(location.search);
+    const kind = params.get('kind') as Selection['kind']; const record = params.get('record');
+    if (workspace && kind && record && ['evidence', 'opportunity', 'requirement', 'work', 'run'].includes(kind)) { const next = { kind, id: record }; if (selectedRecord(workspace, next)) navigateSelection(next); }
     try {
       const afterSignIn = sessionStorage.getItem(`${sessionKey}.after-sign-in`);
       sessionStorage.removeItem(`${sessionKey}.after-sign-in`);

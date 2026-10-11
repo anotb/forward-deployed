@@ -102,6 +102,7 @@ Hosts can register dynamically. For a published package with a pre-registered cl
 ## Runtime settings
 
 - `DB`: Sites-managed D1 binding for saved work, connector authorization state and aggregate usage counts.
+- `FD_FORMS_STATE_SECRET`: random secret of at least 32 bytes used to sign native-form continuations. Configure it as a secret in Sites runtime settings. Without it, form tools return the workspace controls. Rotation invalidates pending forms.
 - `FD_TELEMETRY=off`: disables usage counts. Individual calls also honor `telemetry: false`, `x-fd-telemetry: off`, DNT and GPC. Counters contain fixed tool names, storage mode, result, count and total latency, never account IDs or workspace content.
 - `OPENAI_APP_CHALLENGE`: optional ownership-verification text served at `/.well-known/openai-apps-challenge`. Configure it through Sites runtime settings.
 

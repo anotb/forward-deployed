@@ -1,6 +1,6 @@
 {
   "name": "forward-deployed",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Skills for forward-deployed engineering (FDE): discovery, AI solution design, enterprise integration, agent evaluation, delivery and adoption.",
   "author": {
     "name": "Rahil Banthia",
@@ -41,9 +41,9 @@
       "Write"
     ],
     "defaultPrompt": [
-      "Develop valuable AI opportunities and a recommendation from these discovery notes.",
-      "Explore the available capabilities and design a useful solution for this workflow.",
-      "Prepare the engineering handoff and a practical plan for delivery, adoption and value."
+      "Develop AI service options from these discovery notes and recommend what to build.",
+      "The customer changed this requirement. Show the effects on the design and delivery work before applying it.",
+      "Use Field Lab to try this service and compare a different approach."
     ],
     "logo": "./assets/icon.svg",
     "composerIcon": "./assets/icon.svg",
@@ -54,5 +54,10 @@
   },
   "homepage": "https://forward-deployed.unsol.dev",
   "repository": "https://github.com/anotb/forward-deployed",
-  "mcpServers": "./.mcp.json"
+  "mcpServers": "./.mcp.json",
+  "extensions": {
+    "com.openai": {
+      "onboardingSkill": "./skills/get-started/SKILL.md"
+    }
+  }
 }
