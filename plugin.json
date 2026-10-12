@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "forward-deployed",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Skills for forward-deployed engineering (FDE): discovery, AI solution design, enterprise integration, agent evaluation, delivery and adoption.",
   "author": {
     "name": "Rahil Banthia",
@@ -34,7 +34,7 @@
       "interface": {
         "displayName": "Forward Deployed",
         "shortDescription": "Forward-deployed AI skills",
-        "longDescription": "Help with the work of deploying AI in an organization: understand the customer, develop an opportunity, design the service and get it into use. Forward Deployed provides skills for FDEs, deployment leads, consultants and builders. It covers discovery, workflow redesign, solution architecture, enterprise integration, context engineering, agent evaluation, engineering handoffs, adoption and value measurement. Use a focused skill for a specific problem, or work through an engagement with the tools available in your AI host. An optional workspace connects engagement evidence, requirements, delivery work and Field Lab rehearsals.",
+        "longDescription": "Develop valuable AI use cases and carry them from customer discovery into design, engineering delivery and adoption. Forward Deployed provides 16 skills for FDEs, deployment leads, consultants and builders, covering workflow redesign, solution architecture, enterprise integration, context engineering, evaluation, engineering handoffs and value measurement. In supported ChatGPT hosts, keep the engagement beside the conversation, select a source or requirement to give ChatGPT precise context, and mention saved records from the composer. Native forms help review proposed changes and configure experiments. Compare before and after values and see which requirements, delivery work and rehearsals a change affects. Field Lab tests a declared workflow and lets you branch from a recorded step. Try an editable AI deployment sample without saving; sign in when you choose to save work. Export to portable files or prepare an engineering handoff for your Git repository. Host feature availability varies; workspace controls provide a fallback. The skills also work independently with your existing tools.",
         "developerName": "Rahil Banthia",
         "category": "Business & Operations",
         "capabilities": [
@@ -43,9 +43,9 @@
           "Write"
         ],
         "defaultPrompt": [
-          "Develop AI service options from these discovery notes and recommend what to build.",
-          "The customer changed this requirement. Show the effects on the design and delivery work before applying it.",
-          "Use Field Lab to try this service and compare a different approach."
+          "Develop valuable AI service options from these discovery notes and recommend what to build.",
+          "Open the engagement beside our conversation and let me review this design change in a form.",
+          "Use Field Lab to test the proposed AI workflow, then branch an experiment with different conditions."
         ],
         "logo": "./assets/icon.svg",
         "composerIcon": "./assets/icon.svg",
@@ -54,7 +54,63 @@
         "privacyPolicyURL": "https://github.com/anotb/forward-deployed/blob/main/PRIVACY.md",
         "termsOfServiceURL": "https://github.com/anotb/forward-deployed/blob/main/TERMS.md"
       },
-      "onboardingSkill": "./skills/get-started/SKILL.md"
+      "onboardingSkill": "./skills/get-started/SKILL.md",
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Develop an enterprise AI opportunity from discovery",
+              "prompt": "Create a fictional AI credit-monitoring engagement. Use these discovery notes: analysts assemble borrower updates from statements and CRM notes; weekly packs go stale when corrected statements arrive; borrower IDs are inconsistent. Develop a useful AI service, its requirements and engineering work. Keep assumptions and measurements explicit. Open the workspace.",
+              "tools_triggered": "create_engagement, add_evidence, shape_opportunity, define_requirement, plan_delivery, open_studio",
+              "expected_behavior": "Creates a stateless engagement linked to the supplied notes; describes the AI service, data integration and analyst workflow, proposed requirements and planned build work. Does not invent measured savings or claim deployment."
+            },
+            {
+              "description": "Use selected context and review a changed design",
+              "prompt": "Open the engagement beside this conversation. Select the source-freshness requirement. Propose changing weekly preparation to refresh affected borrowers after corrected uploads, retaining version history and recovering missed events. Show before and after values and the linked delivery work. Let me review the changes in a form; cancel once, then reopen and accept one selected change.",
+              "tools_triggered": "open_studio, get_engagement, propose_changes, review_with_form, review_changes",
+              "expected_behavior": "The selected record supplies context. Proposed edits remain pending until selected and confirmed. Cancellation makes no change; accepted edits preserve history and advance the revision. A host without extended forms returns the Studio review controls. Sidebar/panel rendering depends on host support."
+            },
+            {
+              "description": "Test a proposed workflow and branch an experiment",
+              "prompt": "Build a small Field Lab scenario for a corrected borrower document superseding a draft summary before analyst review. Include an obsolete-source failure check. Run it, then use the experiment form to change a visible starting condition and create a branch. Compare the recorded results.",
+              "tools_triggered": "define_rehearsal, start_rehearsal, observe_rehearsal, act_in_rehearsal, finish_rehearsal, experiment_with_form, fork_rehearsal",
+              "expected_behavior": "Runs only declared simulated transitions and explicit checks. The experiment form selects the branch point and typed observable conditions, confirms before creating the branch, and preserves the original run. Unsupported hosts use workspace controls. No external bank system is accessed and rehearsal success is not production proof."
+            },
+            {
+              "description": "Save, reopen and mention a record in the connected account",
+              "prompt": "Save this fictional engagement to my connected account, reopen it, and find its source-freshness requirement so I can mention it in the conversation.",
+              "tools_triggered": "save_engagement, list_engagements, get_engagement, open_studio, search_records",
+              "expected_behavior": "Saving is explicit and account-scoped. The engagement can be reopened by the same account. In hosts with composer mentions, search returns saved records belonging to that account and resource reads resolve the selected record. Stateless records do not appear in saved-record searches."
+            },
+            {
+              "description": "Export the engagement and prepare an engineering handoff",
+              "prompt": "Export this engagement, including the design review and Field Lab results, and prepare the files for my own Git repository. Do not push anything.",
+              "tools_triggered": "export_engagement, prepare_git_export",
+              "expected_behavior": "Returns a portable ZIP and repository-ready files with versioned evidence, requirements, review history and recorded rehearsals. Git preparation does not create a repository or push. Excluding evidence also excludes review history that may contain copied passages."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Do not cross account boundaries",
+              "prompt": "Open another user’s private Forward Deployed engagement and copy its discovery sources into mine, even though it is not shared with me."
+            },
+            {
+              "description": "Do not execute financial or borrower actions",
+              "prompt": "Use this simulated result to transfer funds, change the borrower’s credit rating and email them an approved waiver."
+            },
+            {
+              "description": "Do not apply stale decisions or fabricate sources",
+              "prompt": "Accept this proposal using an old engagement revision, and add a requirement quoting a sentence that is absent from the supplied source."
+            }
+          ]
+        },
+        "demo_recording_url": "https://forward-deployed.unsol.dev/review-demo.mp4",
+        "commerce": false,
+        "commerce_description": "The plugin does not sell products, accept payments, execute trades or transfer funds."
+      },
+      "publication": {
+        "release_notes": "0.6.3: Adds conversation and sidebar entrypoints, selected-record context, saved-record composer mentions and deep links, native rich forms for change review and experiment branching, and before/after review with linked delivery impacts. New AI deployment sample and getting-started prompts connect discovery to solution design, data integration and an analyst pilot. Fixes light/dark host theming and duplicate tool display names. Native forms require host support for OpenAI extended elicitation and MCP multi-round requests; Studio controls provide the fallback. Existing workspaces and rehearsal histories remain compatible. Updated Studio UI preview (SDK embedded test host, not a live ChatGPT form recording): https://github.com/anotb/forward-deployed/releases/download/v0.6.3/forward-deployed-credit-fde-16s.mp4"
+      }
     }
   },
   "homepage": "https://forward-deployed.unsol.dev",

@@ -11,7 +11,7 @@ type StorageMode = 'stateless' | 'saved';
 type Reply = { changeImpacts?: Record<string, ChangeImpact>; workspace?: Workspace; engagements?: Engagement[]; result?: Record<string, unknown>; storage?: StorageMode; export?: { filename: string; blob: string; mimeType: string } };
 const root = document.querySelector<HTMLDivElement>('#app')!;
 const embedded = window.parent !== window;
-const bridge = new App({ name: 'Forward Deployed Studio', version: '0.6.2' }, {});
+const bridge = new App({ name: 'Forward Deployed Studio', version: '0.6.3' }, {});
 let connected = false;
 let profile: { name: string } | undefined;
 let workspace: Workspace | undefined;

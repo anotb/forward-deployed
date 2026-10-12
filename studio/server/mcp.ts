@@ -27,7 +27,7 @@ const output = z.record(z.string(), z.unknown());
 export function createStudioMcp(options: StudioMcpOptions): McpServer {
   const { store, actor, candidate } = options;
   const formCodec = createFormStateCodec(options);
-  const server = new McpServer({ name: 'forward-deployed', version: '0.6.2' }, {
+  const server = new McpServer({ name: 'forward-deployed', version: '0.6.3' }, {
     ...(formCodec ? { requestState: { verify: formCodec.verify } } : {}),
     ...(!candidate ? { capabilities: { extensions: { 'openai/mentions': { searchTool: 'search_records' } } } } : {}),
     instructions: candidate

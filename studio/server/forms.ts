@@ -53,7 +53,7 @@ export function registerNativeForms(server: McpServer, options: StudioMcpOptions
   for (const [tool, schema] of Object.entries(schemas)) {
     const kind: FormKind = tool === 'review_with_form' ? 'review' : 'experiment';
     server.registerTool(tool, {
-      title: kind === 'review' ? 'Review proposed changes' : 'Configure an experiment',
+      title: kind === 'review' ? 'Review changes in a form' : 'Configure an experiment',
       description: kind === 'review'
         ? 'Use when the user wants to review a discovery, service or delivery change proposal. Shows each proposed change and its impact, collects accept/reject choices, then asks for explicit confirmation. Leaves pending changes untouched. Use the workspace to revise fields.'
         : 'Use when the user wants to test another set of assumptions. Choose a point in a recorded rehearsal, edit typed observable conditions, then confirm a new branch. Only simulated workspace state changes.',

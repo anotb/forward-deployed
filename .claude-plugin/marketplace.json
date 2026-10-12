@@ -10,7 +10,7 @@
     {
       "name": "forward-deployed",
       "source": "./",
-      "version": "0.6.2",
+      "version": "0.6.3",
       "description": "Skills for forward-deployed engineering (FDE): discovery, AI solution design, enterprise integration, agent evaluation, delivery and adoption."
     }
   ]

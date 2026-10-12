@@ -46,14 +46,20 @@ def validate_plugin(root: Path) -> list[str]:
     check(set(portable) == BASE_FIELDS | {'$schema', 'extensions'}, 'Portable manifest fields differ from this package contract')
     check(portable.get('$schema') == 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json', 'Unexpected portable manifest schema')
     check(portable.get('name') == 'forward-deployed', 'Unexpected plugin name')
-    check(portable.get('version') == '0.6.2', 'Unexpected plugin version')
+    check(portable.get('version') == '0.6.3', 'Unexpected plugin version')
     check(portable.get('license') == 'MIT', 'Unexpected plugin license')
     for key in ('description',):
         check(isinstance(portable.get(key), str) and bool(portable.get(key)), f'Missing manifest {key}')
     extensions = portable.get('extensions', {})
     interface = extensions.get('com.openai', {}).get('interface', {}) if isinstance(extensions, dict) else {}
-    onboarding = {'com.openai': {'onboardingSkill': './skills/get-started/SKILL.md'}}
-    check(extensions.get('com.openai', {}).get('onboardingSkill') == onboarding['com.openai']['onboardingSkill'], 'Invalid OpenAI onboarding skill')
+    openai = extensions.get('com.openai', {})
+    compatibility_extensions = {'com.openai': {key: value for key, value in openai.items() if key != 'interface'}}
+    check(openai.get('onboardingSkill') == './skills/get-started/SKILL.md', 'Invalid OpenAI onboarding skill')
+    review = openai.get('review', {})
+    cases = review.get('test_cases', {})
+    check(len(cases.get('positive', [])) == 5 and len(cases.get('negative', [])) == 3, 'Review requires five positive and three negative cases')
+    check(review.get('demo_recording_url') == 'https://forward-deployed.unsol.dev/review-demo.mp4', 'Unexpected review demo URL')
+    check(review.get('commerce') is False, 'Unexpected commerce declaration')
     check(isinstance(interface, dict) and bool(interface.get('displayName')), 'Missing OpenAI interface metadata')
     for field, limit in [('displayName', 30), ('shortDescription', 30), ('longDescription', 4000), ('developerName', 80)]:
         value = interface.get(field)
@@ -73,7 +79,7 @@ def validate_plugin(root: Path) -> list[str]:
             check(isinstance(wrapper.get('description'), str) and 0 < len(wrapper['description']) <= 500, 'Claude plugin description must contain 1-500 characters')
         check(wrapper.get('mcpServers') == './.mcp.json', f'{relative}: invalid MCP configuration path')
         if relative.startswith('.codex'):
-            check(wrapper.get('extensions') == onboarding, f'{relative}: onboarding differs from portable manifest')
+            check(wrapper.get('extensions') == compatibility_extensions, f'{relative}: OpenAI extensions differ from portable manifest')
             check(wrapper.get('skills') == './skills/', f'{relative}: invalid skills discovery path')
             check(wrapper.get('interface') == interface, f'{relative}: interface differs from portable manifest')
 

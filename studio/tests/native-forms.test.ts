@@ -148,6 +148,11 @@ test('open_studio exposes thread and global entrypoints; record mentions and res
   try {
     const workspace = fixture(store); const call = client(store);
     const tools = await call('', {}, undefined, { method: 'tools/list' });
+    const displayNames = tools.tools.map((tool: any) => String(tool.title ?? tool.annotations?.title ?? tool.name).trim().toLocaleLowerCase());
+    assert.equal(displayNames.length, 25, 'Check every public tool exposed by the protocol.');
+    assert.equal(new Set(displayNames).size, displayNames.length, 'Public tool display names must be unique in the directory.');
+    assert.equal(tools.tools.find((tool: any) => tool.name === 'review_changes').title, 'Apply review decisions');
+    assert.equal(tools.tools.find((tool: any) => tool.name === 'review_with_form').title, 'Review changes in a form');
     const discovery = await call('', {}, undefined, { method: 'server/discover' });
     assert.equal(discovery.capabilities.extensions['openai/mentions'].searchTool, 'search_records');
     const open = tools.tools.find((tool: any) => tool.name === 'open_studio');
