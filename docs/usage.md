@@ -1,45 +1,43 @@
 # Working with Forward Deployed
 
-Start with the business situation, the material available and the result you need. The agent can use one skill for a focused task or combine several for a broader engagement. Consulting practice supplies methods for discovery, solution development, stakeholder work and adoption; technical depth helps turn those findings into feasible choices and useful engineering briefs.
+Bring an enterprise AI assignment, the context you have and the result you need. The skills help the agent develop the opportunity, explore technical options, design the changed work and carry it into delivery and adoption.
 
-## Choose the job you need done
+## Choose the work
 
-Name a skill in ordinary language, give it the available material and ask for the result. The examples below show suitable assignments; they are not a prompt syntax or required intake form. A host can also select a skill from its description. Use `get-started` for an assignment spanning several jobs. A focused task can go directly to the relevant skill.
+Invoke a skill by name or describe the assignment. Use get-started when the work spans several skills.
 
-| When to use it | Skill | Example assignment and useful result |
-| --- | --- | --- |
-| The assignment spans several kinds of work, or continues an existing engagement | [get-started](../skills/get-started/SKILL.md) | “Here are the interviews and current proposal. Help us decide the next commitment.” Recover the consequential context and complete the needed work with selected skills. Routing alone is not a deliverable. |
-| You need a credible first conversation or agreement about a piece of work | [enterprise-engagement](../skills/enterprise-engagement/SKILL.md) | “Prepare our discussion with the credit operations sponsor.” Develop a defensible customer thesis, questions that could overturn it and a proposition the sponsor can act on. |
-| The process description does not explain where work or judgment becomes difficult | [discovery](../skills/discovery/SKILL.md) | “Use these interviews and two case histories to understand delayed reviews.” Reconstruct the work, distinguish competing explanations and identify the observation that would change the design. |
-| A conversation changes what the team understands or has committed to | [meeting-synthesis](../skills/meeting-synthesis/SKILL.md) | “Reconcile today's analyst interview with the existing proposal.” Update the affected findings, decisions and follow-through while preserving unresolved disagreement. |
-| A requested automation may miss a more valuable change | [opportunity-design](../skills/opportunity-design/SKILL.md) | “They asked for faster memo drafting. Develop stronger options from this evidence.” Compare concrete changed experiences and recommend the valuable mechanism to try. |
-| Several opportunities compete for the same money, people or dependencies | [use-case-portfolio](../skills/use-case-portfolio/SKILL.md) | “Choose what this team should fund this quarter.” Recommend a feasible mix of deployments and experiments, count shared costs once and explain what is deferred. |
-| The investment depends on full costs, scarce capacity or unproven benefits | [value-case](../skills/value-case/SKILL.md) | “Test this pilot's economics using the workload and cost records.” Build the calculation, reconcile accepted outcomes and resource demand, and expose assumptions that reverse the decision. |
-| A current product or tool capability could change buy/adapt/build | [capability-exploration](../skills/capability-exploration/SKILL.md) | “Can our existing environment support this workflow?” Inspect the available surfaces, test the consequential uncertainty when possible and explain what the result changes. |
-| A chosen opportunity needs a coherent experience and architecture | [solution-design](../skills/solution-design/SKILL.md) | “Design the review-preparation service.” Connect its unit of work, business meaning, intelligence, state, operator decisions and operating cost into a recommended arrangement. |
-| The difficult part is crossing a system, identity or transaction boundary | [enterprise-integration](../skills/enterprise-integration/SKILL.md) | “A case-save response was lost. Define correct recovery.” Establish authoritative state, receiving-system semantics and the behavior engineering must preserve. |
-| The model is missing, mixing or misapplying information | [context-design](../skills/context-design/SKILL.md) | “This answer cites a valid clause from the wrong agreement.” Reconstruct applicable context and use controlled contrasts to locate selection, representation or reasoning failure. |
-| You need to decide whether an approach works or why it fails | [evaluate-and-improve](../skills/evaluate-and-improve/SKILL.md) | “The pilot flags everything and overwhelms reviewers. Diagnose it.” Compare useful completed work, inspect failures, test the relevant repair and retain results that limit the claim. |
-| Engineers need an actionable brief, or delivery meets a consequential constraint | [technical-delivery](../skills/technical-delivery/SKILL.md) | “The source-team release misses our pilot date. Prepare the handoff.” Resolve the viable increment, receiving behavior, dependencies and operating responsibility. |
-| People have access but cannot sustain useful work, or a practice needs to spread | [adoption-and-scale](../skills/adoption-and-scale/SKILL.md) | “Find why analysts bypass the tool and improve their working practice.” Investigate capability, friction and incentives; develop the intervention or practice material and try it where possible. |
-| A sponsor or customer needs to understand a consequential choice | [executive-communication](../skills/executive-communication/SKILL.md) | “Turn these pilot findings into a funding discussion.” Produce a usable deck, memo or walkthrough whose evidence earns the recommendation. |
-| Repeated field work suggests a reusable product, but customers differ | [field-productization](../skills/field-productization/SKILL.md) | “Two teams want similar monitoring with different obligations.” Decide the reusable responsibility, legitimate variation, support burden and next test of reuse. |
+| Skill | Example assignment |
+| --- | --- |
+| [get-started](../skills/get-started/SKILL.md) | "Here are our interviews and current AI proposal. Develop the next version and recommend what to do." |
+| [enterprise-engagement](../skills/enterprise-engagement/SKILL.md) | "Prepare a customer conversation about moving from AI licenses to a different way of running product releases." |
+| [discovery](../skills/discovery/SKILL.md) | "Study these release decisions and interviews. Find the work an AI agent could take on and the context it would need." |
+| [meeting-synthesis](../skills/meeting-synthesis/SKILL.md) | "Reconcile today's interview with the AI design. Update the affected decisions and engineering work." |
+| [opportunity-design](../skills/opportunity-design/SKILL.md) | "Our researchers can study only a fraction of customer feedback. Develop a more valuable research service." |
+| [use-case-portfolio](../skills/use-case-portfolio/SKILL.md) | "Choose this quarter's AI investments across workforce tools, shared capabilities and integrated agents." |
+| [value-case](../skills/value-case/SKILL.md) | "Work through the economics of broader AI-assisted coverage, including the new work it enables." |
+| [capability-exploration](../skills/capability-exploration/SKILL.md) | "Test whether our current coding environment can complete a representative migration. Use the result to choose the approach." |
+| [solution-design](../skills/solution-design/SKILL.md) | "Design an incident investigator that follows evidence across logs, changes and runbooks, then carries useful findings into the incident." |
+| [enterprise-integration](../skills/enterprise-integration/SKILL.md) | "Design an IT agent that provisions an approved development environment and recovers correctly after a lost response." |
+| [context-design](../skills/context-design/SKILL.md) | "Give the research agent the business definitions, source access and memory needed to maintain its analysis as evidence changes." |
+| [evaluate-and-improve](../skills/evaluate-and-improve/SKILL.md) | "Find why this analytics agent reaches the wrong conclusion. Test the change that fixes the cause." |
+| [technical-delivery](../skills/technical-delivery/SKILL.md) | "Prepare the build brief and first release for a coding agent that completes migrations across our repositories." |
+| [adoption-and-scale](../skills/adoption-and-scale/SKILL.md) | "We have broad AI access and a few excellent users. Turn their methods into a practice other teams can use and extend." |
+| [executive-communication](../skills/executive-communication/SKILL.md) | "Make the proposed AI service and investment choice clear in a sponsor presentation." |
+| [field-productization](../skills/field-productization/SKILL.md) | "Turn what worked in these deployments into reusable skills, integrations and product behavior." |
 
-These are independent jobs, not required stages. Their examples and references demonstrate choices in particular circumstances. Borrow the reasoning that fits; do not reproduce their headings, number of options or workflow when the current task needs something else.
+The worked references illustrate decisions, including which changed facts would change the recommendation. Read the ones that help with the current assignment. [Practice and sources](practice.md) explains the OpenAI and Anthropic material behind the methods.
 
-## Give the model something consequential to work on
+## Make the task concrete
 
-“Use discovery to improve this process” gives little to investigate. “Here are an analyst interview, a returned review packet and the queue record; explain why the packet returned and what it changes in our proposed service” supplies a decision and evidence. Partial material is enough to begin useful work. Missing access should produce a precise remaining uncertainty rather than a fabricated observation or a long intake questionnaire.
+A useful request gives the agent a job to finish. For example: "Here are two incident histories and our system diagram. Design an agent that investigates the next incident, define the tools it needs and create a test from the first history." Partial context is enough to start; the agent can investigate what is missing.
 
-For a continuing engagement, a useful request might be: “The source owner says amendments arrive after the initial packet. Update the design and the engineering brief where that changes behavior.” The agent should use existing artifacts and preserve valid decisions, rather than generate a new engagement plan.
+For opportunity work, include the ambition: "What could this team deliver if it could investigate every customer, rather than sample a few?" For a continuing engagement, include the change: "The source system now exposes events. Update the design and delivery plan to use them."
 
-For an adoption assignment, ask for working material: “Prepare and run a practice session using these permitted examples, then have another analyst apply the method to a new case.” A list of training topics would leave the job unfinished. If the host cannot run the session or access the product, a complete worked kit can still advance it without claiming observed adoption.
+For workforce adoption, ask for working material: "Turn this analyst's successful method into a shared skill and run it on a second case." This produces something the next person can use.
 
-## Work with the host's capabilities
+## Work with the host
 
-The skills contribute methods and judgment. The agent host supplies research, connected systems, experiments, coding and artifact creation. Available access determines which findings can be directly verified. Ask for a finished document, deck or analysis when that is the output needed, using the host's authoring tools.
-
-An existing AI product may be sufficient. An integrated service may need engineering. In that case, the library helps define the outcome, examine technical choices and prepare a brief for engineers or a coding agent such as Codex. Implementation feedback can refine the design and delivery plan. The assignment can also finish at the brief when that is the requested result.
+The host supplies connected systems, research, analysis, coding and artifact creation. Ask for the form you need: a finished deck, an experiment, a technical design or a working session. The skills work with existing AI products and with custom applications. When implementation is part of the assignment, the design and build brief carry into the user's engineering or coding-agent workflow.
 
 ## Native interactions
 

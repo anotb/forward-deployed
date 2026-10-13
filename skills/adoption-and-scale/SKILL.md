@@ -1,54 +1,48 @@
 ---
 name: adoption-and-scale
-description: Help people develop, use and spread valuable AI work through existing products or deployed workflows. Use for hands-on team enablement, reusable working practices, adoption diagnosis, changed responsibilities or expansion across teams and organizations.
+description: Help an enterprise put AI to work through broad fluency, role-specific practice, workflow redesign, and reusable methods. Use for enterprise chat, coding and workspace adoption, frontier-user programs, stalled use, and expansion across teams.
 ---
 
-# Adoption and Scale
+# Adoption and scale
 
-Help an organization discover useful ways to work with AI, develop the ability to use them, and spread the practices that improve its work. Adoption can begin with an enterprise AI product available to the workforce, an employee's local invention, or a purpose-built workflow entering operation. Treat these as different entry points, not a maturity ladder ending in custom software.
+Build an organization's ability to work with AI and keep developing better methods. Combine broad access and practical fluency with focused workflow redesign. Enterprise chat, coding tools, shared workspaces, and integrated agents can each serve the goal.
 
-For broad platform adoption, discover what people do, what they could do differently, and which available capabilities help. For a particular deployment, examine how it changes work and why people use, bypass, or abandon it. In both cases, the aim is valuable work that the organization can sustain and improve. When asked to execute an adoption program, carry out the authorized exploration, demonstrations, practice, and asset development rather than returning only a training plan.
+Inspect the available products, context access, sharing, and execution surfaces. Try demanding tasks with employees and produce working material they can use. A training plan alone is insufficient when the assignment is to help a team adopt the capability.
 
-## Choose the work that advances this assignment
+## Build fluency through consequential work
 
-Read the relevant guidance for the requested result; a team session does not need an expansion plan.
+Teach people to commission an outcome, assemble useful context, delegate substantial work, inspect the result, and improve the approach. Practice with their unfinished tasks: an analyst investigates competing explanations, a product manager builds a prototype, an engineer delegates a migration, or a team turns scattered evidence into a maintained work product.
 
-- For existing AI access, employee invention, a small team's reusable method or practical enablement, read [workforce practice](references/workforce-practice.md). Produce and try the working material the team will use.
-- For a particular workflow that people need to adopt, or use that has stalled, read [workflow adoption](references/workflow-adoption.md). Investigate the task and the people's incentives before prescribing training. Its worked warranty example shows how misleading time savings become a targeted service change and a practical role exercise.
-- For a capability ready to reach another population or account, read [expansion](references/expansion.md). Examine what transfers and the next constraint.
+Demonstrate a complete task, including a correction or new constraint, then have participants apply the method independently. Show what deeper delegation makes possible: more alternatives, new analyses, executable artifacts, and work that previously needed several specialist handoffs. Teach the domain judgment needed to use the result alongside the product mechanics.
 
-Combine these when the assignment spans them. Keep any requested format, scale and division of work.
+Match support to role and experience. Broad introductory practice gets people started; focused sessions develop demanding methods. Read [workforce practice](references/workforce-practice.md) when designing hands-on enablement or spreading an employee's invention.
 
-In any mode, consider the time, friction and incentives around use. If people cannot make a promising practice part of their work, the [role and workflow diagnosis](references/workflow-adoption.md) can help even when they use a native AI product rather than a custom service.
+## Find and spread frontier practice
 
-## Choose how the practice should work
+Look for employees already doing useful, surprising work with AI. Study their task framing, context, tool use, corrections, and finished artifacts. Pair them with domain experts and colleagues who can test the method on different work. Give them time and practical support to develop it.
 
-Choose the form of adoption from the work. Native AI product practice can be sufficient when a person can supply the relevant context, initiate the work, judge the result, and complete the action within a manageable flow. A well-designed reusable instruction, skill, agent, or workspace may make that practice teachable and consistent. A formal integration is worthwhile when repeated context assembly, handoffs, access boundaries, or transactions materially limit the outcome. Work that must persist, react to events, coordinate people, or act unattended needs corresponding state and operating arrangements, whether supplied by a maintained product or built for the purpose.
+Package what travels: a task skill, workspace context, worked example, evaluation case, small tool, or reusable artifact. Include the assumptions another person needs to adapt it. Have someone outside the original team use it without its author's constant help, then improve the asset from that attempt.
 
-Do not make custom development the reward for a successful experiment. First discover whether supported product behavior can carry the improved workflow. Equally, do not keep forcing an agentic process through a personal chat when its value depends on durable shared work or enterprise actions. Explain the boundary that changes the solution, and move the promising case into technical design when it needs engineering.
+Make discovery easy through working demonstrations, role communities, and a small maintained collection of useful assets. Give promising ideas a route to engineering when repeated context assembly, durable work, or system actions justify integration. Keep local experimentation open and retire methods that no longer help.
 
-## Develop practical competence
+## Redesign the work around the capability
 
-Teach people to frame a worthwhile task, supply usable context, delegate meaningful work, judge the result, and improve the approach through feedback. Hands-on role enablement should develop this judgment, not just familiarity with controls or prompt phrasing. Let a participant move from asking for a summary to commissioning an investigation, comparing explanations, developing alternatives, or maintaining a useful work product where the task warrants it.
+Follow a task from demand to accepted outcome. Identify what AI can now complete, which handoffs can disappear, and where people should spend more judgment. A team able to investigate, analyze, and prototype in one workspace may change how it scopes projects and involves specialists. Develop that operating possibility with the people who do the work.
 
-Use worked cases that expose the judgment: a convincing but incomplete answer, a correct recommendation that conflicts with an outdated local habit, an ambiguous case that needs more information, and a case the system can handle with little intervention. Show how an expert reasons through the choice. Teaching only failures can produce blanket distrust; teaching only successful demonstrations can produce overreliance.
+Resolve the redistributed effort. Faster preparation can leave reviewers doing more reconstruction; automatic analysis can create more findings than a team can pursue. Adjust the experience, responsibilities, work admission, and management expectations together. Remove redundant work once the new path supports its purpose.
 
-Observe people performing representative work with the service. The useful question is whether they can reach an accepted outcome and detect the mistakes that matter, including when to ask for help. Use the difficulty they encounter to improve the interface, task design, or instruction. Do not assign a training problem to an operator when the system makes the right action unnecessarily obscure.
+When use stalls, observe a willing skilled user, a newcomer, and a bypassed case. Distinguish capability defects, inaccessible context, awkward handoffs, missing competence, and conflicting incentives. Choose the intervention at the cause. Read [workflow adoption](references/workflow-adoption.md) for a worked product-research redesign.
 
-Build a succession path. Have the customer team onboard a new colleague, revise a job aid, handle a failure, and explain a behavior change. Capture reusable domain procedures where they can be maintained and used by the service. Skill development should leave the customer able to extend the capability, rather than dependent on a visiting specialist's prompts or tacit knowledge.
+## Learn from outcomes and new capability
 
-## Learn whether the work improves
+Use samples of completed work alongside aggregate usage to see what is improving. Examine task completion, quality, elapsed time, total labor, new coverage, and whether people can use and adapt the method independently. Usage describes reach and behavior; its value depends on the task.
 
-Trace enough of the case journey to explain loss of value: eligible work, attempted use, completed work, downstream acceptance, time and effort, and the resulting service outcome. Choose measures that answer the current decision. Login frequency says little about an infrequent but valuable expert task. A high acceptance rate can reflect genuinely good results, trivial selected cases, or reviewers who stopped checking.
+Include the experiments people can now attempt and the work they could not previously do. Test promising claims against comparable work, accounting for task mix and concurrent changes. A useful change may improve depth or coverage before it reduces cost.
 
-Measure displaced and newly created effort, including review, escalation, maintenance, and work in downstream teams. Compare similar populations and periods. Where practical, stagger introduction or use a suitable contemporaneous comparison; account for differences in case selection and for practices spreading to the comparison group. For new coverage, examine who receives a service they previously lacked, whether they use its result, and whether the enterprise can continue providing it.
+Choose the next team or task for the value it can gain and what it will teach about reuse. Read [expansion](references/expansion.md) when moving a practice or deployed capability into a different population.
 
-## Sustain useful practice
+## Leave the organization able to improve it
 
-For enterprise product adoption, establish continuing ownership of access and enablement, maintained shared assets, hands-on support, and the path from an employee's promising invention to a supported workflow. Let the central team learn from local practice and help employees discover relevant capabilities as they change. Retire stale guidance and unsuccessful assets so the internal library remains useful.
+Put access, shared assets, technical changes, and domain corrections with people who can maintain them in normal work. Have the team onboard a colleague, improve a skill or context source, and handle a failure. Keep current product discoveries flowing into practice.
 
-For deployed workflows, put day-to-day operation, domain policy, technical change, and benefit realization with people who can act on them. One person may carry several responsibilities in a small organization; a large enterprise may need a clear arrangement across existing teams. The purpose is to ensure that a change in the business can become a controlled change in the service.
-
-Use the organization's normal operating cadence where possible. Examine unresolved work, meaningful failures, operator corrections, resource demand, and the value of possible improvements. Make release communication explain what changed in the task and what the operator should do differently. Avoid a parallel AI governance routine that produces meetings without improving the work.
-
-End with the action supported by the experience: spread a useful practice, develop a promising workflow, reshape a service, fix a constraint, retire redundant work, or discontinue a poor fit. Produce the material needed to carry it out, such as a working shared skill or agent, a hands-on role session, a revised job design, or an expansion proposal. Successful adoption leaves people better able to perform and reimagine valuable work, and the organization able to sustain, share, and develop that capability.
+Deliver the working session, shared asset, changed workflow, or next deployment. Leave people able to do more and develop the next method themselves.

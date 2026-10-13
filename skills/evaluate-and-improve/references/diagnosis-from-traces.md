@@ -1,55 +1,44 @@
-# Worked diagnosis from illustrative traces
+# Diagnose an enterprise analytics agent
 
-All episodes, timings and results below are fictional input traces for learning a diagnostic method. They are not observed plugin performance, a benchmark or evidence for deployment. Use this reference when a local speed improvement conflicts with operational results, or when several failure mechanisms fit the same symptom.
+This constructed example shows how traces change the next engineering decision. Use it when several explanations fit poor output from an agent with enterprise data access.
 
-## The decision
+## The task
 
-A restoration service prepares response options for a supervisor. Dispatchers report faster plan preparation, but more unused expedited spares. The next decision is whether to change information access, planning behavior or the service's stock arrangement. “Improve accuracy” does not distinguish those interventions.
+A product team delegates an investigation into falling activation. The agent can query a warehouse, read metric definitions and release notes, inspect a test application, and create a shared investigation. A finished task includes reproducible analysis, plausible explanations tested against evidence, and a recommendation the team can act on.
 
-Three explanations remain plausible: the candidate overstates diagnostic certainty; it lacks the timing information needed to preserve an option; or its objective rewards maximum immediate readiness without considering avoidable commitments. A fourth possibility is that the network cannot provide an economical feasible option regardless of reasoning quality.
+For this example, activation means a distinct customer account completing setup within 14 days of signup. Employee accounts are excluded. Cohorts need the full 14-day observation window. These definitions are inputs to the evaluation.
 
-## Illustrative episode records
+The team initially proposes upgrading the model because the reports sound convincing but lead to weak decisions. The traces reveal different problems:
 
-| Episode | Evidence available at decision time | Recorded candidate action | Receiving outcome |
-|---|---|---|---|
-| E1 | Pump fault possible; diagnostic result expected 14:20; courier cutoff 15:00; compatible spare remains reservable until 14:40. Production context omitted all three times. | Proposed immediate paid dispatch, accepted by supervisor | Diagnostic result ruled out pump fault at 14:18; courier cost incurred. |
-| E2 | Same uncertainty and decision windows as E1; all times supplied to candidate | Proposed immediate paid dispatch “to minimize restoration risk” | Pump fault ruled out; courier cost incurred. |
-| E3 | Diagnostic result expected 16:00; cutoff 15:00; compatible spare available; waiting loses the same-day option. All times supplied. | Proposed bounded dispatch with diagnostic uncertainty and cost visible | Supervisor accepted the tradeoff; spare was used after confirmation. |
-| E4 | Confirmed fault; only compatible spare cannot reach site within promised window | Produced a confident on-time restoration plan using a nearby incompatible part | Receiving compatibility check rejected the plan; no viable on-time plan established. |
-
-These records establish different problems. E1 is consistent with missing context, but does not prove context alone caused the decision. E2 supplies a counterexample to that simple explanation. E3 is a successful near-neighbor: eliminating all uncertain dispatches would damage useful behavior. E4 tests feasibility, not merely willingness to spend.
-
-## Isolate what changes the decision
-
-Reconstruct the original decision-time packet and observable tool state; do not give the candidate the later diagnostic result. Hold source access, candidate configuration and permitted actions constant except for the factor under investigation. For a real experiment, save the output and resulting state for each run rather than relying on the candidate's own account of success.
-
-The following is an illustrative replay record, not executed evidence:
-
-| Contrast | Illustrative result | What it would support if observed |
+| Case | What the trace shows | Why the task failed |
 |---|---|---|
-| E1 with the three missing times restored | Still requests immediate dispatch | Retrieval repair alone is insufficient for this episode. |
-| E2 with planning instruction to compare waiting, holding and committing against the decision window and bounded downside | Holds the spare, waits for the diagnostic result, then releases the hold | Planning objective is a plausible mechanism; inspect whether the proposed hold is executable. |
-| E3 with the same instruction change | Still surfaces a bounded paid-dispatch option before cutoff | The change need not reduce cost by rejecting the valuable class of work. |
-| E4 with the same instruction change | Still proposes incompatible part | A separate compatibility/feasibility defect remains; do not claim the planning change repaired the service. |
+| A | Retrieval supplied an old definition based on sessions. Queries and arithmetic follow that definition correctly. | The report explains a different metric from the one the team asked about. |
+| B | The current definition is present. The agent compares a mature prior cohort with signups from the last three days and recommends reversing the onboarding release. | It has the needed information but fails to apply the observation window. |
+| C | The query tool silently defaults to a staging clone from last month. Its response carries no environment or snapshot identifier. | The analysis uses the wrong data despite a reasonable query. |
+| D | The analysis is sound and the artifact is saved, but only in the author's personal session. | The product team cannot inspect the queries or use the investigation. |
 
-One changed instruction can affect several behaviors. Check its proposed mechanism in the actual actions and evidence used, then repeat uncertain cases. If a candidate merely rewrites the justification while making the same commitment, the explanation is not evidence of repair.
+## Run the contrast that distinguishes the cause
 
-When candidate order, operator or workload differences could confound a larger comparison, compare within comparable cases and randomize order where practical. [NIST's guidance on randomized blocks](https://www.itl.nist.gov/div898/handbook/pri/section3/pri332.htm) explains the underlying experimental principle. Repeated model calls on one episode do not create independent business episodes or settle population performance.
+For A, replay with the current definition and equivalent warehouse access. Recovery would support fixing definition selection and linking the metric to its source.
 
-## Make the review distinguish useful disagreement from failure
+For B, give the agent a case with mature cohorts and a matched case containing recent signups. Test whether it detects the difference and chooses a comparable population. Compare the current and stronger model on both cases if inference capability remains the question. A blanket instruction to wait 14 days for every analysis would also block valid investigations using already mature cohorts.
 
-An adjudicator should receive decision-time constraints and resulting external state. Ask whether the proposed option was feasible, whether its material uncertainty was visible, and whether its timing preserved a useful choice. Do not require one favored wording or penalize a cheaper feasible alternative absent from the original reference answer.
+For C, expose the environment and data timestamp in the tool result, then repeat against the intended dataset. Inspect the executed query and returned records. A more persuasive explanation cannot correct an undisclosed environment mismatch.
 
-If two domain reviewers disagree about E3's dispatch cost, separate a factual dispute from a risk preference. A missing courier price or customer buffer needs evidence. Two informed supervisors accepting different bounded tradeoffs may both be within authority. Conversely, an incompatible part is not made acceptable by averaging reviewers' scores. Resolve that explicit constraint separately from preference-sensitive utility.
+For D, run the publishing path and inspect the shared artifact as its recipient. Preserve the working analysis while fixing the destination and access. Requiring the analyst to copy every result manually would add a new operating cost.
 
-Retain the disagreement when it matters to the launch decision. An adjudication meeting can discover an undefined service promise; no amount of model grading repairs that missing business decision.
+Use these contrasts to select changes independently. If a combined redesign is the proposal, evaluate the combined outcome and retain enough trace evidence to explain what improved.
 
-[Anthropic's agent evaluation account](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) provides further practitioner guidance on observable outcomes, balanced cases and grader calibration. It is a method reference, not evidence for the results of this fictional example or this plugin.
+## Test the capability the team wants next
 
-## What can be concluded, and what next?
+Add a harder case in which activation falls after an instrumentation change while underlying setup completion is stable. Let the agent inspect event definitions, compare independent records, and exercise the test application. A strong investigation finds the discrepancy and proposes a way to repair measurement. Give it a neighboring case where setup completion really declines, so the evaluation rewards investigation rather than a habitual instrumentation explanation.
 
-These four selected episodes can reveal a mechanism worth testing and a surviving defect. They cannot establish how often the problem occurs or how much money a rollout will save. A production comparison needs an eligible episode denominator, task mix, accepted outcomes and review/repair work, with rejected and unresolved cases visible. Charging every prevented dispatch as savings would also overstate benefit if it increases missed restoration windows.
+Judge the finding, evidence, and executable next step. Permit a valid diagnosis reached through a different sequence of queries.
 
-For the AI contribution, compare against the same information and integrations used by the current supervisor or explicit planning rules. For the service investment, compare the combined intervention with current operation. Those questions can yield different answers.
+## Check the review step
 
-The actionable result would be a bounded planning repair to test, a compatibility defect to investigate, and a preserved successful near-neighbor. If feasible planning still misses the promise because stock placement is wrong, change the operating arrangement or promise. Further prompt refinement would be an unsupported response to a network constraint.
+Give reviewers the working artifact, including query results and definitions. Test a polished report with an invalid cohort comparison and a less polished report with a sound alternative explanation. Observe whether reviewers distinguish them and how much reconstruction they need.
+
+If experts disagree, locate the disagreement: a source fact, an analytical error, an alternative explanation, or a different appetite for the proposed experiment. Correct the grader when it rewards a favored narrative over supported analysis.
+
+Anthropic's [agent evaluation guidance](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) distinguishes the run's transcript from its resulting environment and separates capability tests from regression tests. Those distinctions inform this diagnostic approach.

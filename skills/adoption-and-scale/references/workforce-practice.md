@@ -1,25 +1,35 @@
-# Develop and spread useful AI practice
+# Develop and spread enterprise AI practice
 
-Enter through roles and consequential tasks. Observe what people research, compare, create, decide, coordinate, and maintain, including work they omit because it takes too long or requires inaccessible expertise. Look beyond the busiest administrative task. An account team may gain more from preparing several credible negotiation strategies than from summarizing its meetings faster; an analyst may use AI to investigate competing explanations they previously lacked time to examine.
+Use this worked approach for an organization with enterprise chat, coding, or shared-workspace tools whose employees mostly use them for short writing tasks. The examples are constructed; adapt the work to the products and access the organization has.
 
-Work with employees on unfinished tasks and real work products. Ask them to show where effort or judgment becomes difficult, then try a more capable way of doing that work together. Let participants recognize possibilities through use. A survey of requested use cases captures what people already imagine; hands-on exploration can reveal a different operating possibility.
+## Find a task that changes someone's view of the tool
 
-Explore the AI products and host capabilities available to them now. Inspect the relevant user experience, entitlements, approved context sources, sharing mechanisms, administrative controls, and extension surfaces. Try a demanding piece of the task with the available tools. Discoveries can change the opportunity: a maintained capability may enable richer investigation, reusable context, artifact creation, collaborative review, or a multistep workflow than employees knew was possible. Resolve changing product facts through current exploration rather than teaching a dated feature catalogue.
+Observe unfinished work with several roles. An analyst may spend days assembling a report without testing competing explanations. A product manager may need a prototype to settle a design question. An engineer may have a migration they keep postponing. Ask for the artifacts and constraints behind the task, then try the available AI on the part that demands judgment.
 
-Use demonstrations that reveal the work, including a correction or new constraint that changes the result. Then have employees apply the approach to another case. This separates an impressive demonstration from a practice they can use independently. Find out which part of the benefit comes from the product, which from expert task framing, and which requires better organizational context.
+For a product team, start with a question such as: “Why do small teams abandon setup, and what should we try?” Supply interview excerpts, relevant product definitions, existing funnel analysis, and the current experience. Let the AI assemble competing explanations, identify gaps, propose different changes, and build a runnable prototype where the environment supports it.
 
-Combine broad access with focused help where it can teach the organization something. Select participating roles for meaningful differences in work, expertise, and opportunity, not merely enthusiasm or seniority. Leave room for grassroots discoveries and bring domain experts into promising experiments early. A central team can provide access, support, reusable methods, and technical help while local teams decide what useful work looks like. Centralizing every idea into an approval queue can squander the exploration that broad AI access enables.
+This gives the team something to inspect and change. Introduce new evidence, such as a difference between administrators and invited users, and see whether the investigation and prototype adapt. Show the context and tools that made the result possible.
 
-## Make the practice reproducible
+## Practice the changed job
 
-Package local invention so another person can reproduce the useful behavior. Preserve the job it performs, context it needs, consequential choices, examples of good results, and circumstances requiring adaptation. A shared prompt without these assumptions can spread plausible mistakes. A useful reusable asset might be a role-specific skill, a configured agent, a worked investigation, or an embedded workflow; choose the form the available environment supports.
+Have each participant commission a complete outcome on a different problem. They should choose the information the AI needs, let it carry substantial work, inspect the evidence and artifact, and direct a revision.
 
-Have a colleague outside the original team apply the practice to their own task and explain what they changed. That transfer reveals hidden expertise and local assumptions. Feed the learning back into the maintained asset and into the organization's view of promising use cases. Promote a practice because it travels and helps, not because a showcase attracts attention. Keep discovery open as products and work change; the goal is an organization that keeps inventing useful applications, not a frozen library of approved prompts.
+For the product manager, the exercise ends with a usable prototype and a plan to test its central assumption. For the analyst, it ends with a reproducible analysis. For the engineer, it ends with a working change and checks. Observe whether the person can judge the result in their domain and finish the task without the facilitator supplying every next step.
 
-Develop internal champions who understand both the work and the new capability. Pair skilled AI users with domain experts: one can reveal an unexpected affordance while the other can judge whether it produces useful work. Give them protected time, a direct path to product, technical, and domain owners, and responsibility they can reasonably carry. Their role includes helping colleagues, developing reusable practice, finding new opportunities, and exposing hidden work. Avoid making a few generous experts the permanent unpaid support layer.
+When participants struggle, identify the missing ingredient. Inaccessible files need an access solution. Weak task framing needs practice. A prototype that misrepresents the product's behavior needs better context or technical work. The intervention should follow the observed difficulty.
 
-## Understand useful adoption and diffusion
+## Turn a strong local method into a shared asset
 
-For workforce adoption, distinguish access, useful application, independent competence, and diffusion. Examine whether people apply AI to consequential tasks, whether the result is accepted or acted on, whether a practice recurs, and whether other people can adapt it successfully. Use role-appropriate samples of work alongside available aggregate usage patterns. There is no universal productive usage frequency: occasional deep analysis and daily operational assistance can both justify adoption.
+Pair a skilled AI user with a domain expert and a colleague who has not seen the method. Capture the outcome, context sources, working approach, and a strong example. A short reusable instruction for the product team might begin:
 
-Look for changes in the work itself: more alternatives explored, previously neglected customers served, faster decisions, better prepared expert conversations, or a process that no longer needs an old handoff. Track promising local inventions through reuse and continuing ownership. Seats activated, sessions opened, and assets published can explain reach, but they do not establish that useful practice is spreading. An apparent diffusion problem may be an access constraint, a weak practice, or an inability to transfer the expert judgment behind it.
+> Investigate this product question using the supplied research and usage evidence. Test competing explanations, retain source links, and distinguish user segments where their needs differ. Develop alternatives and produce a runnable prototype for the most promising test. Explain which assumption the prototype will help the team examine.
+
+The workspace also needs maintained product definitions, source access, and examples of useful investigations. A prompt alone cannot supply those dependencies.
+
+Have the colleague use the asset on another question. Record what they had to discover and improve the shared version. Share the completed work through a role community; support contributors with time and access to technical help. Promote methods that colleagues can adapt successfully.
+
+## Look for the next capability
+
+Ask what participants can now do that they previously deferred or handed off. A product manager may test a design before requesting engineering capacity; an analyst may investigate several causes instead of reporting a change. Follow whether these activities recur and improve decisions.
+
+OpenAI's [enterprise usage research](https://openai.com/index/introducing-b2b-signals/) describes deeper delegation and specialized use, while [its study of new ways of working](https://openai.com/index/unlocking-new-ways-of-working/) examines recurring work across occupational boundaries. These observations motivate looking for changes in task depth and role scope. Judge this program through its own work samples and outcomes.

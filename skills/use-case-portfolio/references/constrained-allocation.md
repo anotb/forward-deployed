@@ -1,42 +1,48 @@
-# A constrained investment choice
+# Allocate a quarter of enterprise AI investment
 
-Use this example when attractive opportunities compete for the same people or integration. All figures and business facts are illustrative supplied inputs. They show a decision method, not estimates to reuse elsewhere.
+This fictional retailer has a $240,000 quarterly budget, eighteen integration-engineer weeks, and eighteen merchandising or buying expert hours per week available after existing obligations. Engineering expenditure is included in build cost; the weeks constrain staffing and are not an additional financial charge.
 
-## The choice
+Its ambition is to bring deeper investigation and purchasing expertise to more categories and locations. The candidate investments serve that ambition in different ways.
 
-An insurer has a quarterly deployment budget of $180,000, twelve available integration-engineer weeks and twenty specialist hours per week available after existing obligations. A renewal campaign begins next quarter. The source team can deliver one common customer/case interface, assuming both workflows can use its identity and access semantics.
-
-The estimates below cover the proposed first scope. Build cost includes the engineering expenditure; engineer weeks are a capacity constraint, not another charge to add to cost. Annual benefit means incremental operating benefit after each workflow's own recurring costs, before the shared interface's $20,000 annual operation. These are ranges from the fictional planning material, not demonstrated returns.
-
-| Candidate | Build cost excluding shared interface | Engineer weeks | Additional specialist hours/week | First-scope annual benefit and basis |
+| Investment | Initial cost | Engineer weeks | Expert hours/week in operation | What is known in this planning case |
 | --- | ---: | ---: | ---: | --- |
-| Renewal preparation | $60,000 | 4 | 2 | $90,000–$140,000; avoidable external preparation and capacity use, with the campaign deadline fixed |
-| Claims triage | $100,000 | 6 | 22 | $160,000–$300,000; projected effects, with exception handling still untested |
-| Evidence reconciliation | $45,000 | 3 | 4 | $30,000–$50,000; avoidable cleanup work supported by the supplied invoices |
-| Shared customer/case interface | $40,000 | 4 | 0 | Enables the three workflows; no independent benefit claimed |
+| Category investigation service | $90,000 | 6 | 8 | Historical replays found useful explanations outside the team's normal coverage; two category teams will use it in the next trading cycle |
+| Procurement assignment agent | $75,000 | 5 | 14 | A prototype produced plausible plans; completing substitutions and producing valid purchase requests remain untested |
+| Employee practice and tools | $35,000 | 2 | 2 | Category and store teams already use AI for local analysis; recurring work is fragmented and useful tools are rarely shared |
+| Shared product/supplier context and action interfaces | $50,000 | 4 | 0 | Needed by the two integrated workflows; no independent benefit assigned |
 
-A bounded claims experiment costs $15,000, one engineer week and three specialist hours per week for four weeks. It uses representative exported records and therefore does not require the production interface. It tests whether exceptions can be resolved with substantially less review demand. Its output is information for the claims investment, not the projected claims operating benefit.
+The employee investment supplies supported time to turn recurring problems into usable analyses and tools, connect them to approved data, and share the ones other teams adopt. It serves fifty employees with existing tool access. The funding buys working practice and implementation help.
 
-## Which combinations survive the constraints?
+A procurement probe costs $15,000, one engineer week, and three expert hours per week for four weeks. It uses exported records and the purchasing system's test environment. It must complete a changing requirement through a valid purchase request, including a substitution. The result will determine whether the estimated operating burden can fall enough to justify the service.
 
-Renewal alone with the interface costs $100,000, uses eight engineer weeks and adds two specialist hours per week. Evidence reconciliation alone costs $85,000 and seven weeks. Buying both separately would count the interface twice; their joint commitment is $145,000, eleven weeks and six specialist hours per week.
+## The recommended commitments
 
-Claims triage with the interface costs $140,000 and ten weeks. It fits the delivery budget but needs twenty-two specialist hours against twenty available. Its larger projected benefit does not make the proposed operation feasible. Claims plus renewal also exceeds the engineer capacity: $200,000 and fourteen weeks, before resolving the twenty-four hours of ongoing specialist demand. A preference score must not turn those constraints into small deductions.
+Fund category investigation, the shared capability it requires, employee practice, and the procurement probe. The initial commitment is:
 
-The proposed quarter is renewal plus evidence reconciliation plus the bounded claims experiment. It commits $160,000, twelve engineer weeks and at most nine additional specialist hours per week when the experiment and both operating workflows overlap. The interface is funded once. The claims deployment and its projected benefits remain excluded.
+```text
+cash:             $90,000 + $50,000 + $35,000 + $15,000 = $190,000
+engineer effort:  6 + 4 + 2 + 1 = 13 weeks
+expert demand:    8 + 2 + 3 = 13 hours/week during the probe
+```
 
-That choice leaves $20,000 uncommitted but no spare engineer weeks. Extra money does not create another feasible build. It is also a tight delivery plan: no engineer contingency remains. A slip is handled by deferring evidence reconciliation, preserving the deadline and the experiment rather than silently promising overtime.
+That leaves $50,000, five engineer weeks, and five expert hours per week for findings and later choices. Unspent capacity is useful when the first deployments are still revealing integration and operating work.
 
-## A possible schedule and the economic limit
+The investigation service has evidence of useful work, an available team, and a near-term operating window. It also establishes product identity, source access, and task creation that the procurement service can use. Build those interfaces for the first workflow while testing whether the second needs the same semantics. A supplier identifier alone does not make every purchasing action reusable.
 
-The shared interface occupies weeks 1–4; renewal occupies weeks 5–8; reconciliation occupies weeks 9–11; the experiment's engineer work occupies week 12. Specialists can investigate the exported claims records during weeks 9–12. The illustrative schedule assumes the work can occur sequentially and the experiment's engineering is needed at the end; confirm those dependencies before treating it as a commitment. A required earlier engineering intervention would change the schedule.
+Employee practice earns a place because the business wants wider analytical ability, including work that never becomes a central application. Judge it by recurring use on meaningful assignments, useful tools adopted by colleagues, and workflow ideas worth developing. Do not assign a uniform savings figure to all fifty employees.
 
-The deployed bundle's annual benefit is $120,000–$190,000 before shared operation, or $100,000–$170,000 after it. This is a steady operating-year range, not first-year cash: campaign timing, ramp and the $160,000 initial commitment still matter. The portfolio choice is defensible relative to the supplied deadline and capacity, but this arithmetic does not independently establish acceptable payback. Use a value case if that determines funding.
+## The alternative being deferred
 
-## What changes the choice?
+Both integrated workflows plus the shared capability would cost $215,000 and consume fifteen engineer weeks. That fits the delivery limits but needs twenty-two expert hours per week against eighteen available. Adding employee practice would raise the commitment to $250,000 and twenty-four expert hours per week.
 
-If the campaign moves and the claims experiment supports a useful exception path below the twenty-hour ceiling, reconsider claims against the other commitments with updated economics. If the shared identity semantics differ materially between renewal and reconciliation, recost the additional interface behavior; a shared label is not evidence of shared implementation.
+The procurement agent could be funded alone with the shared capability for $125,000, nine weeks, and fourteen expert hours per week. Its first-scope economics still depend on successful substitutions and valid transactions, which the prototype has not demonstrated. The probe addresses that issue directly; its cost does not buy the projected production benefit.
 
-If reconciliation's cleanup fees cannot be canceled or its supposed released capacity has no valuable use, its $45,000 commitment may lose to leaving capacity available. Do not keep it merely to fill the budget. If claims generates more exceptions as coverage expands, its review demand may invalidate the attractive small experiment; test the intended case mix before adopting the lower estimate.
+If the probe establishes completion with no more than eight expert hours per week at the intended volume, both workflows plus employee practice would use eighteen hours. Adding procurement production to the approved program would require another $75,000 and five engineer weeks, bringing this quarter to $265,000 and eighteen weeks. That exceeds the budget by $25,000 and leaves no engineering or expert headroom. Expansion requires additional funding, a later start, or a changed scope.
 
-This reasoning is consistent with the [Green Book's options-appraisal discussion](https://www.gov.uk/government/publications/the-green-book--2/the-green-book-2026): materially different options and substantive constraints precede detailed appraisal. Its UK public-sector rates, prescribed processes and social-benefit conventions do not govern this fictional private-enterprise choice.
+## A sequence that learns while delivering
+
+Start the procurement probe and employee practice while the product/supplier interfaces are developed against category investigation. Use the first category's operating results to improve the investigation behavior, delivery cost, and tools. Extend to the second category after the team can act on the findings without rebuilding the analysis itself.
+
+Make the next funding decision from that operating evidence and the completed procurement probe. It may favor procurement, more category coverage, or strengthening a tool employees have independently adopted. Shared interfaces, evaluation cases, and learned domain procedures remain useful across those choices.
+
+If the investigation service mainly produces issues the business cannot act on, change its prioritization or receiving workflow before expanding coverage. If procurement completes useful work with little expert intervention and a new opening program becomes urgent, move that investment forward.

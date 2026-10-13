@@ -1,45 +1,47 @@
 ---
 name: use-case-portfolio
-description: Choose what to fund, test or build first among AI and workflow opportunities. Use for investment recommendations, pilot selection, use-case portfolios, shared-capability decisions and sequencing work against available delivery and operating capacity.
+description: Choose and sequence enterprise AI investments across integrated workflows, reusable capabilities, and employee practice. Use for funding choices, pilot selection, shared-capability decisions, and portfolios competing for delivery or operating capacity.
 license: MIT
 ---
 
 # Use-case portfolio
 
-Turn a collection of ideas into an investment view of how the enterprise could work differently. A useful portfolio explains what each opportunity changes, why it matters, how the opportunities relate, and which commitment should come next. Use the customer's existing library and format when they help; choose the representation around the decision rather than forcing every engagement into a common schema.
+Recommend a program the organization can execute: which capabilities to deploy, which ideas to investigate, where to develop employee practice, and what to defer. Start with the business ambition and the resources available for the next commitment.
 
-## Develop opportunities before scoring them
+## Shape the investments
 
-Describe the changed operation with enough substance to assess it. Identify the person or service being enabled, the recurring situation, the judgment or coordination involved, the actions that reach an outcome and the value mechanism. “AI for procurement” is an area to explore. A service that interprets a supply disruption, constructs feasible substitution plans and coordinates the accepted change across purchasing, engineering and production is a candidate capability.
+Develop each serious opportunity enough to understand the changed work. Identify who gains a capability, what the AI does, how the work reaches an outcome, and why that outcome matters. Combine extraction, search, drafting, and routing when they are parts of one service. Preserve separate opportunities when they serve different decisions or customers.
 
-Separate an opportunity from its component features. Document extraction, search, drafting and case routing might be parts of one valuable service. Conversely, two ideas called “customer assistant” can be different investments because their business decisions, users and operating environments differ. Merge overlaps without erasing these distinctions.
+Look beyond the submitted use-case list. Employee-created tools, work currently rationed by experts, recurring investigations, and new customer services may be better investments than speeding up an existing document. Use opportunity-design when the choices need more invention.
 
-Develop promising ideas beyond what people happened to request. Look for work currently omitted, offered only to selected customers, performed too late or restricted by scarce expertise. Use discovery and current capability exploration to form stronger options. Keep the difference between an interview finding and the solution you propose clear in the working material; avoid making provenance labels the portfolio's organizing concept.
+Compare investments at a similar level of development. Establish enough of each experience, architecture, and economic mechanism to judge its potential and the commitment required.
 
-## Understand the portfolio as a system
+## Assemble a coherent program
 
-Map dependencies at the level that changes a choice. Several opportunities may share customer identity, a maintained domain view, an action interface or an evaluation capability. Another may need a distinct permission, specialist or operational owner. Distinguish a genuine prerequisite from a convenient implementation sequence: an offline experiment can often use representative records before a production integration is complete.
+Consider how the investments reinforce one another:
 
-Consider investment bundles. A shared capability can be worthwhile because it unlocks several valuable workflows even when its standalone score is low. Equally, do not fund a broad platform on the promise of hypothetical future reuse. Identify the first consumers and what variation the shared component must support. Count shared costs and overlapping benefits once.
+- An integrated workflow delivers an outcome across the systems and teams that own the work.
+- A reusable capability can make several workflows cheaper or better: identity resolution, task context, an action interface, evaluation cases, or a domain procedure.
+- Employee practice can expand what teams do themselves and supply the next generation of workflow ideas. Fund time to use, adapt, and share useful approaches alongside access to tools.
 
-Examine capacity where work will accumulate. A portfolio of individually attractive assistants can create an unaffordable queue of human review or overwhelm the same integration team. An opportunity with modest direct savings may release the expert capacity that makes a larger service possible. Sequence against these constraints, not just nominal benefit-to-effort ratios.
+Include what serves the ambition. Fund shared capability against named first consumers and the variation they need. Discover common behavior through those deployments; avoid paying for speculative universality. Count shared costs and overlapping benefits once.
 
-For example, claims triage has the larger projected benefit, while renewal preparation has demonstrated useful behavior and an agreed campaign deadline. Both need customer identity data, and the source team can support only one interface build this quarter. Claims triage still has untested exception handling. Allocate the build to renewal preparation and run a bounded claims experiment on representative records; defer the claims production commitment until that uncertainty is resolved. The forgone claims benefit is visible, but funding two builds would promise capacity that does not exist. Reverse the sequence if the campaign moves and the claims experiment establishes a stronger deployable case. A shared interface changes the constraint only if its identity semantics and support effort serve both workflows.
+Look for sequencing effects. One deployment may release the specialist capacity another needs. An employee tool may establish demand before a product build. Two services may compete for the same expert even when their engineering work is independent. Make these relationships part of the recommendation.
 
-## Make a choice the business can understand
+## Choose the next commitments
 
-Begin with the objective and the available commitment: growth, service quality, scarce capacity, cost, speed, resilience or another concrete outcome. Compare the credible opportunities on the dimensions that distinguish them. Develop enough architecture and economics to avoid comparing a vague ambition with a fully costed narrow solution.
+Use the constraints that can change the choice: available budget, engineering time, source-system access, operating capacity, customer timing, and ability to absorb changed work. Distinguish a hard prerequisite from work that can proceed with a temporary interface or representative records.
 
-Keep different decisions separate. Selecting an experiment is a decision about the value of learning. Selecting a deployment is a decision about a useful operating capability. Funding shared infrastructure is a decision about several deployments and their ongoing costs. The most uncertain opportunity may be the best experiment without being the next production commitment.
+Compare the benefits and uncertainties that distinguish the options. Use ranges and thresholds where useful; keep an unknown separate from a poor result. Explain what the proposed bundle gains and what the organization gives up by deferring the alternative.
 
-Use numbers where they illuminate a tradeoff. Estimates, ranges and explicit scenarios can support a decision before all inputs are measured. When preference weights are consequential, make their basis visible and show whether plausible changes reverse the choice. A qualitative comparison is better than an elaborate score built from arbitrary scales. A ranking is a tool for judgment, not the conclusion by itself.
+Fund an experiment for the decision it can resolve. Fund a deployment for the useful capability it will operate. An ambitious uncertain idea can deserve the next experiment while another receives the production commitment. A broad enablement investment can earn its place through recurring useful work and the opportunities it produces, without assigning invented savings to every employee.
 
-When several attractive options compete for shared resources, [the constrained-allocation example](references/constrained-allocation.md) shows how a small program can reconcile shared costs, delivery time and ongoing review capacity. It also separates the production choice from a useful experiment and identifies what would reverse the sequence.
+Read [the allocation example](references/constrained-allocation.md) for a program that combines a deployment, shared capability, employee practice, and a probe under finite capacity.
 
-Recommend a coherent program: what to pursue, what to learn, what to combine, what to defer and what to stop. For the first deployment, preserve the defining mechanism of the larger opportunity and cross the enterprise seams that could defeat it. Choosing only the easiest adjacent automation can spend the first budget without establishing whether the valuable concept works.
+## Make the sequence executable
 
-## Keep the portfolio useful as the work changes
+Specify what starts, the dependency it consumes, the result that releases the next commitment, and who will run it. Preserve the central value mechanism in the first scope. Reserve capacity for integration findings, adoption, and operation.
 
-Update the investment view when a capability experiment, customer response, integration finding or operational result changes it. Explain the consequence: a native product feature may collapse build effort, a shared domain service may enable a second workflow, or review burden may make expansion unattractive. Preserve the reasoning behind changed choices without creating a new reporting ritual.
+Show the deferred alternative and the evidence that would move it forward. Revisit the portfolio when a probe, customer response, native product feature, or operating result changes the economics or sequence.
 
-Deliver a library, investment comparison, roadmap or interactive portfolio suited to the user's task. Let a decision-maker inspect the changed work, economic mechanism, dependencies and recommendation. Keep technical detail and source material accessible behind that view. A portfolio succeeds when it directs resources toward a more valuable operation, not when every cell is populated.
+Deliver the investment comparison and sequence in the user's working format. A decision-maker should be able to see the proposed commitments, their combined resource demand, the useful capability each creates, and the choices still open.

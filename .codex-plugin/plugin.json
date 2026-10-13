@@ -1,6 +1,6 @@
 {
   "name": "forward-deployed",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "Skills for forward-deployed engineering (FDE): discovery, AI solution design, enterprise integration, agent evaluation, delivery and adoption.",
   "author": {
     "name": "Rahil Banthia",
@@ -112,7 +112,7 @@
         "commerce_description": "The plugin does not sell products, accept payments, execute trades or transfer funds."
       },
       "publication": {
-        "release_notes": "0.6.3: Adds conversation and sidebar entrypoints, selected-record context, saved-record composer mentions and deep links, native rich forms for change review and experiment branching, and before/after review with linked delivery impacts. New AI deployment sample and getting-started prompts connect discovery to solution design, data integration and an analyst pilot. Fixes light/dark host theming and duplicate tool display names. Native forms require host support for OpenAI extended elicitation and MCP multi-round requests; Studio controls provide the fallback. Existing workspaces and rehearsal histories remain compatible. Updated Studio UI preview (SDK embedded test host, not a live ChatGPT form recording): https://github.com/anotb/forward-deployed/releases/download/v0.6.3/forward-deployed-credit-fde-16s.mp4"
+        "release_notes": "0.6.4: Reworks all 16 skills around enterprise AI adoption, substantial delegated work, workflow redesign and new services. Replaces repair-quote examples with enterprise AI deployment cases, sharpens model and harness exploration, context design, outcome evaluation and workforce practice, and removes repetitive qualification and process instructions. Bundles an updated OpenAI and Anthropic source guide with both host packages. Studio preview: https://github.com/anotb/forward-deployed/releases/download/v0.6.3/forward-deployed-credit-fde-16s.mp4"
       }
     }
   }

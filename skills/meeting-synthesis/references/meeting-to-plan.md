@@ -1,59 +1,47 @@
-# From a meeting to changed working material
+# A meeting that changes the AI delegation
 
-All artifacts and dialogue in this example are illustrative inventions. Use it when a continuing engagement contains a changed request, conflicting measures and an uncertain commitment. It demonstrates semantic judgment and targeted updates, not a required readout format.
+This fictional meeting continues the release-planning engagement. The user requests a steering readout and updates to the existing pilot brief and benefit assumptions.
 
-The user asks for an executive readout and authorizes updates to the existing pilot brief and benefit assumptions. The prior material says:
+The current brief covers one product group. The agent maintains a readiness brief; product operations transfers its recommendations into the work tracker. An expansion proposal covers two additional groups. Customer launch commitments remain with product leaders.
 
-> Pilot brief, agreed scope: “Launch at North and West sites. Prepare service-response drafts for an authorized planner. Automated dispatch is outside this release.”
+## What participants say
+
+> 09:04 Sponsor: "The demo is strong. Let's put this across all three groups and tell the board we have cut launch preparation by 70%."
 >
-> Benefit worksheet: “Initial population: 1,800 service cases per month. Preparation effort per case: not yet measured.”
+> 09:08 Evaluation lead: "In eight paired readiness sessions, preparation averaged 120 minutes before and 35 with AI. Specialist review went from 20 to 50 minutes. One replay initially missed the difference between cloud and private deployments; the revised assignment found it."
 >
-> Opportunity record S4: “Help planners prepare a supported service response.” Record S9: “Allocate scarce specialist capacity across the service network.”
-
-The meeting record is partial but includes the relevant exchange:
-
-> 09:06 Sponsor: “I want all six sites in the launch story.”
+> 09:12 Product operations: "I am still copying the resulting work into tickets. Updating existing tasks would save another pass. It needs to recognize when an item is already resolved."
 >
-> 09:09 Platform lead: “North and West have the supported identity setup. The other sites need work we have not estimated. Dispatch writes are still unavailable.”
+> 09:16 Platform lead: "We can enable create and update for tagged release tasks in this group's project. The other groups organize their work differently. I will configure this tool next week."
 >
-> 09:12 Operations manager: “The 1,800 is all six sites. North and West are about 600 cases a month, and that includes cases a planner wouldn't draft a response for. I haven't pulled that subset.”
+> 09:20 Sponsor: "Use it on the next two live launches in this group, including the tagged task updates. Bring back an expansion proposal that shows how the other groups would work. Customer date commitments stay with the product leads."
 >
-> 09:16 Sponsor: “Then retain the two-site draft workflow for this release. Bring me an expansion option after the platform assessment; don't move the date on the strength of this conversation.”
+> 09:23 Sponsor: "Mina could run it after the pilot."
 >
-> 09:18 Operations manager: “Lena could own exceptions.”
+> 09:24 Mina: "I can own the release practice. Platform needs to own the integration and service support."
+
+## The interpretation that matters
+
+The later sponsor decision resolves the opening expansion request: two live launches in the existing group come next. The delegation becomes richer within that scope. The agent will maintain tagged work items as well as the readiness brief, while product leaders retain date commitments.
+
+That changes more than the feature list. The design must find existing tasks, distinguish updates from new work and check current state before applying a change. The evaluation should include a resolved task, a changed source and a retry so the team can see whether the agent maintains coherent work. These are synthesis implications derived from the agreed delegation, not statements to attribute to the sponsor.
+
+The preparation reduction is about 71%, but combined preparation and review falls from 140 to 85 minutes, about 39%. The eight sessions support that description of observed work. They do not measure total launch duration. Use the result to explain released coordination capacity, with review remaining a substantial part of the assignment.
+
+Mina accepts ownership of the release practice. Her statement identifies a separate platform responsibility; it does not assign an individual to that responsibility. The platform lead commits to tool configuration next week, not ongoing service ownership or a three-group rollout date.
+
+## The executive readout
+
+> The next deployment will cover two live launches in the current product group and add delegated create/update access for tagged release tasks. Product leads retain customer date commitments. The expansion proposal will explain how the same work fits the other groups before a wider rollout is agreed.
 >
-> 09:19 Lena: “I can describe the exceptions. I can't take the queue without my manager reallocating support.”
+> The paired sessions show about 39% less combined preparation and review effort. AI preparation is much faster; specialist review now accounts for 50 of the 85 minutes. The next launches should show whether the improved cohort analysis and task integration reduce reconstruction for the reviewer.
 >
-> 09:23 Platform lead: “I will assess the other sites and take the integration estimate to our release planning meeting.”
->
-> 09:27 Planner: “A good draft still stalls when we discover that another team has already booked the same specialist.”
+> Platform will configure the task tool next week. Mina will own the release practice. Ongoing integration and service support ownership still needs a named owner.
 
-## What changes, and why
+## Carry it into the authorized material
 
-The sponsor's first statement is a requested expansion. The later statement resolves this meeting's scope question by retaining the agreed two-site release; the platform constraint alone would not have authorized that decision. The record does not change the existing delivery date, but it also supplies no independent confirmation that the date remains feasible.
+Update the pilot brief's scope to include the two live launches and tagged task writes. Preserve the product leads' commitment authority. Add the state-aware update cases to evaluation work and record the platform configuration commitment using the meeting's relative date.
 
-The volume correction invalidates the worksheet's initial population. It does not establish that 600 cases are eligible for assistance. Reducing a forecast by exactly two-thirds would imply that eligibility, work mix and effort are unchanged across populations, none of which is established here. The useful correction preserves the approximate two-site total and leaves the addressable subset unresolved.
+Replace the benefit assumption with the combined effort calculation, retaining its eight-session population and source. Keep the preparation figure as a component, not the headline for total benefit. Add Mina's accepted practice ownership and leave platform service ownership open.
 
-Lena has offered knowledge, not accepted operational ownership. The platform lead has accepted an assessment, not promised six-site delivery. The planner's observation may affect S4's context requirements and support S9's allocation opportunity. Shared specialist information does not make the two opportunities identical: one prepares a response; the other decides where scarce capacity should go.
-
-## Example executive readout
-
-> The sponsor retained the North and West release with planner-approved response drafts. Six-site expansion remains an option to develop after the platform assessment; automated dispatch remains outside the release. No delivery date changed in this meeting.
->
-> The pilot benefit assumptions need correction. The previously used 1,800 monthly cases cover all six sites. Operations estimates about 600 at North and West, including work outside the proposed drafting flow. Eligible volume and preparation effort remain unmeasured, so this meeting does not establish a revised savings figure.
->
-> Platform will assess the additional sites and take its estimate into release planning. Exception ownership is unresolved: Lena can explain the work but cannot absorb the queue without a staffing decision. The planner also exposed a design issue worth investigating now: drafts can become unusable when specialist availability has changed elsewhere.
-
-## Specific authorized revisions
-
-Keep the existing scope sentence; it remains correct. Add to the pilot brief's open work:
-
-> Develop a six-site expansion option after platform assesses the unsupported sites. This is not part of the current release commitment. Exception-queue ownership remains open; Lena is a source for understanding that work, not its assigned owner. Investigate how a planner sees current specialist commitments before accepting a response draft. Source: steering meeting, 09:09–09:27.
-
-Replace the benefit worksheet's population assumption with:
-
-> North and West process approximately 600 service cases per month, according to the operations manager. The subset eligible for response drafting is not yet known. The previous 1,800 figure covered all six sites and is not the pilot population. Preparation effort remains unmeasured. Source: steering meeting, 09:12.
-
-The user has not authorized portfolio edits in this example. Prepare a targeted suggestion for its owner: add the changed specialist-availability observation to S4's design questions and cross-reference it as evidence relevant to S9. Do not merge the records or replace their descriptions with a new generic “service copilot” idea.
-
-If the excerpt ended before 09:16, the readout would instead leave the rollout choice unresolved. If Lena had explicitly accepted ownership with authority to allocate capacity, the brief could name her. If the user requested only minutes, the revisions above would be implications to report, not permission to modify files. The material and assignment determine the action.
+The readout can recommend reducing review reconstruction and developing the other groups' operating design now. Neither activity needs to wait for a new generic discovery phase. A concise update advances the deployment while preserving exactly what this meeting decided.

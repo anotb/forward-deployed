@@ -17,17 +17,17 @@ The result could be better use of an existing AI product, reusable skills and ag
 | Skill | Use it to | Example request |
 |---|---|---|
 | [get-started](skills/get-started/SKILL.md) | Orient an engagement and choose the next useful work | “Help me move this enterprise AI engagement forward.” |
-| [enterprise-engagement](skills/enterprise-engagement/SKILL.md) | Develop a customer point of view and shape a useful engagement | “Prepare our first conversation with the operations sponsor.” |
-| [discovery](skills/discovery/SKILL.md) | Understand operations, systems, and expert judgment | “Find what this process depends on and where it could change.” |
+| [enterprise-engagement](skills/enterprise-engagement/SKILL.md) | Develop a customer point of view and shape an AI engagement | “Prepare our conversation about moving from AI access to redesigned work.” |
+| [discovery](skills/discovery/SKILL.md) | Find where AI can change expertise, information and handoffs | “Study these release decisions and find the work an agent could take on.” |
 | [meeting-synthesis](skills/meeting-synthesis/SKILL.md) | Develop understanding and follow-through from conversations | “Reconcile these interviews and sharpen our solution ideas.” |
 | [opportunity-design](skills/opportunity-design/SKILL.md) | Invent and develop valuable AI applications and services | “What could we offer if this expertise became available at every case?” |
-| [use-case-portfolio](skills/use-case-portfolio/SKILL.md) | Develop, select, and sequence opportunities | “Which opportunities belong together, and what should we test first?” |
+| [use-case-portfolio](skills/use-case-portfolio/SKILL.md) | Select and sequence AI investments | “Choose what to fund across workforce tools, shared capabilities and agents.” |
 | [value-case](skills/value-case/SKILL.md) | Explain and test the economics of changed work | “Build the case for this service, including adoption and full costs.” |
 | [capability-exploration](skills/capability-exploration/SKILL.md) | Discover what current products and host tools can do | “Explore the available capabilities and test the hardest assumption.” |
-| [solution-design](skills/solution-design/SKILL.md) | Design the complete service and operator experience | “Turn this opportunity into a coherent, buildable solution.” |
+| [solution-design](skills/solution-design/SKILL.md) | Design the AI service, experience and architecture | “Design an incident investigator that follows evidence across our systems.” |
 | [enterprise-integration](skills/enterprise-integration/SKILL.md) | Design reliable work across systems, identities, and business objects | “Design how the agent updates a case without duplicating actions.” |
 | [context-design](skills/context-design/SKILL.md) | Make enterprise knowledge and continuing state useful | “Fix the missing context behind these inconsistent decisions.” |
-| [evaluate-and-improve](skills/evaluate-and-improve/SKILL.md) | Experiment, diagnose failures, and improve the right component | “Find why this pilot fails on exceptions and test the repair.” |
+| [evaluate-and-improve](skills/evaluate-and-improve/SKILL.md) | Test completed work, diagnose failures and improve performance | “Find why this analytics agent reaches the wrong conclusion and test the fix.” |
 | [technical-delivery](skills/technical-delivery/SKILL.md) | Brief engineers and coordinate delivery into operation | “Prepare the engineering handoff and a practical path to our first useful release.” |
 | [adoption-and-scale](skills/adoption-and-scale/SKILL.md) | Enable workforce AI use, spread effective practices and expand deployments | “We have AI licenses but little changed work. Find where people get stuck and help teams develop useful practices.” |
 | [executive-communication](skills/executive-communication/SKILL.md) | Build a persuasive deck, memo, or solution walkthrough | “Make the investment choice clear in a sponsor presentation.” |
@@ -39,7 +39,7 @@ Give the assistant the business situation, available evidence, and the result yo
 
 The skills encourage exploration of the current environment before settling on a design: inspect available connectors and tools, consult current product documentation, and run a small permitted experiment where it resolves uncertainty. They also use the host's document, presentation, spreadsheet, browser, and coding capabilities when those help deliver the result. No particular companion plugin is required.
 
-The guidance and selected worked references are bundled. Each skill can be used directly, without the hosted workspace. References show how source material changes a diagnosis, design, investment or delivery choice; the entrypoints explain when those examples help. They illustrate judgment rather than prescribe a process or output format. The [usage guide](docs/usage.md) explains where each skill helps and what you can ask it to do.
+The guidance and worked references are bundled. Each skill can be used directly, without the hosted workspace. Examples cover engineering migrations, incident investigation, enterprise research, workforce practice and AI investment choices. The [usage guide](docs/usage.md) gives concrete assignments; [practice and sources](docs/practice.md) connects the methods to OpenAI and Anthropic's deployment and engineering work.
 
 ## Workspace and Field Lab
 

@@ -1,63 +1,37 @@
 ---
 name: enterprise-engagement
-description: Develop an enterprise AI engagement and customer point of view. Use for technical pursuits, first conversations, opening decks, engagement proposals, collaborative scoping and sponsor alignment, or adapting commitments when the work changes.
+description: Develop an enterprise AI adoption proposition, customer conversation or engagement. Use for opening decks, technical pursuits, adoption proposals, collaborative scoping and changes to an ongoing AI engagement.
 license: MIT
 ---
 
 # Enterprise engagement
 
-Enter the conversation with a useful point of view about the business and a way to test it. Help the customer see a more valuable operation, understand why it may now be possible, and decide where to begin. Adapt to the relationship: an exploratory executive meeting, a technical evaluation, an internal initiative and a competitive pursuit need different arguments.
+Give the customer a useful view of what AI could let their organization do, then turn that view into work worth committing to. Connect business ambition, current AI capability and the way this organization operates. Finish the requested conversation material, demonstration, deck or proposal.
 
-For an engagement already underway, build on the current proposal, design, delivery evidence and recent conversations. Understand the progress made and the next decision, preserving useful work and commitments. When those sources show materially different expectations, reconcile them before making a new commitment. Keep the current understanding in the team's existing working material so another participant can pick up the work.
+## Develop a customer-specific thesis
 
-## Find a reason for this customer to act
+Find a consequential opportunity: work too expensive to offer broadly, expertise concentrated in a few people, analysis that arrives after the decision, or a product that could do more for its users. Understand the customer's strategy and existing commitments well enough to explain why this opportunity deserves attention now.
 
-Understand how the organization creates value and what is preventing it from doing more. Read the supplied account material, recent conversations and relevant public context. Look for a consequential pressure: a service the business cannot economically provide, demand it cannot absorb, decisions arriving too late, complexity that restricts growth, or scarce expertise concentrated in a few people. A technology announcement matters only if it changes one of those conditions.
+Investigate how people already use AI. Ask capable practitioners to show a completed assignment, including the context, tools, iterations and finished output. A finance analyst producing executable scenarios or a product manager investigating usage data may reveal a more valuable adoption path than the official use-case inventory. Explore what would let the rest of the team do that work and what new responsibility it creates.
 
-Establish the engagement's starting point. A company with broad AI access but shallow use may need role-based working sessions, reusable workflows and a path for local inventions to spread. A team with a valuable prototype may need integration and an operating owner. An executive exploring a new business capability may need a developed concept and demonstration. Investigate existing licenses, successful employee practices, abandoned experiments and the support available before assuming the assignment is a custom application build.
+Choose an intervention that fits the opportunity. Broad access and role-specific working practices can let employees take on richer work. A shared team workflow can replace repeated preparation and handoffs. An integrated agent can pursue a goal across systems and maintain progress over time. These approaches can reinforce one another; a custom application is not the default destination of every adoption program.
 
-Develop a specific thesis connecting that pressure to a change in work. For an industrial supplier, the opportunity may be to quote complex requests that engineering currently declines, rather than to write quotations faster. For a bank, it may be to maintain an informed view of more customers between scheduled reviews. These are starting hypotheses to investigate, not facts to attribute to an account without support.
+State the thesis concretely. For example: let account teams investigate customer health and develop a retention plan throughout the quarter, with finance and product specialists contributing at the points that require their judgment. Explain what would change in the work, what AI would accomplish, and why that matters to this customer.
 
-Know whose problem the thesis solves. The executive who funds a service, the manager responsible for its performance, the people who do the work and the team that must operate the technology may each face a different tradeoff. Identify where their incentives align and where the proposed change creates work or loses discretion. Use that understanding to shape the engagement, rather than treating stakeholder names as a contact list.
+## Make the capability tangible
 
-## Make the opportunity concrete enough to discuss
+Develop an episode the customer recognizes, with enough complexity to expose the opportunity. Have the AI investigate evidence, use tools, compare explanations, create a usable artifact or revise a plan after new information. Choose the demonstration around the work you want the customer to delegate.
 
-Prepare a recognizable episode from the customer's work. Show what arrives, the decisions and systems involved, where expertise changes the outcome, and how a better experience would unfold. The strongest opening demonstration lets the audience see a difficult judgment or a cross-functional plan improve. A polished summary of supplied information often leaves the customer's main problem untouched.
+Check current products, models and integration surfaces when they affect the offer. A maintained enterprise workspace, coding agent or native application capability may already cover substantial work. Test with suitable context and tools before defining a model's limits or proposing a custom stack. Use the results to improve the proposition, including making it more ambitious when the capability warrants it.
 
-Explore relevant capabilities when the opportunity depends on what is possible now. Inspect the appropriate product and developer surfaces, available tools and customer environment; use what you discover to strengthen or change the thesis. Avoid selling a fixed architecture before understanding whether a maintained capability can do the work. Equally, do not reduce the opportunity to whatever is easiest to demonstrate with the first tool available.
+In the conversation, pursue questions that change the design: which decisions could move closer to the person serving the customer, which context specialists repeatedly reconstruct, what work would be worth doing continuously, and what would become possible if that work were cheap enough. Bring the people who perform, fund and operate the work into the relevant choices.
 
-Design questions around choices. Asking which system owns a work order can determine the integration boundary. Asking why a specialist rejected a superficially valid request can reveal the actual reasoning task. Asking what the business would offer with twice the expert capacity can expose demand absent from today's queue. A useful question changes the concept, architecture, economics or engagement; it is not simply another field to populate.
+## Shape the commitment
 
-## Shape a deployment worth committing to
+Choose an initial deployment that delivers the mechanism behind the thesis. Narrow its business population or integration scope while keeping the meaningful work intact. If value depends on an agent investigating changing information and updating a plan, a static summarization demo will leave the investment question unanswered.
 
-Connect an ambitious target to an initial deployment that demonstrates its defining mechanism. If the service depends on interpreting specifications and checking fulfillment constraints together, a first deployment should exercise both. Bound the customer population, transaction scope or product family where that makes delivery feasible, while preserving the mechanism that creates value.
+Make the joint contribution concrete: representative work and domain expertise from the customer; product, integration and evaluation work from the delivery team; an operating arrangement that lets the capability continue after the engagement. For a commercial pursuit, connect that work to the customer's buying decision, alternatives, budget and procurement route. Resolve requirements through the proposed design instead of appending a generic list of risks.
 
-Develop the operating bargain with the customer. Work out what the field team brings, what customer engineers and domain experts contribute, how existing vendors or delivery partners participate, and who will inherit the capability. Treat architecture, access, procurement, security and organizational requirements as design inputs to resolve together. For example, an existing service platform's extension and release process may provide a faster supported path than a separate application with a new operating team.
+Recommend a commitment sized to the evidence. Explain what it delivers, what decision it settles, and how it opens the larger opportunity. Carry agreed changes into the existing scope, design and forecast. When a new request changes the bargain, offer a feasible substitution or extension with its effect on outcome, effort and timing. Preserve the distinction between a recommendation, an engineering estimate and an accepted commitment.
 
-For a commercial pursuit, connect the technical proof to the buying decision. Understand who controls budget, which alternatives are being considered, how procurement evaluates the offer, and what would justify the next commitment. Frame a proof of value around the uncertainty that could change the purchase, with an intelligible path into operation. Avoid an impressive demonstration that has no relationship to the customer's evaluation or deployment process.
-
-Scope the work in outcomes and responsibilities. Explain what the initial deployment accomplishes, what the customer must supply, what the team will learn, and how changed findings affect the next commitment. Use assumptions to advance a concrete proposal; distinguish assumptions with material commercial consequences from routine design choices. Develop pricing or contractual detail when the task calls for it, using the economics and responsibilities of the proposed work.
-
-Qualify the engagement as well as the idea. A promising use case may still lack a person who can change the workflow, access to representative work, or capacity to absorb delivery. Decide whether the next commitment should be discovery, a bounded feasibility investigation, deployment, or a pause. Explain what would make a larger commitment justified. Enthusiasm from a sponsor does not by itself supply an operating owner or customer engineering time.
-
-For an opening proposition where the apparent bottleneck and the proposed proof do not yet line up, [the quotation engagement example](references/quotation-engagement.md) shows how contradictory account evidence changes the thesis, the customer contribution and the next offer. Use it to reason about that situation, not as a standard proposal format.
-
-## Adapt the engagement when the work changes
-
-Revisit the engagement when business priorities, evidence or constraints change. Establish what was agreed, what is newly requested, and who can decide the affected commitment. A sponsor can change the desired outcome without being able to commit a platform team's release window. Prepare the conversation with both the business consequence and a feasible delivery proposal.
-
-Understand what a consequential objection protects. An operations manager may be protecting review capacity, a platform owner a support obligation, and a sponsor a commercial date. Separate the constraint from a preferred solution. When feasibility is disputed, identify the observation or experiment that could settle it. When the disagreement is a legitimate priority choice, develop the options and take the remaining tradeoff to the accountable decision maker instead of seeking endless technical consensus.
-
-Distinguish a clarification of the promised outcome from a defect, new scope or a changed assumption. That distinction affects who absorbs the work and which commitment needs renegotiation; it should not become a pretext for refusing necessary correction. Trace a material change through user experience, access and integration, evaluation, delivery effort, operating cost and adoption where relevant. Seek the implementers' estimate before presenting an engineering date as agreed.
-
-Offer choices that preserve the reason for the engagement. For a new request, recommend whether to substitute it for existing work, narrow its first population, fund an extension, or defer it. Explain the resulting outcome, date, customer contribution and remaining limitation. Make clear what you recommend, what the customer has accepted, and what still needs a decision. A discussion of an option is not a delivery promise.
-
-For example, a service-triage pilot was scoped to recommend a response for one product family. The sponsor now wants the system to dispatch technicians at launch, while the scheduling owner cannot support write access until the next release. Investigate whether dispatch is essential to the pilot's value or a new expansion. If triage still resolves the original bottleneck, recommend retaining the first release with a native dispatch draft for an authorized planner, and scope automated dispatch separately. If the claimed benefit depended on eliminating that planner handoff, revise the value case and release proposal instead of calling the draft equivalent. Bring the sponsor and scheduling owner the choice together; do not promise the missing interface on their behalf.
-
-After agreement, carry the change into the design, engineering brief, forecast and customer-facing material that depend on it. Use the team's established records and authorized channels. When interests remain in conflict, identify the person who can settle the tradeoff and the decision needed by a useful date. Keep independent work moving without allowing an unresolved assumption to become an implicit commitment.
-
-## Lead a productive conversation
-
-Build the meeting around the insight, the changed experience, the hard tradeoff and the choice in front of the audience. Use exhibits that explain the idea: a customer episode, an operating-flow comparison, a solution demonstration or the economics of extending a service. Put supporting research and technical detail where the audience can inspect them without breaking the story.
-
-Finish the requested briefing, deck, demonstration plan or engagement proposal. Recommend a next move specific enough to act on, and make it clear how that move advances the target. A successful opening gives the customer something useful to agree with, challenge or improve.
+Read [the adoption proposition](references/adoption-proposition.md) when an initial request for a general assistant needs to become a specific, valuable AI engagement.

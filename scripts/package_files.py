@@ -4,7 +4,7 @@ from pathlib import Path
 RUNTIME_FIXED = {
     'plugin.json', '.codex-plugin/plugin.json', '.claude-plugin/plugin.json',
     'README.md', 'LICENSE', 'PRIVACY.md', 'TERMS.md',
-    'docs/installation.md', 'docs/usage.md', 'docs/export.md', 'assets/icon.svg',
+    'docs/installation.md', 'docs/usage.md', 'docs/export.md', 'docs/practice.md', 'assets/icon.svg',
     'mcp.json', '.mcp.json',
 }
 HOST_MANIFESTS = {'plugin.json', '.codex-plugin/plugin.json', '.claude-plugin/plugin.json'}
@@ -17,20 +17,20 @@ RUNTIME_RESOURCES = {
     'skills/adoption-and-scale/references/workforce-practice.md',
     'skills/adoption-and-scale/references/workflow-adoption.md',
     'skills/adoption-and-scale/references/expansion.md',
-    'skills/capability-exploration/references/workbench-probe.md',
-    'skills/context-design/references/applicable-evidence.md',
-    'skills/discovery/references/service-case-reconstruction.md',
-    'skills/enterprise-engagement/references/quotation-engagement.md',
+    'skills/capability-exploration/references/engineering-migration.md',
+    'skills/context-design/references/enterprise-research.md',
+    'skills/discovery/references/release-planning-investigation.md',
+    'skills/enterprise-engagement/references/adoption-proposition.md',
     'skills/enterprise-integration/references/uncertain-write.md',
     'skills/evaluate-and-improve/references/diagnosis-from-traces.md',
     'skills/executive-communication/references/evidence-to-decision.md',
     'skills/field-productization/references/covenant-review-boundary.md',
     'skills/meeting-synthesis/references/meeting-to-plan.md',
-    'skills/opportunity-design/references/equipment-options.md',
-    'skills/solution-design/references/supplier-delay.md',
-    'skills/technical-delivery/references/quote-service-handoff.md',
+    'skills/opportunity-design/references/enterprise-opportunities.md',
+    'skills/solution-design/references/incident-investigation.md',
+    'skills/technical-delivery/references/coding-agent-delivery.md',
     'skills/use-case-portfolio/references/constrained-allocation.md',
-    'skills/value-case/references/service-economics.md',
+    'skills/value-case/references/new-service-economics.md',
 }
 STUDIO_SOURCE = {
     'studio/README.md', 'studio/package.json', 'studio/package-lock.json',

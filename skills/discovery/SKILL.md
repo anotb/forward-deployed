@@ -1,49 +1,39 @@
 ---
 name: discovery
-description: Investigate enterprise work, systems and expert judgment to discover what an AI solution should change. Use for operator research, technical discovery, workflow redesign, workshops or diagnosis of an inherited process.
+description: Discover how enterprise work could change with AI. Use for adoption discovery, operator research, capability exploration, workflow redesign and investigating why an AI pilot has stalled.
 license: MIT
 ---
 
 # Discovery
 
-Discover the mechanism of the work: how an outcome is produced, why it sometimes fails, and what prevents the organization from doing it better or more broadly. Enter through the available material and access. Interviews, observation, product exploration, operational records and technical investigation answer different parts of the question; combine them where they change the design.
+Find work that AI could materially improve or make possible, and establish what it would need to accomplish. Study business practice and model capability together: the current process reveals the problem; experiments reveal which parts of that process still need to exist.
 
-Choose discovery around the decision at hand. A first opportunity discussion needs enough evidence to select a valuable problem; a contested integration needs a trace through the affected systems; an inherited pilot may need observation of failed cases. Use existing research before requesting another workshop. Stop broadening when the remaining unknowns would not change the next commitment, and turn unresolved consequential questions into a bounded investigation with a stated decision to inform.
+## Follow meaningful work
 
-## Follow an outcome through the enterprise
+Start with an outcome people care about and reconstruct how it is produced. Follow an assignment through its sources, judgments, tools, handoffs and finished output. Inspect the working files and systems alongside interviews. Separate effort from waiting and identify where the work is repeated because context or a decision did not travel with it.
 
-Choose a recognizable business outcome and trace a case from its trigger to accepted completion. Follow information and decisions across teams, documents, products and systems. Separate active work from waiting, rework and external dependencies. A task that takes a day may contain minutes of analysis and hours waiting for information; automating the analysis alone may barely change the outcome.
+Choose contrasting cases that expose the design: an ordinary success, a difficult assignment and work the organization wanted but could not justify doing. For an analyst, this might include the published forecast, a disputed driver and a scenario abandoned for lack of time. The opportunity may lie in broader coverage, deeper investigation or a new service as much as faster completion.
 
-Compare cases that expose variation. A routine success shows the usual path; an expert intervention reveals judgment; a failed or abandoned case reveals where the process stops working. Also inspect work that never entered the process: rejected quotations, unserved customers, deferred reviews, ignored signals and exceptions handled outside the official workflow. Today's throughput can conceal the most valuable demand.
+Find employees already doing unusually useful work with AI. Watch a complete session, including how they delegate, recover from poor results and assess the output. Identify what makes their practice transferable: access to context, a reusable instruction, a tool, domain judgment or permission to work differently. Usage totals alone will not reveal those ingredients.
 
-Look beyond the local task. Faster preparation can overload the approver, a new recommendation can create a queue nobody owns, and a missing upstream decision can cause downstream rework. Locate the constraint on the outcome and test whether the proposed intervention removes, moves or intensifies it.
+## Expose the judgment and context
 
-## Learn how expertise changes the case
+Reconstruct the moment an expert changed their mind. Ask what they noticed, which explanation they discarded, what evidence they sought next and which action followed. Change one fact and ask whether the decision changes. This exposes the reasoning an AI system must perform more clearly than a list of business rules.
 
-Ask the expert to reconstruct the moment a decision became clear. What did they notice? Which explanation initially looked plausible? What contradicted it? Which next observation was worth obtaining? What did they decide not to do? Inspect the documents, screens or case state they used when available.
+Inspect what the relevant records mean. A revenue forecast can describe a planning assumption while a contract describes a binding term. A release date may refer to code completion, limited availability or customer rollout. Establish how a person resolves those differences and where current information lives. These semantics determine useful retrieval, tools and working state.
 
-Distinguish a rule from its application. A warranty policy may be explicit while identifying the applicable equipment configuration is difficult. A credit formula may be straightforward while deciding which reporting perimeter and amendment apply requires interpretation. A technician may recognize that a new symptom invalidates an earlier diagnosis. These distinctions identify what AI must reason about, what authoritative services can decide and what information the solution must preserve.
+Separate knowledge that can be supplied from authority the organization must exercise. An analyst may be able to develop a pricing scenario using finance's assumptions without acquiring authority to approve the price. AI can expand the work a role performs while leaving specific decisions with their existing owners.
 
-Use counterfactual questions to expose hidden knowledge. Change one material fact and ask whether the action changes: a different customer entitlement, a revised contract, a substituted component, an absent measurement or a new deadline. The boundary between two apparently similar cases often teaches more than another happy-path description.
+## Explore what AI can do with the work
 
-When a reported bottleneck rests on partial records or an expert says they "just know," [the service-case reconstruction](references/service-case-reconstruction.md) shows how to recover an omitted handoff, expose a decision cue and turn it into a changed operation. It also shows where the same evidence is too weak to support a workload or savings claim.
+Give a capable current model a meaningful assignment, representative context and the tools needed to pursue it. Let it search, calculate, inspect files, run code or revise an artifact where those actions serve the task. Compare the finished work and the path taken with the expert's approach.
 
-## Inspect the systems people actually use
+Investigate failures at the right level. Missing access, conflicting versions and an underspecified outcome call for different changes from weak reasoning. If the team spends every session rebuilding the same context, investigate a shared workspace or maintained context. If the task depends on discovering the next question, try a goal-directed agent rather than encoding the interviewer's imagined sequence.
 
-Follow the operator through the product surfaces and, with appropriate access, investigate the corresponding administrative and developer capabilities. Learn which business record each system owns, how records are identified, which updates arrive when, and how a decision becomes an action. Screens and exports can reveal relationships that a systems inventory misses.
+Use the experiment to redesign work with the team. What can people now do themselves? Which handoffs disappear? What should become continuous? Where does review effort move? Test these choices inside a working day, including the specialist who receives the result. A useful workshop has participants work through the changed assignment and improve it.
 
-Investigate a seam through a concrete case. Does the installed-asset record describe the machine as sold or as currently maintained? Is a customer number a legal entity, billing account or service location? Does inventory availability mean physically present, unreserved, or available to this customer? Can a long-running case resume after another team changes the underlying record? Resolve the meaning before proposing a connector or a shared data model.
+## Turn discovery into a direction
 
-Explore affordances as well as deficiencies. The current product may support a richer workbench, native orchestration, delegated actions or a relevant extension mechanism that users have never adopted. A developer surface may expose an operation missing from the user interface. These discoveries can materially improve the solution and reduce custom work.
+Recommend the changed work and the next deployment or experiment. Explain the finding that changed your view, the capability demonstrated, and the remaining question that could change the choice. Produce the requested workflow, prototype, discovery synthesis or technical investigation. Use existing working material and complete authorized updates as part of the assignment.
 
-## Develop and challenge a changed operation
-
-Construct a target episode with the people doing the work. Show how information would arrive, how the system would investigate or prepare a decision, what the operator would see and do, and how the outcome would reach the authoritative business process. Use a sketch or prototype when interaction is hard to describe.
-
-Ask what becomes unnecessary, what becomes possible, and what new work appears. Test the design against the difficult case, including changed information and competing responsibilities. Find out whether people would use the proposal inside their working day, not merely whether they like it in a workshop. Resistance may expose a loss of discretion, a misaligned incentive or a genuine product flaw.
-
-Bring competing accounts together around the decision they affect. A sponsor's estimate and an operator's measurement may concern different populations. A policy owner and system owner may disagree about how authority is implemented. Resolve what can be resolved from the available record, then identify the particular observation or investigation that would change the design. Avoid turning unresolved details into an excuse to stop independent work.
-
-Deliver the understanding the task needs: a persuasive diagnosis, a current-to-target workflow, a solution hypothesis, a discovery session, or a technical investigation. Preserve useful sources and commitments in the working material. The main result should explain what the enterprise could do differently and what you learned that changes the next decision.
-
-When preparing a workshop, give the facilitator material they can use in the room: a case to reconstruct, questions whose answers change a choice, and an exercise or contrasting example where it helps people expose judgment. Tailor the session and information requests to what is already known. When a workspace is the requested output, let the team add later sessions, connect findings and develop new opportunities; a fixed set of example records is a demonstration, not continuing discovery support. Keep source details accessible without making record maintenance the main activity.
+Read [the release-planning investigation](references/release-planning-investigation.md) for an example where a convincing AI answer exposes a missing distinction and leads to a stronger delegation.

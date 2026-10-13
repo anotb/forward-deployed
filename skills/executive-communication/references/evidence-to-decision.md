@@ -1,33 +1,45 @@
-# From deployment evidence to a decision
+# From release-planning evidence to an expansion decision
 
-Use this example when the underlying work supports a useful recommendation but not the headline a sponsor initially wants. The company, records and figures are illustrative. They show an argument and possible outputs, not a measured deployment or a required narrative structure.
+This fictional example continues the release-planning deployment. Its numbers and records are invented. Use it when a promising AI workflow needs an investment argument that explains both the capability and the changed work.
 
-## The supplied evidence
+## What the team has learned
 
-A field-service team tests remote repair preparation for a single equipment family. In twelve matched sample jobs, preparation falls from 30 to 18 minutes per job; central specialist review grows from 6 to 14 minutes. Engineers use the result to arrive with a better-informed repair option, but stock still needs a live sales check. No observed record establishes fewer visits, incremental revenue or lower staffing cost. A maintained case integration is feasible; its receiving owner has not yet agreed support capacity.
+The agent assembles a customer-specific readiness brief, investigates conflicting release evidence and maintains tagged work items. The first replay confused managed-cloud readiness with private-deployment readiness. Discovery changed the assignment to reason by customer cohort and applicable evidence. On the two subsequent live launches, the agent correctly separated those cohorts and revised the relevant tasks when new assessments arrived.
 
-The sponsor asks for a deck announcing “40% lower service cost and readiness to scale.” Forty percent is the reduction in preparation time alone. Combined preparation and review falls from 36 to 32 minutes, about 11%, in this small sample. The sample excludes travel and repair labor. Both the denominator and the business consequence differ from the desired claim.
+Eight paired preparation sessions showed these average labor times:
 
-The point of view is stronger when it locates the next decision: preserve the useful repair preparation, resolve review burden and support ownership, then expand only where the operating design holds. Replacing the headline with “more validation needed” would throw away that useful choice.
+| Work | Previous method | AI workflow |
+| --- | ---: | ---: |
+| Assemble and investigate readiness | 120 min | 35 min |
+| Specialist review | 20 min | 50 min |
+| Combined | 140 min | 85 min |
 
-## A sponsor memo excerpt
+The team can now maintain an evidence-linked plan between meetings. Customer success can investigate a customer's eligibility without first asking product operations to reconstruct the release. Reviewers still spend time opening source documents because the brief does not place the applicable assessment beside each conclusion. The next product group uses a different work-item structure, but its platform owner has agreed to own the integration extension.
 
-> **Keep remote repair preparation focused on the supported equipment family while we reduce specialist review.**
+## Find the decision inside the evidence
+
+The sponsor wants to announce "70% faster launches." The preparation task is about 71% faster; the combined measured work is about 39% lower. Neither measures elapsed launch time. The stronger argument is that the team has delegated a substantial recurring assignment and can keep the result current across roles.
+
+Higher review time deserves investigation. Some is new work: reviewers now examine customer coverage that was previously implicit. Some is avoidable reconstruction caused by the artifact. Removing the additional scrutiny would improve the time metric while weakening the service. Putting the applicable evidence next to the conclusion can improve both the work and the review.
+
+The recommendation is therefore to extend the workflow to the next product group while improving the review artifact and adapting its work-item mapping. That group supplies a useful test of transfer: can the same assignment work with a different local process? Continuing indefinitely in the first group would answer less of the expansion question.
+
+## Memo excerpt
+
+> **Extend AI release planning to the next product group and retire its duplicate status assembly.**
 >
-> The sample suggests that engineers can prepare an informed repair option sooner, but part of their saved effort moves to central specialists. Combined preparation and review takes 32 minutes per sampled job, compared with 36 previously. We have not established lower total service cost or fewer site visits.
+> The first group has used the agent to keep a customer-specific plan current across two live launches. It investigates conflicting evidence, distinguishes deployment cohorts and updates the resulting work. This lets product operations and customer success act from the same release picture.
 >
-> Use the next increment to find what reviewers have to reconstruct and try a revised review experience on representative jobs. Case integration is one possible remedy; its feasibility alone does not show that it removes that work. Preserve the sales team's live stock check. The result should determine which change merits implementation and let the receiving service owner assess its support demand before coverage expands. The work should improve the evidence and handoff the reviewer uses, not simply encourage faster approval.
+> In eight paired sessions, combined preparation and review fell from 140 to 85 minutes, about 39%. Review grew as the team examined customer coverage more explicitly. The next increment should place applicable source evidence beside each readiness conclusion so specialists spend their time resolving judgment, rather than reconstructing the investigation.
 >
-> Broadening equipment coverage now would increase variation before this constraint is resolved. Continuing the supported cohort gives us a useful service and a setting in which to examine that constraint. If reviewer effort remains high because the equipment requires specialist reasoning each time, price and staff the service accordingly or choose a narrower population.
+> Expand into the next group with its platform owner responsible for the integration extension. Adapt the tagged-task mapping and use the AI brief as the source for its readiness meeting, replacing the separate weekly assembly. Compare complete work accepted by the team, effort across roles and the ability to stay current when sources change. Keep customer launch commitments with product leaders.
 
-The excerpt makes a recommendation without disguising an unresolved support decision as completed work. The full artifact would include the requested commitment and resource details if supplied. It should not invent a funding amount to make the memo look finished.
+The memo makes a concrete recommendation without turning task savings into a launch-speed claim. It also names the work that should disappear. Adding an AI artifact while retaining every old reporting activity would dilute the benefit.
 
-## Choose the form for the decision
+## Exhibits that carry the argument
 
-For a sponsor deck, two exhibits may carry this argument better than separate “benefits,” “risks” and “roadmap” slides. A before/after stacked bar shows preparation and review labor on the same scale, with a caption limiting the inference to twelve matched sample jobs. A case sequence shows the engineer's prepared option, the specialist's unresolved question and the sales stock check; it reveals where the proposed integration helps. The support decision belongs beside the commitment it affects. A technical appendix can show evidence access and recovery behavior without loading the sponsor narrative with endpoint names.
+Use a release episode to show the agent revising a customer cohort after a new assessment, including the resulting task update. This makes persistent work visible. A before/after flow can show customer success investigating directly and product operations maintaining the common picture. A stacked labor comparison can show the preparation and review figures together.
 
-For an opening conversation, the audience may need a thesis instead of a release decision: “The opportunity is to arrive at the site with a defensible repair option. The constraint may be specialist review, not preparation speed.” Walk through one job, then invite the service leader to test whether the same constraint exists in their work. Do not imply that a constructed example is their operational evidence.
+Place the expansion decision beside the work it funds: adapting the next group's task structure, improving evidence placement and replacing duplicate status assembly. Keep the single replay failure and resulting design change in the evidence discussion; it explains why the capability improved. Detailed traces belong in backup for those assessing the implementation.
 
-For a technical walkthrough, follow the case through the source, recommendation, review and commercial check. Stop at the seam where a changed part invalidates the prior check. That makes the design challenge visible to the receiving engineer; the executive arithmetic alone would not.
-
-For external writing, a supportable sentence is: “This illustrative case shows why faster preparation can still leave a service constrained by expert review.” A worked artifact can explain a product capability. A customer result, productivity claim or proven commercial outcome requires corresponding evidence. The distinction permits a specific, persuasive explanation without manufacturing success.
+For an opening deck, the same case supports a useful thesis: "Give teams a shared AI process that investigates and maintains the plan they act on." For an executive decision, show the observed work and the particular expansion being recommended. The purpose of the artifact determines how much of the case the audience needs.
