@@ -37,9 +37,3 @@ AI can make that expertise available as repeated practice around the learner's u
 This creates a new recurring service for the provider and expands employees' access to coaching. Its substance is the adaptive exercise and feedback, including consequences that develop over several turns. Merely changing names in a standard script would add little.
 
 Build one rehearsal from a situation the facilitators know well. Have them test whether it responds coherently to different approaches and gives useful feedback, then let learners use it before a relevant assignment. Compare performance on a fresh scenario and observe whether they return for preparation. Price ongoing customer-context updates and facilitator support alongside model use. That first experience tests educational value and recurring demand before building a large scenario catalog.
-
-## Reading that can widen the design
-
-[OpenAI's enterprise research](https://openai.com/index/introducing-b2b-signals/) discusses deeper, delegated work across business functions. [Its research on changing work](https://openai.com/index/unlocking-new-ways-of-working/) examines recurring tasks outside workers' usual occupations. These support looking at the assignment and the employee's expanding role when finding opportunities.
-
-[Anthropic's agent patterns](https://www.anthropic.com/engineering/building-effective-agents) help distinguish a known sequence from work requiring adaptive investigation. [Its context-engineering guidance](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) explains how a continuing assignment can find and retain the information it needs. The concepts above are original design examples, not reported customer results from those sources.

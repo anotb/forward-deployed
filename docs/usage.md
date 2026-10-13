@@ -25,7 +25,7 @@ Invoke a skill by name or describe the assignment. Use get-started when the work
 | [executive-communication](../skills/executive-communication/SKILL.md) | "Make the proposed AI service and investment choice clear in a sponsor presentation." |
 | [field-productization](../skills/field-productization/SKILL.md) | "Turn what worked in these deployments into reusable skills, integrations and product behavior." |
 
-The worked references illustrate decisions, including which changed facts would change the recommendation. Read the ones that help with the current assignment. [Practice and sources](practice.md) explains the OpenAI and Anthropic material behind the methods.
+The worked references illustrate decisions, including which changed facts would change the recommendation. Read the ones that help with the current assignment.
 
 ## Make the task concrete
 

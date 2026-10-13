@@ -5,7 +5,7 @@ description: Help an enterprise put AI to work through broad fluency, role-speci
 
 # Adoption and scale
 
-Build an organization's ability to work with AI and keep developing better methods. Combine broad access and practical fluency with focused workflow redesign. Enterprise chat, coding tools, shared workspaces, and integrated agents can each serve the goal.
+Help people work with AI and develop better methods. Combine broad access and practical fluency with focused workflow redesign. Enterprise chat, coding tools, shared workspaces, and integrated agents can each serve the goal.
 
 Inspect the available products, context access, sharing, and execution surfaces. Try demanding tasks with employees and produce working material they can use. A training plan alone is insufficient when the assignment is to help a team adopt the capability.
 
@@ -21,7 +21,7 @@ Match support to role and experience. Broad introductory practice gets people st
 
 Look for employees already doing useful, surprising work with AI. Study their task framing, context, tool use, corrections, and finished artifacts. Pair them with domain experts and colleagues who can test the method on different work. Give them time and practical support to develop it.
 
-Package what travels: a task skill, workspace context, worked example, evaluation case, small tool, or reusable artifact. Include the assumptions another person needs to adapt it. Have someone outside the original team use it without its author's constant help, then improve the asset from that attempt.
+Make the working method reproducible: its trigger, outcome, maintained context, tool access, task state, and how people inspect and complete the work. Package these in a skill, workspace, tool, or reusable artifact. Have someone outside the original team complete a task without its author's constant help, then improve the method from that attempt.
 
 Make discovery easy through working demonstrations, role communities, and a small maintained collection of useful assets. Give promising ideas a route to engineering when repeated context assembly, durable work, or system actions justify integration. Keep local experimentation open and retire methods that no longer help.
 
@@ -43,6 +43,6 @@ Choose the next team or task for the value it can gain and what it will teach ab
 
 ## Leave the organization able to improve it
 
-Put access, shared assets, technical changes, and domain corrections with people who can maintain them in normal work. Have the team onboard a colleague, improve a skill or context source, and handle a failure. Keep current product discoveries flowing into practice.
+Give domain experts and technical owners a practical way to improve the method. Put corrections into the maintained context, skill, tool, or workflow that caused the problem. Have the team onboard a colleague, make such a change, and use it on the next task. Keep current product discoveries flowing into practice.
 
 Deliver the working session, shared asset, changed workflow, or next deployment. Leave people able to do more and develop the next method themselves.

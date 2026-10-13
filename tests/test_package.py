@@ -165,6 +165,7 @@ class PackageTests(unittest.TestCase):
                 self.assertIn('forward-deployed/' + expected_mcp, names)
                 self.assertNotIn('forward-deployed/' + ('.mcp.json' if host == 'chatgpt' else 'mcp.json'), names)
                 self.assertNotIn('forward-deployed/docs/verification.md', names)
+                self.assertNotIn('forward-deployed/docs/practice.md', names)
                 self.assertIn('forward-deployed/skills/adoption-and-scale/references/workforce-practice.md', names)
                 self.assertNotIn('forward-deployed/skills/adoption-and-scale/references/unlisted.md', names)
                 for relative in selected_files(self.root, host=host):
@@ -183,6 +184,7 @@ class PackageTests(unittest.TestCase):
             self.assertFalse(any('/.env' in name or '/research/' in name or name.startswith('forward-deployed/references/') for name in names))
             self.assertFalse(any(part in name for name in names for part in ['/examples/', '/docs/unlisted.md', '/tests/notes.md']))
             self.assertIn('forward-deployed/docs/usage.md', names)
+            self.assertIn('forward-deployed/docs/practice.md', names)
             self.assertIn('forward-deployed/studio/server/mcp.ts', names)
             self.assertIn('forward-deployed/studio/package-lock.json', names)
             self.assertIn('forward-deployed/docs/export.md', names)

@@ -14,7 +14,7 @@ Try the broader assignment with a capable model and harness. The result may show
 
 ## Use a case that exposes the work
 
-Choose an isolated copy of a service with an ordinary login path and a refresh-token path. Supply the current source, migration guide, repository instructions, acceptance checks, and available test infrastructure. Keep the expected application behavior independent of the candidate's own tests.
+Choose an isolated copy of a service with an ordinary login path and a refresh-token path. Supply the current source, full relevant migration guidance, repository instructions, acceptance checks, and available test infrastructure. A working integration in another service can be a useful reference. Keep the expected application behavior independent of the candidate's own tests.
 
 In the illustrative fixture, replacing the SDK import makes the build pass. It also changes how a refresh failure is reported. The application must still return the established unauthenticated response and clear the expired session. This is the difference between a syntactic migration and a completed engineering assignment.
 
@@ -28,7 +28,7 @@ Then interrupt the task after a partial edit. On resumption, the candidate shoul
 |---|---|
 | The agent completes the migration and verifies both flows | Delegate migrations of this class through the tested environment; investigate which variations need different context or tools. |
 | It solves the work after receiving the existing service acceptance guide | Package that guide or make it discoverable; the original failure does not establish a model limit. |
-| It makes the right edit but cannot run the required identity test environment | Resolve the test interface or retain that verification with the service owner; inspect how much review work remains. |
+| It makes the right edit but cannot run the required identity test environment | Expose the existing test command and environment to the agent where authorized, then rerun. Identify verification that still needs the service owner. |
 | It loses partial work after interruption | Examine session and workspace persistence before adopting unattended fleet execution. |
 | A smaller configuration needs repeated expert repairs | Compare total accepted-change cost with the stronger configuration, including reviewer time. |
 
@@ -42,4 +42,4 @@ For engineer-initiated work, recommend the existing coding product if it complet
 
 For recurring fleet work, compare the product's automation interface, a managed agent runtime, and an owned execution service on scheduling, workspaces, recovery, and repository integration. Use the successful task as the workload for that comparison.
 
-Anthropic's [long-running harness example](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents) shows why recoverable progress and executable feedback matter across sessions. Its [agent evaluation guide](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) distinguishes the agent's account of completion from the environment's resulting state. Apply those ideas to the selected runtime rather than copying a fixed harness.
+When a stronger configuration becomes available, replay the migration without an older import-by-import task split or forced session reset. Compare complete service behavior and recovery. Keep a mechanism that still earns its place; remove one whose original failure no longer appears. The migration contract and repository permissions remain the same during this comparison.

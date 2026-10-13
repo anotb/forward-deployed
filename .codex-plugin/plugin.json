@@ -1,6 +1,6 @@
 {
   "name": "forward-deployed",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "Skills for forward-deployed engineering (FDE): discovery, AI solution design, enterprise integration, agent evaluation, delivery and adoption.",
   "author": {
     "name": "Rahil Banthia",
@@ -112,7 +112,7 @@
         "commerce_description": "The plugin does not sell products, accept payments, execute trades or transfer funds."
       },
       "publication": {
-        "release_notes": "0.6.4: Reworks all 16 skills around enterprise AI adoption, substantial delegated work, workflow redesign and new services. Replaces repair-quote examples with enterprise AI deployment cases, sharpens model and harness exploration, context design, outcome evaluation and workforce practice, and removes repetitive qualification and process instructions. Bundles an updated OpenAI and Anthropic source guide with both host packages. Studio preview: https://github.com/anotb/forward-deployed/releases/download/v0.6.3/forward-deployed-credit-fde-16s.mp4"
+        "release_notes": "0.6.5: Updates skill guidance for business context, simpler agent designs, evaluation quality and recurring work. Keeps maintenance sources in one repository note and removes them from installed packages. Studio preview: https://github.com/anotb/forward-deployed/releases/download/v0.6.3/forward-deployed-credit-fde-16s.mp4"
       }
     }
   }

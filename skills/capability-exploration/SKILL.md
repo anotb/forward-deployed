@@ -23,11 +23,13 @@ Investigate unfamiliar approaches when they could change the outcome. A workforc
 
 ## Test the whole configuration
 
-Begin with a capable configuration suited to the difficult work, clear instructions, useful context, and tools that let it inspect and change the relevant environment. This establishes a credible capability ceiling. Then improve economics and operating fit while preserving the result that matters.
+Begin with a capable configuration suited to the difficult work and references that convey the intended result: business definitions, working examples, source code, executable acceptance checks, or a detailed design. Keep useful detail accessible as the task develops. This establishes a credible capability ceiling; then improve economics and operating fit while preserving the result that matters.
 
-Let the system work far enough to expose its capabilities. It may need to investigate, write code, run calculations, inspect a rendered artifact, recover from an error, or revise its plan. A one-turn answer cannot establish performance on such an assignment. Supply feedback it can use, such as test failures, business validation results, or a source-system response.
+Let the system investigate, create, inspect its results, and revise its approach. When it stalls, identify the missing capability: can it run the application, inspect logs, query the relevant state, or exercise the receiving workflow? Improve that access or interface and retry the assignment. More instructions to verify work cannot replace a usable verification path.
 
 Record the configuration and inspect both the delivered artifact and the resulting environment. Measure completion, quality, elapsed time, human repair, and cost at the level of accepted work. Use comparable tasks when comparing candidates. Repeat variable results and distinguish shortcomings in reasoning from missing context, weak tool descriptions, access failures, or runtime behavior.
+
+When upgrading a model or runtime, also test a simpler arrangement. Fixed task splits, forced context resets, or repeated review loops may compensate for a limitation that has changed. Remove them when representative results support it, while retaining business requirements and enforced permissions. Test whether the new configuration can own a larger useful assignment as well as perform the old one faster.
 
 Choose additional probes from the claim the design depends on. Test resumption if tasks cross sessions; exercise the receiving system if the value depends on an action; inspect editability if the deliverable is a working document. Keep simulated behavior and executed product behavior distinguishable.
 

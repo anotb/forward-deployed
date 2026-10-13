@@ -28,6 +28,8 @@ Suppose the skill improves its handling of executed amendments. Keep earlier com
 
 Test the upgrade against both agreements. The shared method should produce the appropriate calculation for each; its configuration should not silently substitute consolidated earnings for property income.
 
+When the model changes, compare the same cases with and without the old calculation recipe, retaining identical agreements, tools, and permissions. If both handle the arithmetic but still need the amendment relationship supplied, simplify the recipe and retain that domain context. The customer's definition and review authority remain requirements even when they produce no difference in a small test set.
+
 ## Check whether the next deployment gets easier
 
 Assume the effort is:

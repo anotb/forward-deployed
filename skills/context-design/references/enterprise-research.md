@@ -14,8 +14,10 @@ The agent needs to discover whether the dashboard measures the same outcome befo
 
 | Source | Relevant fragment and scope |
 |---|---|
+| Owner's metric definition C1 | Successful onboarding requires both a ready workspace and the intended member's access. Count newly created production workspaces. |
 | Dashboard definition D2 | Completion counts distinct workspaces with `setup_complete`; denominator is newly created production workspaces. |
 | Event schema E4 | The new client emits `workspace_ready` for the successful path. `setup_complete` remains on the old client. |
+| Producing code P4 | The client emits `workspace_ready` after creation succeeds, before the separate member-grant operation completes. The dashboard query still filters on `setup_complete`. |
 | Workspace query Q1 | In the same production cohort, 84 of 100 new workspaces reached ready state; the dashboard counts 43. Query and source snapshot are retained. |
 | Access audit Q2 | 12 of those 84 ready workspaces lacked the intended member grant at the observation cutoff. |
 | Support cases S1–S6 | Four cases concern the member-grant delay in production. Two describe a separate sandbox sign-in issue. |
@@ -26,7 +28,7 @@ The dashboard has a measurement defect, and a separate access problem affects pa
 
 ## Design the information path
 
-Provide the task, cohort definition, available sources, and tool descriptions initially. Let the agent inspect the dashboard definition, follow its event names to the schema, and query the underlying states. Load relevant support cases with environment and release metadata so similar language does not merge unrelated problems.
+Provide the task, canonical metric definition, available sources, and tool descriptions initially. Let the agent follow the dashboard query through event production and compare that behavior with the owner's intended outcome. Load relevant support cases with environment and release metadata so similar language does not merge unrelated problems.
 
 Return query results with the denominator, observation cutoff, and source handle. Keep the calculation reproducible. Search can identify R4 and W2, but the complete applicability statement must be available when the agent interprets them.
 
@@ -39,7 +41,8 @@ Hold the task and candidate configuration steady while changing the input or acc
 | Contrast | What it tests |
 |---|---|
 | Initial dashboard and complaint search only | Does the agent notice the missing metric definition and request it? |
-| Add D2 and E4 | Does it investigate the measurement change instead of treating the chart as a stable outcome? |
+| Add D2, E4, and P4 | Does it trace the measurement change into producing code instead of treating the chart as a stable outcome? |
+| Add C1 | Does it distinguish the intended metric from both the old chart and the newly named event? |
 | Add Q1 without Q2 | Does it distinguish workspace readiness from successful user access? |
 | Add the complete packet | Does it separate the measurement defect, member-grant delay, and unrelated sandbox cases? |
 | Remove W2's sandbox qualification | Does the representation loss change the proposed action? |
@@ -53,4 +56,4 @@ A useful result identifies the measurement repair, explains the production acces
 
 Preserve the cohort and observation cutoff in task memory, alongside completed queries and unresolved hypotheses. If later audit data shows the grants completed after a delay, revise the severity and affected-user analysis while retaining the measurement finding.
 
-Anthropic's [context engineering article](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) describes combining initial orientation with information retrieved as an agent works. Here, that choice allows the agent to discover a broken measurement definition and then investigate the operational problem it had obscured.
+If the product lead clarifies that this study excludes internal training workspaces, recompute the affected results and retain that correction with the study's scope where reuse is authorized. Make it available for the next relevant analysis without redefining the organization's onboarding metric. Keep this reusable context separate from progress markers such as the last inspected support case.

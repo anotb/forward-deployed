@@ -39,7 +39,7 @@ Give the assistant the business situation, available evidence, and the result yo
 
 The skills encourage exploration of the current environment before settling on a design: inspect available connectors and tools, consult current product documentation, and run a small permitted experiment where it resolves uncertainty. They also use the host's document, presentation, spreadsheet, browser, and coding capabilities when those help deliver the result. No particular companion plugin is required.
 
-The guidance and worked references are bundled. Each skill can be used directly, without the hosted workspace. Examples cover engineering migrations, incident investigation, enterprise research, workforce practice and AI investment choices. The [usage guide](docs/usage.md) gives concrete assignments; [practice and sources](docs/practice.md) connects the methods to OpenAI and Anthropic's deployment and engineering work.
+The guidance and worked references are bundled. Each skill can be used directly, without the hosted workspace. Examples cover engineering migrations, incident investigation, enterprise research, workforce practice and AI investment choices. The [usage guide](docs/usage.md) gives concrete assignments. The repository keeps a [maintenance reading list](https://github.com/anotb/forward-deployed/blob/main/docs/practice.md).
 
 ## Workspace and Field Lab
 

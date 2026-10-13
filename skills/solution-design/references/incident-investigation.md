@@ -12,7 +12,7 @@ For this deployment, the agent has standing authority to disable an allowlisted 
 
 ## Give the investigation room to reason
 
-The incident begins with elevated checkout failures shortly after a release. Available tools expose deployment metadata, service ownership, cohort metrics, selected log queries, configuration history, and the flag operation.
+The incident begins with elevated checkout failures shortly after a release. Available tools expose deployment metadata, service ownership, cohort metrics, selected log queries, configuration history, and the flag operation. If the metrics tool only returns a service-wide average, add the supported cohort filter needed to test the explanation. Repeating "investigate thoroughly" cannot supply that missing observation.
 
 The agent should form and distinguish plausible explanations. A temporal association with a release is useful, but the affected cohort can be more informative. It can compare errors across flag exposure, application version, and region, then inspect the relevant change. Calculations and query execution run in their existing systems.
 
@@ -28,7 +28,7 @@ The incident application owns incident status and responder participation. Obser
 
 Use a managed runtime if its current session, networking, tool, and recovery interfaces meet this workload. Keep the enterprise tools behind services that enforce their existing permissions. Own more of the runtime when a demonstrated requirement demands it, such as an execution environment or lifecycle behavior the managed service cannot supply.
 
-The model's active context can contain the current hypotheses and decisive observations while source results remain recoverable elsewhere. Anthropic's [Managed Agents design](https://www.anthropic.com/engineering/managed-agents) provides one example of separating persistent session records, the reasoning harness, and execution environments. The general design question is which failures the chosen platform can recover from without losing the business operation.
+The model's active context can contain the current hypotheses and decisive observations while source results remain recoverable elsewhere. On resumption, the agent can inspect the relevant observations and pending mitigation, then determine what changed. Exercise this behavior through the chosen platform rather than adding a separate session store by default.
 
 ## Exercise the consequential path
 

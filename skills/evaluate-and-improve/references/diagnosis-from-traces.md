@@ -41,4 +41,4 @@ Give reviewers the working artifact, including query results and definitions. Te
 
 If experts disagree, locate the disagreement: a source fact, an analytical error, an alternative explanation, or a different appetite for the proposed experiment. Correct the grader when it rewards a favored narrative over supported analysis.
 
-Anthropic's [agent evaluation guidance](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) distinguishes the run's transcript from its resulting environment and separates capability tests from regression tests. Those distinctions inform this diagnostic approach.
+Suppose the automated grader reverses its verdict when shown the identical report and evidence again. Fix that inconsistency before attributing a small score gain to the agent. Repeating candidate runs would otherwise mix grader instability with variation in the investigation itself.

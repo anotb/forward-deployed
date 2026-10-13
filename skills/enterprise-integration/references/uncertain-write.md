@@ -37,10 +37,13 @@ The intent identifies this requested workspace. Another legitimate workspace req
 | The provisioning service accepts operation P-82, but the response is lost. | The caller has an uncertain result. A timeout does not establish failure. |
 | The runtime restarts and looks up the recorded intent. | P-82 is running; keep following that operation. |
 | P-82 returns workspace W-93 with health passed but access pending. | The workspace exists, but the employee's assignment is unfinished. |
-| The supported access check confirms the employee's intended role. | Return W-93's access details and record the request as completed. |
+| The supported access check confirms the employee's intended role. | Update the native request with W-93's access details. |
+| The request system acknowledges the completed handoff. | Mark the item handled. If that update failed, retain the handoff as pending without provisioning again. |
 | The original initiating event is delivered again. | Resolve it to the completed request; do not create another workspace. |
 
 The user receives a working environment. The agent's final statement follows the receiving-system result, not the fact that a create call returned successfully.
+
+If a scheduled run discovers these requests, retain the source's supported cursor and the pending request IDs. A failed next-page read leaves that portion unread. Once request 731 is durably pending, discovery can continue while P-82 runs. Finishing the scan does not complete request 731; its recorded outcome and handoff determine that.
 
 ## A changed request is a different decision
 

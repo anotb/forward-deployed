@@ -4,7 +4,7 @@ from pathlib import Path
 RUNTIME_FIXED = {
     'plugin.json', '.codex-plugin/plugin.json', '.claude-plugin/plugin.json',
     'README.md', 'LICENSE', 'PRIVACY.md', 'TERMS.md',
-    'docs/installation.md', 'docs/usage.md', 'docs/export.md', 'docs/practice.md', 'assets/icon.svg',
+    'docs/installation.md', 'docs/usage.md', 'docs/export.md', 'assets/icon.svg',
     'mcp.json', '.mcp.json',
 }
 HOST_MANIFESTS = {'plugin.json', '.codex-plugin/plugin.json', '.claude-plugin/plugin.json'}

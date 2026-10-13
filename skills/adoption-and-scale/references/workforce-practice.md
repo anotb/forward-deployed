@@ -24,12 +24,10 @@ Pair a skilled AI user with a domain expert and a colleague who has not seen the
 
 > Investigate this product question using the supplied research and usage evidence. Test competing explanations, retain source links, and distinguish user segments where their needs differ. Develop alternatives and produce a runnable prototype for the most promising test. Explain which assumption the prototype will help the team examine.
 
-The workspace also needs maintained product definitions, source access, and examples of useful investigations. A prompt alone cannot supply those dependencies.
+Give the workspace maintained product definitions, source access, prototype tools, and a shared destination for unfinished and completed investigations. If a researcher discovers that “small team” includes two different customer populations, correct the definition and affected analysis where the next run will read them.
 
 Have the colleague use the asset on another question. Record what they had to discover and improve the shared version. Share the completed work through a role community; support contributors with time and access to technical help. Promote methods that colleagues can adapt successfully.
 
 ## Look for the next capability
 
 Ask what participants can now do that they previously deferred or handed off. A product manager may test a design before requesting engineering capacity; an analyst may investigate several causes instead of reporting a change. Follow whether these activities recur and improve decisions.
-
-OpenAI's [enterprise usage research](https://openai.com/index/introducing-b2b-signals/) describes deeper delegation and specialized use, while [its study of new ways of working](https://openai.com/index/unlocking-new-ways-of-working/) examines recurring work across occupational boundaries. These observations motivate looking for changes in task depth and role scope. Judge this program through its own work samples and outcomes.

@@ -21,13 +21,13 @@ Inspect the customer's available product, administration, and developer surfaces
 
 Choose among native extensions, APIs, events, connectors, extracts, and supported browser operation according to the work. An overnight extract may be enough for research; provisioning requires a command and a way to establish its result. Preserve an incumbent application's useful workflow instead of duplicating it by default.
 
-Separate context reads from commitment checks. Cache stable descriptive material where useful; refresh the facts that determine whether the action remains valid. Use events to continue work when waiting is part of the service, with handling for repeated or out-of-order delivery.
+Separate context reads from commitment checks. Cache stable descriptive material where useful; refresh the facts that determine whether the action remains valid. For recurring work, retain a position per source and account for pagination, late updates, and repeated events. A failed read leaves an unread interval; it cannot establish that nothing changed.
 
 ## Give the agent effective tools
 
 Expose operations that preserve business meaning. A query returning an employee's project membership, role eligibility, and source revision can be more useful than unrelated field lookups. A supported provisioning command can carry validations and downstream events that direct table writes would bypass.
 
-Make the interface intelligible: what it does, which identifiers it accepts, required conditions, and what its response proves. Return useful status, source references, versions, and errors. Distinguish correction, denial, pending work, and uncertain outcome so the agent can respond appropriately. Test tool use on complete assignments; add a wrapper only when it solves an observed problem.
+Make the interface intelligible through its operations, parameters, result types, and descriptions. Expose the query or action choices the task needs. Return useful status, source references, versions, and errors that distinguish correction, denial, pending work, and uncertain outcome. Test tool use on complete assignments; repair ambiguity in the interface before adding repeated instructions about how to call it.
 
 Large results should offer summaries or selectable records plus handles for deeper inspection. Preserve the detail the next decision needs. A successful tool call can still be an unusable interface if its output hides the relevant condition or overwhelms the context.
 
@@ -42,6 +42,8 @@ Align caches, derived summaries, and shared task state with the source access bo
 Keep proposed intent, attempted command, and confirmed external result distinguishable. Persist an operation reference when the receiving interface supports it. After a timeout, reconcile the authoritative state before repeating a potentially completed action. Reuse the same idempotency reference for the same request; changing it can create a second effect.
 
 For asynchronous operations, retain the returned job or resource identifier and continue through its documented status mechanism. "Accepted" can mean queued. Verify the result at the level promised to the user.
+
+In a read-then-act workflow, mark an item handled only after its required effect is confirmed. If intake advances ahead of execution, preserve the item as durable pending work. After a lost response, reconcile that effect before moving the completion position or sending again. Existing queues or workflow state can supply this behavior.
 
 Use native version and concurrency checks where available. Across systems, describe partial completion and the next valid action. Reversing a completed operation can itself be a new business action. Preserve confirmed effects during retry, cancellation, or manual takeover.
 

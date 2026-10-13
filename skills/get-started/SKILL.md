@@ -54,4 +54,4 @@ The optional Studio connects sources, opportunities, requirements, delivery work
 
 When invoked after installation with no assignment, offer useful starting points: bring discovery notes, continue an engagement or try Studio's editable sample. Start the sample without requiring sign-in or saved storage. A focused skill task can proceed in the conversation and the user's existing tools.
 
-Finish with a recommendation and usable work: a developed opportunity, a tested design, an engineering brief, a working practice or a decision-ready artifact. Explain what the result changes and the next consequential step. Consult [methods and source notes](../../docs/practice.md) when deeper background would help.
+Finish with a recommendation and usable work: a developed opportunity, a tested design, an engineering brief, a working practice or a decision-ready artifact. Explain what the result changes and the next consequential step.

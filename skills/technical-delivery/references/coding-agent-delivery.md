@@ -26,8 +26,6 @@ Use the available host's persistence and continuation before building another jo
 
 Interrupt a run after edits and before its final tests. Resume it with a fresh session and check that it completes the remaining work without discarding edits or declaring success from an earlier partial check. If review creation can lose its response, reconcile the branch's existing review artifact before creating another.
 
-Anthropic's [long-running agent engineering](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents) describes environment setup, persistent progress, and end-to-end verification in its coding experiments. Apply those mechanisms where the chosen runtime needs them; its particular files and session recipe are not requirements for this deployment.
-
 ## Resolve the dependency that changes the release
 
 Suppose local tests pass, but the coding environment cannot obtain the test-tenant identity. Local fakes can establish unit conversion; they cannot establish the authentication path.

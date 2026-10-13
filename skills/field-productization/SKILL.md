@@ -9,11 +9,11 @@ Make a field capability work beyond its original author and setting. Inspect the
 
 ## Find the part worth reusing
 
-Describe the job before choosing the component. A successful research workflow may depend on a method for testing competing explanations, access to the right sources, and a useful artifact. Copying its prompt captures only part of the capability.
+Describe the job before choosing the component. A research workflow depends on testing explanations, source access, and a useful artifact; its prompt captures only part of that capability.
 
 Compare cases along the dimensions that change behavior: task, domain meaning, context, tools, output, and lifecycle. Separate stable method from local knowledge and system-specific action semantics. Use a materially different task or deployment to challenge the proposed abstraction. When one case exposes a compelling platform gap, build the smallest useful response and use the next case to test its reach.
 
-Preserve surprising successes as well as failures. An employee who combines analysis, coding, and domain context may have invented a method other teams can use. Productization can make that method teachable without turning it into a rigid application.
+Capture discoveries while doing the work: a successful method, source quirk, diagnostic test, or reason an approach changed. Turn the useful lesson into the maintained skill, context, tool, or example another team will use. Preserve what changes the next attempt rather than publishing a transcript of every run.
 
 ## Package the capability at the right layer
 
@@ -32,7 +32,7 @@ Repair defects in existing promises before treating them as new features. Inspec
 
 State what the consumer supplies, what the capability completes, and which variations it supports. Include the context and access assumptions that otherwise live in the author's head. Let the next team run a representative task and a difficult variation. Inspect its result and the adaptations it needed.
 
-For a skill, have another user or agent use it without its author's explanation. For a tool, exercise the receiving system's behavior. For a harness, test continuation against persisted state. For an evaluation set, check that graders recognize good solutions from another implementation.
+For a skill, have another user or agent use it without its author's explanation. Exercise tools against the receiving system and test harness continuation against persisted state. Check that evaluations recognize good solutions from another implementation.
 
 Keep reusable learning separate from customer data and rights. Permission to deliver a deployment does not grant permission to redistribute its documents, policies, traces, or examples. Transfer the general method using permitted material or independently constructed cases that retain the behavior being tested.
 
@@ -40,7 +40,9 @@ Keep reusable learning separate from customer data and rights. Permission to del
 
 ## Support variation and change
 
-Provide extension points for differences already encountered or likely to matter next, such as a source adapter, metric definition, or output destination. Avoid a universal schema that hides incompatible business meanings behind similar field names.
+Provide extension points for differences that matter, such as a source adapter, metric definition, or output destination. Keep incompatible business meanings explicit.
+
+After model improvements, compare performance with and without older capability guidance or scaffolding. Retire workarounds that no longer help. Keep current domain definitions, user preferences, authority, and security contracts: their validity does not depend on a quality-score gain.
 
 Choose an owner who can maintain the asset and receive field corrections. Version behavior when consumers rely on it, and identify what an upgrade changes for existing configuration, open work, and evaluation cases. Preserve old decision evidence where later changes alter its interpretation. Make the supported migration practical enough that teams can adopt the improvement.
 

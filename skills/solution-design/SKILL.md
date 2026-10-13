@@ -17,19 +17,19 @@ Distinguish the target service from its first deployment. Narrow by population, 
 
 ## Design the intelligence and its environment together
 
-Identify what the model needs to interpret, investigate, create, and verify. Give it clear outcomes, business context, usable tools, and feedback from the environment. Start with the control flow the work needs: an explicit sequence for predictable processing, an adaptive loop when evidence determines the next step, or a combination.
+Identify what the model needs to interpret, investigate, create, and verify. Make the relevant environment accessible: a running application, source records, logs, calculations, and actions that produce inspectable results. Start with the control flow the work needs: an explicit sequence for predictable processing, an adaptive loop when evidence determines the next step, or a combination.
 
 Keep exact calculations and transaction validation in executable components. Let the model formulate hypotheses, choose informative queries, interpret uneven evidence, and revise its approach. Define a meaningful finishing condition and what useful progress looks like when a required fact remains unavailable.
 
-Use parallel workers when independent investigations, separate workspaces, or specialized context improve the result. Give each a concrete assignment and an owner for integration. Shared assumptions, dependent edits, and reconciliation costs can outweigh the benefit. Test the arrangement on the work.
+Use parallel workers when independent investigations or separate workspaces improve the result, with an owner for integration. A separate evaluator can help when the task needs judgment beyond executable checks; give it the work, criteria, and means to inspect the result. Test whether its feedback improves accepted outcomes enough to justify the coordination and latency.
 
-Choose context access deliberately. A bounded dossier may fit directly; a changing corpus may need search and selective inspection; current business state may come from a query. Shape tool results so the agent can determine what happened and choose its next step.
+Choose context access deliberately. A bounded dossier may fit directly; a changing corpus may need search and selective inspection; current business state may come from a query. Supply detailed reference artifacts when they convey the business or product requirement better than prose. Shape tool results so the agent can determine what happened and choose its next step.
 
 ## Allocate runtime responsibilities
 
 Decide who supplies execution, tool connections, persistent sessions, scheduling, recovery, and observability. These responsibilities can reside in one product. Compare a managed service with an owned runtime when that choice affects the workload; do not build facilities already supplied well by the chosen platform.
 
-For continuing work, distinguish the session record, the model's current context, and the business record. Preserve enough progress to resume, including produced artifacts, verified results, unresolved questions, and pending external operations. Refresh facts that could invalidate the next action. A larger context window does not establish recovery after a process failure.
+For continuing work, distinguish the session record, the model's current context, and the business record. Preserve artifacts, verified results, unresolved questions, and pending external operations so the task can resume. For recurring work, include which source intervals were read and which effects were completed. Use the selected platform's durable facilities and refresh facts that could invalidate the next action.
 
 Map data and execution across the proposed environments. State where inference, source access, generated files, and retained records live. Use that concrete flow to resolve networking, deployment, ownership, and operating requirements.
 
@@ -45,6 +45,6 @@ Specify consequential write behavior: source-version checks, concurrent changes,
 
 Trace the chosen arrangement through a normal assignment and the failure most likely to invalidate it. Inspect the experience, delivered work, and receiving-system result. Read [the incident investigation example](references/incident-investigation.md) for a design that combines adaptive investigation, an existing work surface, and bounded operational action.
 
-Estimate cost and capacity per accepted task, including tools, retries, and expert repair. Match latency and effort to the business window. Identify the team that can diagnose failures and maintain the custom behavior.
+Estimate cost and capacity per accepted task, including tools, retries, and expert repair. Match latency and effort to the business window. Retest orchestration choices as capabilities improve; simplify a handoff or control loop when it no longer improves the outcome. Identify the team that can diagnose failures and maintain the custom behavior.
 
 Deliver a recommendation with enough interfaces, state changes, ownership, and acceptance examples for its recipient to act. Use diagrams or prototypes where they settle ambiguity. If using Studio, record consequential behavior with `define_requirement`; use Field Lab to exercise proposed behavior while identifying which interfaces remain simulated.

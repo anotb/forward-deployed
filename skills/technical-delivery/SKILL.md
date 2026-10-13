@@ -11,7 +11,7 @@ Deliver an AI capability the receiving team can operate and extend. Inspect what
 
 Choose a task that exercises the defining intelligence and reaches its recipient. An agent that migrates one package, runs its checks, and prepares the change for review demonstrates more of a coding deployment than suggestions across an entire repository. A research workflow should finish an investigation in the place where its team uses it.
 
-Narrow the population, document family, repository, or action scope while preserving meaningful work. Choose the first slice to expose a consequential seam: source access, tool semantics, a long-running task, or the receiving workflow. Build through that seam early. Expand from observed behavior instead of waiting for every future feature.
+Narrow the population, document family, repository, or action scope while preserving meaningful work. Exercise source access, tool semantics, continuation, and the receiving workflow early. Expand from observed behavior instead of waiting for every future feature.
 
 Explore the supported products, connectors, runtimes, and extension points available in the customer's environment. A managed capability may already supply execution, persistence, sharing, or deployment. Use custom infrastructure for the behavior the task still needs.
 
@@ -25,15 +25,15 @@ Give the implementing engineer or coding agent enough context to start and enoug
 - The state that must survive, output location, and how the recipient completes the work.
 - Acceptance checks, unresolved decisions, and the constraints behind settled choices.
 
-Link existing technical material instead of recreating it. Separate required behavior from an assumed implementation. A requirement to resume work does not itself require a new orchestration service. Have the implementer exercise a complete case and surface ambiguity before treating an estimate as a commitment.
+Link existing technical material. Separate required behavior from implementation assumptions: resumption need not require a new orchestration service. Have the implementer exercise a complete case before treating an estimate as a commitment.
 
 See [a coding-agent delivery](references/coding-agent-delivery.md) for a handoff that resolves environment and continuation requirements.
 
 ## Equip the agent to keep working
 
-For work spanning sessions, preserve the goal, current artifacts, completed and unfinished work, relevant source versions, and the next useful action outside transient conversation. Give the agent a way to inspect the current environment, run meaningful checks, and recognize completion. Verify that a resumed run can use this state.
+For work spanning sessions, preserve the goal, artifacts, progress, source versions, and next action outside transient conversation. Give the agent a way to inspect the environment, check its work, and recognize completion. Verify resumption.
 
-Define action semantics where they matter. After a lost write response, reconcile against the receiving system before repeating the action. Separate a completed operation from a pending request. When an input changes, identify which work must be revisited. These behaviors belong in the tool or harness contract when applications depend on them.
+For recurring work, track progress per source and distinguish read, processed, and delivered items. Keep failed reads separate from "nothing changed" and preserve their last successful position. Advance delivery state after acknowledgment; reconcile an uncertain write before retrying. Keep user-maintained preferences separate from agent progress, with their own write permissions. When inputs change, identify affected work. Put these semantics in the tool or harness contract when applications depend on them.
 
 ## Resolve dependencies into delivery choices
 
