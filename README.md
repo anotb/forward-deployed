@@ -67,7 +67,7 @@ In Cowork, open **Customize > Plugins > Add > Add marketplace** and enter `anotb
 
 ### ChatGPT and Codex
 
-Add the repository's plugin marketplace:
+Install [Forward Deployed from the Plugins Directory](https://chatgpt.com/plugins/plugin_asdk_app_6ac9d1460b1481919b7284262bce73fe). For source installation and local development, add the repository's plugin marketplace:
 
 ```text
 codex plugin marketplace add anotb/forward-deployed

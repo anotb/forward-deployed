@@ -21,7 +21,7 @@ Identify what the model needs to interpret, investigate, create, and verify. Mak
 
 Keep exact calculations and transaction validation in executable components. Let the model formulate hypotheses, choose informative queries, interpret uneven evidence, and revise its approach. Define a meaningful finishing condition and what useful progress looks like when a required fact remains unavailable.
 
-Use parallel workers when independent investigations or separate workspaces improve the result, with an owner for integration. A separate evaluator can help when the task needs judgment beyond executable checks; give it the work, criteria, and means to inspect the result. Test whether its feedback improves accepted outcomes enough to justify the coordination and latency.
+Keep coupled judgments in shared context when each step needs the same evidence or detail from earlier results; load domain guidance and tools as needed. Use separate agents for independent parallel work, fresh verification, permission boundaries, or a demonstrated context limit, with an owner for integration. Compare complete assignments and frequently used task chains. Inspect individual regressions, handoff losses, latency, and cost before accepting a better aggregate score.
 
 Choose context access deliberately. A bounded dossier may fit directly; a changing corpus may need search and selective inspection; current business state may come from a query. Supply detailed reference artifacts when they convey the business or product requirement better than prose. Shape tool results so the agent can determine what happened and choose its next step.
 

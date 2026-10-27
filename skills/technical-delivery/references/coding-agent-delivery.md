@@ -34,6 +34,12 @@ One concrete route is to run the authenticated check through the existing CI job
 
 Forecast from this dependency and the application team's review capacity. Adding more migration prompts will not resolve missing test access.
 
+## Follow the change into operation
+
+Link the migration request, accepted behavior, code change, checks, and release in the team's existing records. If patches arrive faster but migrations still wait for test access or review, improve that part of the path before adding more concurrent runs. Judge throughput by completed, usable migrations and the work needed to repair them.
+
+Suppose the first release passes unit conversion and authentication checks, but production shows longer delays before a failed call returns. Investigation finds that the new client applies its timeout per attempt and retries, while the application promised a three-second total call budget. Reproduce the slow-response case through the client, repair the retry or deadline behavior, and retain a check on total elapsed behavior. After rollout, inspect that journey again. The production observation has improved both the implementation and the migration's acceptance criteria.
+
 ## Transfer and expand
 
 Have a customer engineer run the next package and add an example for a newly encountered usage pattern. Observe whether they can diagnose a failing migration from the trace and tests. Package the migration method, client context, continuation behavior, and regression cases so the team can extend them.

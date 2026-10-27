@@ -19,8 +19,8 @@ Invoke a skill by name or describe the assignment. Use get-started when the work
 | [solution-design](../skills/solution-design/SKILL.md) | "Design an incident investigator that follows evidence across logs, changes and runbooks, then carries useful findings into the incident." |
 | [enterprise-integration](../skills/enterprise-integration/SKILL.md) | "Design an IT agent that provisions an approved development environment and recovers correctly after a lost response." |
 | [context-design](../skills/context-design/SKILL.md) | "Give the research agent the business definitions, source access and memory needed to maintain its analysis as evidence changes." |
-| [evaluate-and-improve](../skills/evaluate-and-improve/SKILL.md) | "Find why this analytics agent reaches the wrong conclusion. Test the change that fixes the cause." |
-| [technical-delivery](../skills/technical-delivery/SKILL.md) | "Prepare the build brief and first release for a coding agent that completes migrations across our repositories." |
+| [evaluate-and-improve](../skills/evaluate-and-improve/SKILL.md) | "Our automated reviewer finds plenty of issues. Test which findings improve the work, then fix the review process." |
+| [technical-delivery](../skills/technical-delivery/SKILL.md) | "Coding is faster, but releases aren't. Find the constraint and prepare the next engineering change." |
 | [adoption-and-scale](../skills/adoption-and-scale/SKILL.md) | "We have broad AI access and a few excellent users. Turn their methods into a practice other teams can use and extend." |
 | [executive-communication](../skills/executive-communication/SKILL.md) | "Make the proposed AI service and investment choice clear in a sponsor presentation." |
 | [field-productization](../skills/field-productization/SKILL.md) | "Turn what worked in these deployments into reusable skills, integrations and product behavior." |

@@ -1,11 +1,11 @@
 ---
 name: evaluate-and-improve
-description: Evaluate and improve enterprise AI on completed tasks, useful capability, and operating economics. Use for experiments, model or harness comparisons, release decisions, regressions, and diagnosis from agent traces.
+description: Evaluate and improve enterprise AI on completed tasks, useful capability, and operating economics. Use for experiments, bounded optimization, model or harness comparisons, release decisions, and diagnosis from agent traces.
 ---
 
 # Evaluate and improve
 
-Use experiments to make AI more capable and settle a build, change, or release decision. Run the available experiment.
+Use experiments to make AI more capable and settle a build, change, or release decision.
 
 ## Define a finished task
 
@@ -43,11 +43,15 @@ Test the repair against a successful nearby case as well as the failure. See [a 
 
 Use executable checks for calculations and system state. Use independent expert or model judgment for open-ended quality. Calibrate against inspected outputs, permit valid alternatives, and check that the grader gives consistent verdicts on identical artifacts. When human review is part of the product, observe errors missed and reconstruction effort.
 
-For skills, test explicit invocation, natural requests that should activate the skill, and adjacent requests that should not. Judge output quality separately. Use a no-skill baseline with the same task inputs and authority when testing the skill's contribution.
+For automated review, include confirmed defects and known-good work. Check whether following a suggested fix improves the result or introduces a regression; count time spent on false alarms. During a repair loop, re-review changed behavior and unresolved findings. Stop when remaining comments do not justify a change.
+
+For skills, test explicit invocation, natural requests that should activate the skill, and adjacent requests that should not. Judge output quality separately. Use a no-skill baseline with the same task inputs and authority when testing the skill's contribution. For a suspected bad instruction, replay the original task from the same environment and model with only that instruction changed.
 
 ## Improve useful output per unit of effort
 
 Measure accepted outcomes across eligible work, keeping failed, abandoned, and unresolved attempts visible. Calculate cost per accepted outcome from model, tool, infrastructure, review, repair, and maintenance costs over the same population and period. Measure elapsed time separately from labor. New coverage or better decisions can justify higher spend.
+
+Read [a bounded optimization loop](references/optimization-loop.md) when an agent will iterate against a quality, cost, or performance target. It covers validating a proxy metric, limiting what the optimizer can change, and checking whether gains survive in use.
 
 Use development cases to diagnose and held-out validation cases to choose edits. Change one attributable factor per tuning step. Repeated selection on validation results still tunes to that set; after sustained iteration, confirm the final choice on untouched test cases. Stop tuning when gains cannot be distinguished or would not change the decision.
 

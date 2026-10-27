@@ -20,7 +20,7 @@ See [Use plugins in Claude](https://support.claude.com/en/articles/13837440-use-
 
 ## ChatGPT and Codex
 
-For desktop use, register the GitHub marketplace:
+Install the published [Forward Deployed plugin](https://chatgpt.com/plugins/plugin_asdk_app_6ac9d1460b1481919b7284262bce73fe) from the Plugins Directory. For source installation and local development, register the GitHub marketplace:
 
 ```text
 codex plugin marketplace add anotb/forward-deployed
@@ -36,6 +36,8 @@ codex plugin list --marketplace anotb-forward-deployed --json
 ```
 
 The `-chatgpt.zip` is the portable upload package for OpenAI's plugin import/submission flow. Uploading a draft, installing a local plugin, and publishing a directory listing are separate actions. Use the local marketplace for desktop testing before submitting a public listing.
+
+Codex CLI `0.164.0-alpha.11.1` discovers the skills but rejects the OpenAI OAuth extension in portable `mcp.json`, leaving the Studio connection undiscovered during local import. The published marketplace connection works. Use the directory installation for Studio; keep the OAuth metadata in packages submitted to the portal.
 
 See [OpenAI packaging and local installation](https://developers.openai.com/plugins/build/plugins) and [plugin upload and publication](https://developers.openai.com/plugins/deploy/submission).
 

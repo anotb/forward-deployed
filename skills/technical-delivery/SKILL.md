@@ -1,6 +1,6 @@
 ---
 name: technical-delivery
-description: Deliver an enterprise AI capability from a working slice to operation and team ownership. Use for implementation coordination, coding-agent handoffs, integration dependencies, release scope, and technical transfer.
+description: Deliver an enterprise AI capability from a working slice to operation and team ownership. Use for coding-agent handoffs, integration dependencies, AI-assisted development workflows, release scope, and technical transfer.
 ---
 
 # Technical delivery
@@ -25,7 +25,7 @@ Give the implementing engineer or coding agent enough context to start and enoug
 - The state that must survive, output location, and how the recipient completes the work.
 - Acceptance checks, unresolved decisions, and the constraints behind settled choices.
 
-Link existing technical material. Separate required behavior from implementation assumptions: resumption need not require a new orchestration service. Have the implementer exercise a complete case before treating an estimate as a commitment.
+Carry the accepted intent and constraints through the team's existing issue, design, or repository records. Link implementation, checks, and release results there, updating the decision when the intended behavior changes. Separate required behavior from implementation assumptions: resumption need not require a new orchestration service. Have the implementer exercise a complete case before treating an estimate as a commitment.
 
 See [a coding-agent delivery](references/coding-agent-delivery.md) for a handoff that resolves environment and continuation requirements.
 
@@ -39,12 +39,14 @@ For recurring work, track progress per source and distinguish read, processed, a
 
 Work backward from the completed task. For each blocking dependency, identify the behavior it enables and a concrete alternative. A dated snapshot may support an overnight analysis; an interactive decision may need a live query. Existing user access may support a shared workspace; unattended execution may need a service identity. Choose the route that preserves the task's useful outcome.
 
-Sequence work around uncertainty, scarce expertise, and dependent interfaces. Parallelize independent work with clear ownership. Forecast elapsed time from the dependencies and review capacity as well as engineering effort. When a constraint changes the promise, propose the scope, sequence, or date change and keep unaffected work moving.
+Find where accepted work waits: clarification, environment setup, review, CI, or release. Measure those queues alongside implementation time and the repair work after shipping. Use the observed constraint to choose where more automation or capacity helps. Parallelize independent work with clear ownership. When a constraint changes the promise, propose the scope, sequence, or date change and keep unaffected work moving.
 
 ## Release and transfer the capability
 
 Choose the release scope from observed task performance and the consequences of failure. Some work can run autonomously within its granted action scope; other work belongs in an existing review process. Demonstrate the operating path, including recovery that matters to this service. Inspect the resulting state and user experience.
 
 Put the service into the team's normal access, release, and support arrangements. Keep temporary bridges paired with a replacement or retirement plan. If Studio is the working record, use `plan_delivery` to connect the useful increment with its requirements and supporting runs; link the team's existing work items.
+
+Check the deployed result against the intended user outcome. Turn a production failure or missed outcome into a reproducible case, a repair to the responsible layer, and a verified release. Retain the useful regression check or operating lesson where the next change will use it.
 
 Transfer through practice: have the customer team run the next task, diagnose a failed run, and make a change. Supply documentation for those tasks and the reasoning behind coupled choices. Close with the delivered scope, remaining constraint, and next expansion.

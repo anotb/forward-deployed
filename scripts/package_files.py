@@ -23,6 +23,7 @@ RUNTIME_RESOURCES = {
     'skills/enterprise-engagement/references/adoption-proposition.md',
     'skills/enterprise-integration/references/uncertain-write.md',
     'skills/evaluate-and-improve/references/diagnosis-from-traces.md',
+    'skills/evaluate-and-improve/references/optimization-loop.md',
     'skills/executive-communication/references/evidence-to-decision.md',
     'skills/field-productization/references/covenant-review-boundary.md',
     'skills/meeting-synthesis/references/meeting-to-plan.md',

@@ -39,6 +39,8 @@ Judge the finding, evidence, and executable next step. Permit a valid diagnosis 
 
 Give reviewers the working artifact, including query results and definitions. Test a polished report with an invalid cohort comparison and a less polished report with a sound alternative explanation. Observe whether reviewers distinguish them and how much reconstruction they need.
 
+Include a sound investigation whose recommendation is to run an experiment because the available evidence cannot establish causation. A reviewer that demands a definitive cause may induce an unsupported rewrite. Check the revised artifact as well as the review comment. Once the cohort error is fixed, another round should inspect that repair and any material remaining issue; requests for extra sections need a reason tied to the decision.
+
 If experts disagree, locate the disagreement: a source fact, an analytical error, an alternative explanation, or a different appetite for the proposed experiment. Correct the grader when it rewards a favored narrative over supported analysis.
 
 Suppose the automated grader reverses its verdict when shown the identical report and evidence again. Fix that inconsistency before attributing a small score gain to the agent. Repeating candidate runs would otherwise mix grader instability with variation in the investigation itself.
