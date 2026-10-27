@@ -1,5 +1,7 @@
 # Installation
 
+For ChatGPT and Codex, [install Forward Deployed from the Plugins Directory](https://chatgpt.com/plugins/plugin_asdk_app_6ac9d1460b1481919b7284262bce73fe). For Claude, follow the [Cowork](#claude-cowork) or [Claude Code](#claude-code) instructions below.
+
 The skills are shared across hosts. The plugin also declares an optional hosted Studio at `https://forward-deployed.unsol.dev/connect/mcp` for working with engagement snapshots, Field Lab runs and exports. The build produces a ChatGPT/Codex upload, a Claude Cowork upload, and the complete source package.
 
 | Package | Contents |

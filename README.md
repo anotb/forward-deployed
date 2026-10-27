@@ -2,6 +2,8 @@
 
 **Skills for forward-deployed engineering (FDE).**
 
+[Install in ChatGPT and Codex](https://chatgpt.com/plugins/plugin_asdk_app_6ac9d1460b1481919b7284262bce73fe) · [Try the workspace](https://forward-deployed.unsol.dev) · [Installation guide](docs/installation.md)
+
 Forward Deployed helps an AI agent work through an enterprise AI engagement. It covers the customer conversations that shape what gets built, the product and technical decisions behind the solution, and the work of getting it into use.
 
 The starting point might be a discovery meeting, interview notes, a workflow that needs attention or an idea for a new service. The skills help the agent investigate how the business works, develop the opportunity and give engineers a design they can build from. For an engagement already underway, they support delivery, adoption and value measurement.
@@ -77,7 +79,7 @@ codex plugin list --marketplace anotb-forward-deployed --json
 
 You can also install from the desktop app's Plugins Directory after adding the local marketplace. The `forward-deployed-<version>-chatgpt.zip` is the package for OpenAI's plugin import flow.
 
-The ChatGPT directory submission is in progress. The website is available directly, and the skills can be installed independently. See the [installation guide](docs/installation.md) for the supported routes.
+See the [installation guide](docs/installation.md) for host-specific setup and connection checks.
 
 ### Claude Code
 
