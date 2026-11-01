@@ -1,5 +1,13 @@
 # Building and checking the package
 
+## Releasing
+
+`main` is the only source. To release, raise the version in `plugin.json`, both host manifests, `.claude-plugin/marketplace.json` and `scripts/validate_plugin.py`, push to `main`, then push a matching tag such as `v0.6.9`. The Checks workflow validates each push. The Release workflow builds the ZIPs and publishes them, and fails if the tag and manifest differ.
+
+Anthropic's directory scans each new commit on `main` when GitHub's push webhook fires, and a passing version goes live under the listing's publish setting. Commits that change nothing for Claude users still create a new version to scan. OpenAI's listing does not follow GitHub: upload the `-chatgpt.zip` through its portal when you want that listing updated.
+
+## Local checks
+
 Python 3.10 or later is needed for source checks and release builds. The installed plugin has no Python runtime dependency.
 
 ```text

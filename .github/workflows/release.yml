@@ -1,0 +1,27 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check the tag matches the manifest
+        run: |
+          version="$(python -c "import json; print(json.load(open('plugin.json'))['version'])")"
+          test "$GITHUB_REF_NAME" = "v$version"
+      - run: python -m unittest discover -s tests
+      - run: python scripts/build_release.py --output-dir dist
+      - name: Publish the packages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/* --title "$GITHUB_REF_NAME" --generate-notes --verify-tag
