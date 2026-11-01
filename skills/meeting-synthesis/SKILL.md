@@ -1,6 +1,6 @@
 ---
 name: meeting-synthesis
-description: Turn enterprise AI adoption meetings into useful findings, decisions and follow-through. Use for discovery and stakeholder interview synthesis, engagement readouts, use-case updates and changes to an AI solution or deployment plan.
+description: Turn enterprise AI adoption meetings into useful findings, decisions and follow-through. Use for discovery synthesis, engagement readouts, use-case updates and changes to an AI solution or deployment plan.
 license: MIT
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: technical-delivery
-description: Deliver an enterprise AI capability from a proof of concept or working slice to production operation and team ownership. Use for coding-agent handoffs, integration dependencies, AI-assisted development workflows, release scope, and technical transfer.
+description: Deliver an enterprise AI capability from a working slice to operation and team ownership. Use for coding-agent handoffs, integration dependencies, AI-assisted development workflows, release scope, and technical transfer.
 ---
 
 # Technical delivery
