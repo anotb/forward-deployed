@@ -45,7 +45,7 @@ The guidance and worked references are bundled. Each skill can be used directly,
 
 ## Workspace and Field Lab
 
-The Claude plugin contains only the skills and references. It runs no code, connects to no server and sends nothing to the publisher. The workspace is a separate service that the ChatGPT and Codex packages can connect to.
+The Claude plugin loads only the skills and references. It runs no code, connects to no server and sends nothing to the publisher. The workspace is a separate service that the ChatGPT and Codex packages can connect to. This repository also holds the workspace's server source in `studio/` and build tools in `scripts/` and `tests/`; the Claude plugin never loads or runs them, and their credential handling applies only to someone hosting the workspace.
 
 The optional [workspace](https://forward-deployed.unsol.dev) connects discovery sources, opportunities, requirements and delivery work. An agent can bring in selected meeting excerpts through the host's Meetings connector, develop a service from that evidence and keep each requirement linked to the passage behind it.
 

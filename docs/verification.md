@@ -27,14 +27,7 @@ claude plugin validate --strict .
 claude plugin validate --strict .claude-plugin/plugin.json
 ```
 
-Anthropic's directory tracks the generated `claude-directory` branch, which holds exactly the Cowork package. Its scan then covers the installed files and not `studio/`, `scripts/` or `tests/`. To release, commit to `main`, then run:
-
-```text
-python scripts/publish_claude_branch.py
-git push origin claude-directory
-```
-
-Do not edit that branch directly. A root `.mcp.json` would load in Claude whether or not its manifest declares it, so Codex's configuration stays in `.codex-plugin/mcp.json`. The portal's Validate step runs further checks.
+The repository root is the plugin folder submitted to Anthropic's directory. A root `.mcp.json` would load in Claude whether or not its manifest declares it, so Codex's configuration stays in `.codex-plugin/mcp.json`. The portal's Validate step runs further checks.
 
 Also validate the extracted Cowork package's manifest and check that its referenced resources are present. Claude Code validation checks manifest compatibility; a live Cowork import checks account installation and discovery. See [Claude's upload requirements](https://platform.claude.com/docs/en/manage-claude/plugins-api#upload-requirements).
 

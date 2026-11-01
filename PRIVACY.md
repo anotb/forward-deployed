@@ -1,6 +1,6 @@
 # Privacy
 
-The Forward Deployed skills are local instructions. Using a skill does not by itself send data to the publisher. The Claude plugin contains only these skills and does not connect to the workspace described below. Your AI host and any connected services handle the work under their own permissions and settings.
+The Forward Deployed skills are local instructions. Using a skill does not by itself send data to the publisher. The Claude plugin loads only these skills and does not connect to the workspace described below. Your AI host and any connected services handle the work under their own permissions and settings.
 
 The optional workspace at `forward-deployed.unsol.dev` processes the information you send to its tools. Stateless mode is the default: the service receives a workspace snapshot, processes the request and returns it without saving the workspace in its database. Your host retains the returned snapshot according to its own settings. The website keeps its active snapshot in browser tab session storage, including through a sign-in redirect. Export work you want to keep.
 

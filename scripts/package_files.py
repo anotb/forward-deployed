@@ -63,9 +63,9 @@ STUDIO_SOURCE = {
 }
 SOURCE_FIXED = RUNTIME_FIXED | STUDIO_SOURCE | {
     '.agents/plugins/marketplace.json', '.claude-plugin/marketplace.json',
-    '.gitignore', '.gitattributes',
+    '.gitignore',
     'docs/installation.md', 'docs/usage.md', 'docs/practice.md', 'docs/verification.md',
-    'scripts/build_release.py', 'scripts/package_files.py', 'scripts/publish_claude_branch.py', 'scripts/validate_plugin.py',
+    'scripts/build_release.py', 'scripts/package_files.py', 'scripts/validate_plugin.py',
     'tests/test_package.py',
 }
 EXCLUDED_PARTS = {'.git', '__pycache__', '.venv', 'node_modules', 'dist', 'work', '.wrangler', 'coverage', '.cache'}
