@@ -1,6 +1,6 @@
 ---
 name: get-started
-description: Advance an enterprise AI adoption or forward-deployment assignment and choose the relevant Forward Deployed skills. Use for work spanning customer discovery, AI opportunity and solution design, delivery, workforce adoption and value.
+description: Advance an enterprise AI adoption or forward-deployed engineering (FDE) assignment and choose the relevant Forward Deployed skills. Use for work spanning customer discovery, AI opportunity and solution design, delivery, workforce adoption and value.
 license: MIT
 ---
 

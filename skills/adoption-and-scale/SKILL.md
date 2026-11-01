@@ -1,6 +1,6 @@
 ---
 name: adoption-and-scale
-description: Help an enterprise put AI to work through broad fluency, role-specific practice, workflow redesign, and reusable methods. Use for enterprise chat, coding and workspace adoption, frontier-user programs, stalled use, and expansion across teams.
+description: Help an enterprise put AI to work through broad fluency, role-specific practice, workflow redesign, and reusable methods. Use for enterprise chat, coding and workspace adoption, AI training and rollout, frontier-user programs, stalled use, and expansion across teams.
 ---
 
 # Adoption and scale

@@ -1,6 +1,6 @@
 ---
 name: capability-exploration
-description: Discover and test what current AI products, models, runtimes, and enterprise tools can accomplish on a meaningful task. Use for capability exploration, platform choices, buy/adapt/build decisions, and finding a better way to deliver an AI workflow.
+description: Discover and test what current AI products, models, runtimes, and enterprise tools can accomplish on a meaningful task. Use for capability exploration, platform choices, buy/adapt/build decisions, proofs of concept, and finding a better way to deliver an AI workflow.
 ---
 
 # Capability exploration

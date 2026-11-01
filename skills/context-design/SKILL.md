@@ -1,6 +1,6 @@
 ---
 name: context-design
-description: Design the information an AI workflow uses to investigate, create, and act. Use for enterprise knowledge, retrieval, tool results, long-running work, task memory, or failures caused by missing, misleading, or poorly organized context.
+description: Design the information an AI workflow uses to investigate, create, and act. Use for enterprise knowledge, RAG and retrieval, tool results, long-running work, task memory, or failures caused by missing, misleading, or poorly organized context.
 ---
 
 # Context design

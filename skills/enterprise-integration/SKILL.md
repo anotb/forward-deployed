@@ -1,6 +1,6 @@
 ---
 name: enterprise-integration
-description: Connect AI work to enterprise systems through meaningful business objects, usable tools, identity, and reliable actions. Use for integration design, tool contracts, asynchronous operations, or diagnosis of a workflow that cannot complete its work.
+description: Connect AI work to enterprise systems through meaningful business objects, usable tools, identity, and reliable actions. Use for integration design, MCP and API tool contracts, asynchronous operations, or diagnosis of a workflow that cannot complete its work.
 ---
 
 # Enterprise integration

@@ -48,7 +48,7 @@ def validate_plugin(root: Path) -> list[str]:
     check(set(portable) == BASE_FIELDS | {'$schema', 'extensions'}, 'Portable manifest fields differ from this package contract')
     check(portable.get('$schema') == 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json', 'Unexpected portable manifest schema')
     check(portable.get('name') == 'forward-deployed', 'Unexpected plugin name')
-    check(portable.get('version') == '0.6.7', 'Unexpected plugin version')
+    check(portable.get('version') == '0.6.8', 'Unexpected plugin version')
     check(portable.get('license') == 'MIT', 'Unexpected plugin license')
     for key in ('description',):
         check(isinstance(portable.get(key), str) and bool(portable.get(key)), f'Missing manifest {key}')

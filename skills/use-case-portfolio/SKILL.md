@@ -1,6 +1,6 @@
 ---
 name: use-case-portfolio
-description: Choose and sequence enterprise AI investments across integrated workflows, reusable capabilities, and employee practice. Use for funding choices, pilot selection, shared-capability decisions, and portfolios competing for delivery or operating capacity.
+description: Choose and sequence enterprise AI investments across integrated workflows, reusable capabilities, and employee practice. Use for use-case prioritization, funding choices, pilot selection, shared-capability decisions, and portfolios competing for delivery or operating capacity.
 license: MIT
 ---
 

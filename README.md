@@ -2,7 +2,7 @@
 
 **Skills for forward-deployed engineering (FDE).**
 
-[Install in ChatGPT and Codex](https://chatgpt.com/plugins/plugin_asdk_app_6ac9d1460b1481919b7284262bce73fe) · [Install in Claude](docs/installation.md#claude-cowork) · [Try the workspace](https://forward-deployed.unsol.dev) · [Installation guide](docs/installation.md)
+[Install in Claude](docs/installation.md#claude-cowork) · [Install in ChatGPT and Codex](https://chatgpt.com/plugins/plugin_asdk_app_6ac9d1460b1481919b7284262bce73fe) · [Installation guide](docs/installation.md) · [Try the workspace](https://forward-deployed.unsol.dev)
 
 Forward Deployed helps an AI agent work through an enterprise AI engagement. It covers the customer conversations that shape what gets built, the product and technical decisions behind the solution, and the work of getting it into use.
 

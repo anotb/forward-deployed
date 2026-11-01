@@ -1,6 +1,6 @@
 ---
 name: value-case
-description: Build and test the economic case for an enterprise AI investment or service. Use for revenue, decision quality, expert capacity, delivery economics, and expansion choices where the architecture and changed work determine the return.
+description: Build and test the business case, ROI and economics of an enterprise AI investment or service. Use for revenue, decision quality, expert capacity, delivery economics, and expansion choices where the architecture and changed work determine the return.
 ---
 
 # Value case

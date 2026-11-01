@@ -1,6 +1,6 @@
 ---
 name: discovery
-description: Discover how enterprise work could change with AI. Use for adoption discovery, operator research, capability exploration, workflow redesign and investigating why an AI pilot has stalled.
+description: Discover how enterprise work could change with AI. Use for adoption discovery, stakeholder and operator research, capability exploration, workflow redesign and investigating why an AI pilot has stalled.
 license: MIT
 ---
 

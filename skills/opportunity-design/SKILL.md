@@ -1,6 +1,6 @@
 ---
 name: opportunity-design
-description: Develop enterprise AI opportunities that change how work gets done or create new services. Use to expand an automation request, discover work the organization could not previously afford, or turn a business ambition into a concrete first build.
+description: Develop enterprise AI opportunities and use cases that change how work gets done or create new services. Use to expand an automation request, discover work the organization could not previously afford, or turn a business ambition into a concrete first build.
 ---
 
 # Opportunity design

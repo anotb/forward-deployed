@@ -1,6 +1,6 @@
 ---
 name: evaluate-and-improve
-description: Evaluate and improve enterprise AI on completed tasks, useful capability, and operating economics. Use for experiments, bounded optimization, model or harness comparisons, release decisions, and diagnosis from agent traces.
+description: Evaluate and improve enterprise AI on completed tasks, useful capability, and operating economics. Use for evals, experiments, bounded optimization, model or harness comparisons, release decisions, and diagnosis from agent traces.
 ---
 
 # Evaluate and improve
