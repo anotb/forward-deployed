@@ -5,15 +5,18 @@ import hashlib
 import json
 from pathlib import Path
 import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
+import unittest.mock
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 from build_release import build_release
 from package_files import selected_files
+from publish_claude_branch import BRANCH, publish
 from validate_plugin import validate_plugin
 
 
@@ -203,6 +206,25 @@ class PackageTests(unittest.TestCase):
             self.assertFalse(any(part in name for name in names for part in ['/.wrangler/', '/node_modules/', '/dist/', '/.dev.vars', '.sqlite', '/screenshot.png', '/launch-notes.md', '/unreviewed.ts']))
         for archive, checksum in zip(outputs[::2], outputs[1::2]):
             self.assertEqual(checksum.read_text().split()[0], hashlib.sha256(archive.read_bytes()).hexdigest())
+
+    def test_claude_branch_holds_only_the_claude_package(self):
+        def git(*args):
+            return subprocess.run(['git', '-c', 'user.name=test', '-c', 'user.email=test@example.com', *args], cwd=self.root, check=True, capture_output=True, text=True).stdout
+
+        git('init', '-q')
+        git('add', '-A')
+        git('-c', 'commit.gpgsign=false', 'commit', '-qm', 'source')
+        self.write('uncommitted.md', 'dirty\n')
+        with self.assertRaisesRegex(ValueError, 'Commit source changes'):
+            publish(self.root)
+        (self.root / 'uncommitted.md').unlink()
+        identity = {'GIT_AUTHOR_NAME': 'test', 'GIT_AUTHOR_EMAIL': 'test@example.com', 'GIT_COMMITTER_NAME': 'test', 'GIT_COMMITTER_EMAIL': 'test@example.com'}
+        with unittest.mock.patch.dict('os.environ', identity):
+            first = publish(self.root)
+            self.assertEqual(publish(self.root), first)
+        names = set(git('ls-tree', '-r', '--name-only', BRANCH).split())
+        self.assertEqual(names, {p.as_posix() for p in selected_files(self.root, host='cowork')})
+        self.assertFalse(any(name.startswith(('studio/', 'scripts/', 'tests/')) or name.endswith('mcp.json') for name in names))
 
     def test_invalid_host_selection_is_rejected(self):
         with self.assertRaises(ValueError):
