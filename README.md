@@ -2,7 +2,7 @@
 
 **Skills for forward-deployed engineering (FDE).**
 
-[Install in Claude](docs/installation.md#claude-cowork) · [Install in ChatGPT and Codex](https://chatgpt.com/plugins/plugin_asdk_app_6ac9d1460b1481919b7284262bce73fe) · [Installation guide](docs/installation.md) · [Try the workspace](https://forward-deployed.unsol.dev)
+[Install](#installation) · [Usage guide](docs/usage.md) · [Optional workspace](#optional-workspace-and-field-lab)
 
 Forward Deployed helps an AI agent work through an enterprise AI engagement. It covers the customer conversations that shape what gets built, the product and technical decisions behind the solution, and the work of getting it into use.
 
@@ -10,7 +10,7 @@ The starting point might be a discovery meeting, interview notes, a workflow tha
 
 OpenAI and Anthropic have teams dedicated to this work. So do DeployCo, Ode, Casper Studios and consulting firms of all sizes. Working with the customer means understanding the industry and the organization as well as the technology. Product choices, engineering and change management often need to be worked through together.
 
-The technical skills cover enterprise integration, context engineering and agent evaluation. Coding tools such as Codex can implement the resulting design. A focused assignment might end with a discovery finding or an engineering brief; a broader engagement can continue through rollout and measured results.
+The technical skills cover enterprise integration, context engineering and agent evaluation. Coding agents can implement the resulting design. A focused assignment might end with a discovery finding or an engineering brief; a broader engagement can continue through rollout and measured results.
 
 The result could be better use of an existing AI product, reusable skills and agents, or an integrated application. The customer and the work determine the approach. Builders, operators, consultants and deployment leads can use the skills across industries and AI hosts.
 
@@ -43,31 +43,9 @@ The skills encourage exploration of the current environment before settling on a
 
 The guidance and worked references are bundled. Each skill can be used directly, without the hosted workspace. Examples cover engineering migrations, incident investigation, enterprise research, workforce practice and AI investment choices. The [usage guide](docs/usage.md) gives concrete assignments. The repository keeps a [maintenance reading list](https://github.com/anotb/forward-deployed/blob/main/docs/practice.md).
 
-## Workspace and Field Lab
-
-The Claude plugin loads only the skills and references. It runs no code, connects to no server and sends nothing to the publisher. The workspace is a separate service that the ChatGPT and Codex packages can connect to. This repository also holds the workspace's server source in `studio/` and build tools in `scripts/` and `tests/`; the Claude plugin never loads or runs them, and their credential handling applies only to someone hosting the workspace.
-
-The optional [workspace](https://forward-deployed.unsol.dev) connects discovery sources, opportunities, requirements and delivery work. An agent can bring in selected meeting excerpts through the host's Meetings connector, develop a service from that evidence and keep each requirement linked to the passage behind it.
-
-The ChatGPT package includes an interactive workspace that opens in the conversation through MCP Apps. You can inspect the service, update delivery work and run a rehearsal there, then ask the agent to develop the design further. The agent and the interface work on the same workspace. ChatGPT supplies the reasoning and its connected tools; Forward Deployed supplies the project state and executable rehearsal.
-
-Select a source, requirement or piece of delivery work to discuss it with the agent. When the design changes, review the proposed edits and their linked effects before applying them. Supported OpenAI hosts can open the workspace beside the conversation and collect review or experiment choices in native forms. The browser keeps equivalent editing controls. See [native interactions](docs/usage.md#native-interactions) for examples and host requirements.
-
-Choose **Try a sample** on the welcome screen to explore a fictional FDE engagement: designing and piloting AI borrower-change intelligence for a commercial banking team. Follow discovery into service design, data integration, analyst evaluation and a pending choice between weekly preparation and upload-triggered refresh. The sample is editable, claims no implementation or pilot results, and starts without sign-in or saved storage.
-
-Field Lab lets the agent try the proposed workflow. Define its starting state, available actions and outcome checks, then run it through the MCP tools. Fork a point in the timeline to try another approach or change an assumption. For an AI portfolio-monitoring service, that might mean testing how a corrected document affects a drafted assessment, including source matching, invalidating an outdated summary and returning it for analyst review. Runs preserve the scenario and requirement versions they exercised.
-
-Work is stateless by default: the caller carries the workspace between requests. In the browser, it stays in the tab session. ChatGPT Sites hosts the application and manages ChatGPT sign-in and optional saved storage. The website works without sign-in; MCP connections use ChatGPT authentication. Signing in does not save your workspace. You can [export a portable ZIP or prepare files for your own Git repository](docs/export.md). The skills remain useful with your existing tools and records.
-
-The MCP endpoint is `https://forward-deployed.unsol.dev/connect/mcp`. Its OAuth connection uses ChatGPT sign-in and runs within the same Site. [Studio source and local setup](https://github.com/anotb/forward-deployed/tree/main/studio) are included for self-hosting.
-
 ## Installation
 
-The same skills are packaged for ChatGPT/Codex and Claude. Each upload contains its host's manifest and the shared skill content. Only the ChatGPT and Codex packages declare the optional workspace connection.
-
-### Claude Cowork
-
-In Cowork, open **Customize > Plugins > Add > Add marketplace** and enter `anotb/forward-deployed`. You can also upload the Cowork ZIP from [Releases](https://github.com/anotb/forward-deployed/releases). Start a new conversation and ask to use Forward Deployed.
+The same skills work in each host. Every package contains that host's manifest and the shared skills and references.
 
 ### ChatGPT and Codex
 
@@ -81,11 +59,11 @@ codex plugin list --marketplace anotb-forward-deployed --json
 
 You can also install from the desktop app's Plugins Directory after adding the local marketplace. The `forward-deployed-<version>-chatgpt.zip` is the package for OpenAI's plugin import flow.
 
-See the [installation guide](docs/installation.md) for host-specific setup and connection checks.
+### Claude
 
-### Claude Code
+In Claude apps and Cowork, open **Customize > Plugins > Add > Add marketplace** and enter `anotb/forward-deployed`, or upload the Cowork ZIP from [Releases](https://github.com/anotb/forward-deployed/releases). Start a new conversation and ask to use Forward Deployed.
 
-Add the same repository in Claude Code:
+In Claude Code:
 
 ```text
 claude plugin marketplace add anotb/forward-deployed
@@ -93,8 +71,32 @@ claude plugin install forward-deployed@anotb-forward-deployed
 claude plugin list
 ```
 
-Start a new session. `/forward-deployed:get-started` invokes the entry skill. The [installation guide](docs/installation.md) covers host details and checking the installed copy.
+Start a new session. `/forward-deployed:get-started` invokes the entry skill.
+
+### Other hosts
 
 For another Agent Skills host, use its skill-directory installation mechanism. Copy complete skill folders, including their references. The full skills directory preserves the entry skill's navigation.
+
+The [installation guide](docs/installation.md) covers host-specific setup and checking the installed copy.
+
+## Optional workspace and Field Lab
+
+The skills work on their own. The [workspace](https://forward-deployed.unsol.dev) is a separate hosted service that connects discovery sources, opportunities, requirements and delivery work. An agent can bring in selected meeting excerpts through the host's connectors, develop a service from that evidence and keep each requirement linked to the passage behind it.
+
+In a host that supports MCP Apps, the workspace opens in the conversation. You can inspect the service, update delivery work and run a rehearsal there, then ask the agent to develop the design further. The host supplies the reasoning and its connected tools; Forward Deployed supplies the project state and executable rehearsal.
+
+Select a source, requirement or piece of delivery work to discuss it with the agent. When the design changes, review the proposed edits and their linked effects before applying them. Some hosts can open the workspace beside the conversation and collect choices in native forms; the browser keeps equivalent controls. See [native interactions](docs/usage.md#native-interactions) for examples and host requirements.
+
+Choose **Try a sample** on the welcome screen to explore a fictional FDE engagement: designing and piloting AI borrower-change intelligence for a commercial banking team. Follow discovery into service design, data integration, analyst evaluation and a pending choice between weekly preparation and upload-triggered refresh. The sample is editable, claims no implementation or pilot results, and starts without sign-in or saved storage.
+
+Field Lab lets the agent try the proposed workflow. Define its starting state, available actions and outcome checks, then run it through the MCP tools. Fork a point in the timeline to try another approach or change an assumption. For an AI portfolio-monitoring service, that might mean testing how a corrected document affects a drafted assessment, including source matching, invalidating an outdated summary and returning it for analyst review. Runs preserve the scenario and requirement versions they exercised.
+
+Work is stateless by default: the caller carries the workspace between requests. In the browser, it stays in the tab session. You can [export a portable ZIP or prepare files for your own Git repository](docs/export.md).
+
+### What connects to it
+
+The website works without sign-in. The service runs on ChatGPT Sites, so saving work and connecting over MCP (`https://forward-deployed.unsol.dev/connect/mcp`) use ChatGPT sign-in. The ChatGPT and Codex packages declare that connection. The Claude plugin does not: it loads only the skills and references, runs no code, connects to no server and sends nothing to the publisher.
+
+This repository also holds the workspace's [server source](https://github.com/anotb/forward-deployed/tree/main/studio) in `studio/` for self-hosting, and build tools in `scripts/` and `tests/`. Installed plugins never load or run them, and their credential handling applies only to someone hosting the workspace.
 
 Original material is available under the [MIT License](LICENSE). See [Privacy](PRIVACY.md) and [Terms](TERMS.md).
