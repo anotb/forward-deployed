@@ -5,13 +5,14 @@ RUNTIME_FIXED = {
     'plugin.json', '.codex-plugin/plugin.json', '.claude-plugin/plugin.json',
     'README.md', 'LICENSE', 'PRIVACY.md', 'TERMS.md',
     'docs/installation.md', 'docs/usage.md', 'docs/export.md', 'assets/icon.svg',
-    'mcp.json', '.mcp.json',
+    'mcp.json', '.codex-plugin/mcp.json', '.claude-plugin/icon.png',
 }
 HOST_MANIFESTS = {'plugin.json', '.codex-plugin/plugin.json', '.claude-plugin/plugin.json'}
-HOST_MCP_FILES = {'mcp.json', '.mcp.json'}
+HOST_MCP_FILES = {'mcp.json', '.codex-plugin/mcp.json'}
+HOST_ICONS = {'assets/icon.svg', '.claude-plugin/icon.png'}
 HOST_FILES = {
-    'chatgpt': (RUNTIME_FIXED - HOST_MANIFESTS - HOST_MCP_FILES) | {'plugin.json', 'mcp.json'},
-    'cowork': (RUNTIME_FIXED - HOST_MANIFESTS - HOST_MCP_FILES - {'assets/icon.svg'}) | {'.claude-plugin/plugin.json', '.mcp.json'},
+    'chatgpt': (RUNTIME_FIXED - HOST_MANIFESTS - HOST_MCP_FILES - HOST_ICONS) | {'plugin.json', 'mcp.json', 'assets/icon.svg'},
+    'cowork': (RUNTIME_FIXED - HOST_MANIFESTS - HOST_MCP_FILES - HOST_ICONS) | {'.claude-plugin/plugin.json', '.claude-plugin/icon.png'},
 }
 RUNTIME_RESOURCES = {
     'skills/adoption-and-scale/references/workforce-practice.md',

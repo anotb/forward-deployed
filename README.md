@@ -2,7 +2,7 @@
 
 **Skills for forward-deployed engineering (FDE).**
 
-[Install in ChatGPT and Codex](https://chatgpt.com/plugins/plugin_asdk_app_6ac9d1460b1481919b7284262bce73fe) · [Try the workspace](https://forward-deployed.unsol.dev) · [Installation guide](docs/installation.md)
+[Install in ChatGPT and Codex](https://chatgpt.com/plugins/plugin_asdk_app_6ac9d1460b1481919b7284262bce73fe) · [Install in Claude](docs/installation.md#claude-cowork) · [Try the workspace](https://forward-deployed.unsol.dev) · [Installation guide](docs/installation.md)
 
 Forward Deployed helps an AI agent work through an enterprise AI engagement. It covers the customer conversations that shape what gets built, the product and technical decisions behind the solution, and the work of getting it into use.
 
@@ -45,6 +45,8 @@ The guidance and worked references are bundled. Each skill can be used directly,
 
 ## Workspace and Field Lab
 
+The Claude plugin contains only the skills and references. It runs no code, connects to no server and sends nothing to the publisher. The workspace is a separate service that the ChatGPT and Codex packages can connect to.
+
 The optional [workspace](https://forward-deployed.unsol.dev) connects discovery sources, opportunities, requirements and delivery work. An agent can bring in selected meeting excerpts through the host's Meetings connector, develop a service from that evidence and keep each requirement linked to the passage behind it.
 
 The ChatGPT package includes an interactive workspace that opens in the conversation through MCP Apps. You can inspect the service, update delivery work and run a rehearsal there, then ask the agent to develop the design further. The agent and the interface work on the same workspace. ChatGPT supplies the reasoning and its connected tools; Forward Deployed supplies the project state and executable rehearsal.
@@ -61,7 +63,7 @@ The MCP endpoint is `https://forward-deployed.unsol.dev/connect/mcp`. Its OAuth 
 
 ## Installation
 
-The same skills are packaged for ChatGPT/Codex and Claude Cowork. Each upload contains its host's manifest and the shared skill content.
+The same skills are packaged for ChatGPT/Codex and Claude. Each upload contains its host's manifest and the shared skill content. Only the ChatGPT and Codex packages declare the optional workspace connection.
 
 ### Claude Cowork
 

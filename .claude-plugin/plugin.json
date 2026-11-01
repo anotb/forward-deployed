@@ -1,6 +1,7 @@
 {
   "name": "forward-deployed",
-  "version": "0.6.6",
+  "displayName": "Forward Deployed",
+  "version": "0.6.7",
   "description": "Skills for forward-deployed engineering (FDE): discovery, AI solution design, enterprise integration, agent evaluation, delivery and adoption.",
   "author": {
     "name": "Rahil Banthia",
@@ -24,11 +25,13 @@
     "agent-evaluation",
     "ai-adoption",
     "claude-cowork",
-    "claude-code",
-    "chatgpt",
-    "codex"
+    "claude-code"
   ],
-  "homepage": "https://forward-deployed.unsol.dev",
+  "homepage": "https://github.com/anotb/forward-deployed#readme",
   "repository": "https://github.com/anotb/forward-deployed",
-  "mcpServers": "./.mcp.json"
+  "icon": "./.claude-plugin/icon.png",
+  "documentationUrl": "https://github.com/anotb/forward-deployed/blob/main/docs/usage.md",
+  "supportUrl": "https://github.com/anotb/forward-deployed/issues",
+  "privacyPolicyUrl": "https://github.com/anotb/forward-deployed/blob/main/PRIVACY.md",
+  "termsOfServiceUrl": "https://github.com/anotb/forward-deployed/blob/main/TERMS.md"
 }

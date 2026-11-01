@@ -2,15 +2,15 @@
 
 For ChatGPT and Codex, [install Forward Deployed from the Plugins Directory](https://chatgpt.com/plugins/plugin_asdk_app_6ac9d1460b1481919b7284262bce73fe). For Claude, follow the [Cowork](#claude-cowork) or [Claude Code](#claude-code) instructions below.
 
-The skills are shared across hosts. The plugin also declares an optional hosted Studio at `https://forward-deployed.unsol.dev/connect/mcp` for working with engagement snapshots, Field Lab runs and exports. The build produces a ChatGPT/Codex upload, a Claude Cowork upload, and the complete source package.
+The skills are shared across hosts. The ChatGPT and Codex packages also declare an optional hosted Studio at `https://forward-deployed.unsol.dev/connect/mcp` for working with engagement snapshots, Field Lab runs and exports. The build produces a ChatGPT/Codex upload, a Claude Cowork upload, and the complete source package.
 
 | Package | Contents |
 |---|---|
 | `forward-deployed-<version>-chatgpt.zip` | Portable `plugin.json`, `mcp.json`, OpenAI metadata and icon, skills and references, user guides, license and policies |
-| `forward-deployed-<version>-cowork.zip` | `.claude-plugin/plugin.json`, `.mcp.json`, the same skills and references, user guides, license and policies |
+| `forward-deployed-<version>-cowork.zip` | `.claude-plugin/plugin.json` and its icon, the same skills and references, user guides, license and policies. No MCP configuration |
 | `forward-deployed-<version>-source.zip` | All host manifests and catalogs, shared content, documentation, Studio source, and build/validation tools |
 
-Each ZIP has one `forward-deployed/` root. Upload packages contain no server executable, marketplace catalogs, build scripts or tests. The source repository keeps the host wrappers together; each upload contains its host's manifest and MCP configuration.
+Each ZIP has one `forward-deployed/` root. Upload packages contain no server executable, marketplace catalogs, build scripts or tests. The source repository keeps the host wrappers together; each upload contains its host's manifest, and the ChatGPT upload adds its MCP configuration.
 
 ## Claude Cowork
 
@@ -59,7 +59,7 @@ See [Claude plugin marketplaces](https://code.claude.com/docs/en/plugin-marketpl
 
 ## Use the optional Studio
 
-The configured endpoint is `https://forward-deployed.unsol.dev/connect/mcp`. Enable the plugin's `forward-deployed-studio` connection in your host and sign in with ChatGPT. A connected host with MCP Apps support can open the Studio interface; the tools also return structured results for work in chat. Authentication from Claude hosts has not been verified. The [website](https://forward-deployed.unsol.dev) is also available directly.
+The configured endpoint is `https://forward-deployed.unsol.dev/connect/mcp`. Enable the plugin's `forward-deployed-studio` connection in your host and sign in with ChatGPT. A connected host with MCP Apps support can open the Studio interface; the tools also return structured results for work in chat. The Claude plugin omits this connection because Studio sign-in uses ChatGPT. The [website](https://forward-deployed.unsol.dev) is also available directly.
 
 The website supports local work without sign-in. Sign in with ChatGPT to save or reopen account workspaces. MCP connections use ChatGPT authentication, but connected work remains stateless until you explicitly save it: carry the supplied snapshot between requests and export it when you finish. Connecting the MCP server does not grant it access to a Git repository. [Exporting work](export.md) explains downloads and saving through the host's existing Git access.
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import struct
 import sys
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
@@ -18,6 +19,7 @@ SKILLS = {
     'technical-delivery', 'adoption-and-scale', 'executive-communication', 'field-productization',
 }
 BASE_FIELDS = {'name', 'version', 'description', 'author', 'homepage', 'repository', 'license', 'keywords'}
+CLAUDE_LISTING_FIELDS = {'displayName', 'icon', 'documentationUrl', 'supportUrl', 'privacyPolicyUrl', 'termsOfServiceUrl'}
 STUDIO_URL = 'https://forward-deployed.unsol.dev/connect/mcp'
 LINK = re.compile(r'!?\[[^\]\n]*\]\(([^)\n]+)\)')
 
@@ -46,7 +48,7 @@ def validate_plugin(root: Path) -> list[str]:
     check(set(portable) == BASE_FIELDS | {'$schema', 'extensions'}, 'Portable manifest fields differ from this package contract')
     check(portable.get('$schema') == 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json', 'Unexpected portable manifest schema')
     check(portable.get('name') == 'forward-deployed', 'Unexpected plugin name')
-    check(portable.get('version') == '0.6.6', 'Unexpected plugin version')
+    check(portable.get('version') == '0.6.7', 'Unexpected plugin version')
     check(portable.get('license') == 'MIT', 'Unexpected plugin license')
     for key in ('description',):
         check(isinstance(portable.get(key), str) and bool(portable.get(key)), f'Missing manifest {key}')
@@ -69,21 +71,32 @@ def validate_plugin(root: Path) -> list[str]:
     prompts = interface.get('defaultPrompt', [])
     check(isinstance(prompts, list) and 1 <= len(prompts) <= 3 and all(isinstance(p, str) and 0 < len(p) <= 128 for p in prompts), 'Invalid OpenAI starter prompts')
 
-    for relative, extra in [('.claude-plugin/plugin.json', {'mcpServers'}), ('.codex-plugin/plugin.json', {'skills', 'interface', 'mcpServers', 'extensions'})]:
+    for relative, extra in [('.claude-plugin/plugin.json', CLAUDE_LISTING_FIELDS), ('.codex-plugin/plugin.json', {'skills', 'interface', 'mcpServers', 'extensions'})]:
         wrapper = read_json(relative)
         check(set(wrapper) == BASE_FIELDS | extra, f'{relative}: unexpected fields')
-        for key in BASE_FIELDS:
+        # The Claude listing has its own homepage and keywords because it omits the workspace.
+        for key in BASE_FIELDS - ({'homepage', 'keywords'} if relative.startswith('.claude') else set()):
             check(wrapper.get(key) == portable.get(key), f'{relative}: {key} differs from portable manifest')
         if relative.startswith('.claude'):
             check(isinstance(wrapper.get('name'), str) and bool(re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', wrapper['name'])) and len(wrapper['name']) <= 64, 'Invalid Claude plugin name')
             check(isinstance(wrapper.get('description'), str) and 0 < len(wrapper['description']) <= 500, 'Claude plugin description must contain 1-500 characters')
-        check(wrapper.get('mcpServers') == './.mcp.json', f'{relative}: invalid MCP configuration path')
+            check(wrapper.get('icon') == './.claude-plugin/icon.png', 'Claude icon must reference the bundled PNG')
+            check(all(str(wrapper.get(key, '')).startswith('https://') for key in CLAUDE_LISTING_FIELDS - {'displayName', 'icon'}), 'Claude listing URLs must use https')
         if relative.startswith('.codex'):
+            check(wrapper.get('mcpServers') == './.codex-plugin/mcp.json', f'{relative}: invalid MCP configuration path')
             check(wrapper.get('extensions') == compatibility_extensions, f'{relative}: OpenAI extensions differ from portable manifest')
             check(wrapper.get('skills') == './skills/', f'{relative}: invalid skills discovery path')
             check(wrapper.get('interface') == interface, f'{relative}: interface differs from portable manifest')
 
-    for relative, transport in [('mcp.json', 'streamable-http'), ('.mcp.json', 'http')]:
+    # Claude loads a root .mcp.json whether or not its manifest declares it.
+    check(not (root / '.mcp.json').exists(), '.mcp.json: a root file would add the Studio connection to the Claude plugin')
+    icon = root / '.claude-plugin/icon.png'
+    if icon.is_file():
+        header = icon.read_bytes()[:24]
+        size = struct.unpack('>II', header[16:24]) if header[:8] == b'\x89PNG\r\n\x1a\n' and len(header) == 24 else (0, 0)
+        check(size[0] == size[1] and 512 <= size[0] <= 2048, '.claude-plugin/icon.png: must be a square PNG of 512-2048 px')
+
+    for relative, transport in [('mcp.json', 'streamable-http'), ('.codex-plugin/mcp.json', 'http')]:
         config = read_json(relative)
         expected = {'mcpServers': {'forward-deployed-studio': {'type': transport, 'url': STUDIO_URL}}}
         if relative == 'mcp.json':

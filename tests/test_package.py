@@ -54,24 +54,35 @@ class PackageTests(unittest.TestCase):
 
     def test_hosted_mcp_configuration_rejects_commands_credentials_and_url_drift(self):
         self.edit_json('mcp.json', lambda data: data['mcpServers']['forward-deployed-studio'].update(command='node', headers={'Authorization': 'example'}))
-        self.edit_json('.mcp.json', lambda data: data['mcpServers']['forward-deployed-studio'].update(url='http://localhost:3000/mcp'))
+        self.edit_json('.codex-plugin/mcp.json', lambda data: data['mcpServers']['forward-deployed-studio'].update(url='http://localhost:3000/mcp'))
         errors = validate_plugin(self.root)
         self.assertTrue(any(value.startswith('mcp.json: expected only') for value in errors))
-        self.assertTrue(any(value.startswith('.mcp.json: expected only') for value in errors))
+        self.assertTrue(any(value.startswith('.codex-plugin/mcp.json: expected only') for value in errors))
 
     def test_missing_mcp_configuration_and_wrong_wrapper_path_are_rejected(self):
         (self.root / 'mcp.json').unlink()
-        self.edit_json('.claude-plugin/plugin.json', lambda data: data.update(mcpServers='./other.json'))
+        self.edit_json('.codex-plugin/plugin.json', lambda data: data.update(mcpServers='./other.json'))
         errors = validate_plugin(self.root)
         self.assertTrue(any('Missing package file: mcp.json' in value for value in errors))
         self.assertTrue(any('invalid MCP configuration path' in value for value in errors))
 
+    def test_claude_plugin_cannot_gain_the_studio_connection(self):
+        self.write('.mcp.json', '{"mcpServers": {}}')
+        self.edit_json('.claude-plugin/plugin.json', lambda data: data.update(mcpServers='./.codex-plugin/mcp.json'))
+        errors = validate_plugin(self.root)
+        self.assertTrue(any('add the Studio connection to the Claude plugin' in value for value in errors))
+        self.assertTrue(any(value.startswith('.claude-plugin/plugin.json: unexpected fields') for value in errors))
+
+    def test_claude_icon_must_be_a_square_png(self):
+        self.write('.claude-plugin/icon.png', '<svg></svg>')
+        self.assertTrue(any('must be a square PNG' in value for value in validate_plugin(self.root)))
+
     def test_connector_path_cannot_be_replaced_with_the_native_mcp_path(self):
-        for path in ['mcp.json', '.mcp.json']:
+        for path in ['mcp.json', '.codex-plugin/mcp.json']:
             self.edit_json(path, lambda data: data['mcpServers']['forward-deployed-studio'].update(url='https://forward-deployed.unsol.dev/mcp'))
         errors = validate_plugin(self.root)
         self.assertTrue(any(value.startswith('mcp.json: expected only') for value in errors))
-        self.assertTrue(any(value.startswith('.mcp.json: expected only') for value in errors))
+        self.assertTrue(any(value.startswith('.codex-plugin/mcp.json: expected only') for value in errors))
 
     def test_connector_oauth_requires_registered_public_client_and_exact_scopes(self):
         path = 'mcp.json'
@@ -161,9 +172,8 @@ class PackageTests(unittest.TestCase):
                 self.assertIn('forward-deployed/docs/installation.md', names)
                 self.assertIn('forward-deployed/docs/usage.md', names)
                 self.assertIn('forward-deployed/docs/export.md', names)
-                expected_mcp = 'mcp.json' if host == 'chatgpt' else '.mcp.json'
-                self.assertIn('forward-deployed/' + expected_mcp, names)
-                self.assertNotIn('forward-deployed/' + ('.mcp.json' if host == 'chatgpt' else 'mcp.json'), names)
+                self.assertEqual('forward-deployed/mcp.json' in names, host == 'chatgpt')
+                self.assertFalse(any(name.endswith('/.mcp.json') or name.endswith('.codex-plugin/mcp.json') for name in names))
                 self.assertNotIn('forward-deployed/docs/verification.md', names)
                 self.assertNotIn('forward-deployed/docs/practice.md', names)
                 self.assertIn('forward-deployed/skills/adoption-and-scale/references/workforce-practice.md', names)
@@ -176,6 +186,8 @@ class PackageTests(unittest.TestCase):
             self.assertTrue(all(left.read(name) == right.read(name) for name in skill_paths))
             self.assertIn('forward-deployed/assets/icon.svg', left.namelist())
             self.assertNotIn('forward-deployed/assets/icon.svg', right.namelist())
+            self.assertIn('forward-deployed/.claude-plugin/icon.png', right.namelist())
+            self.assertNotIn('forward-deployed/.claude-plugin/icon.png', left.namelist())
         with zipfile.ZipFile(source) as bundle:
             names = bundle.namelist()
             self.assertIn('forward-deployed/.agents/plugins/marketplace.json', names)

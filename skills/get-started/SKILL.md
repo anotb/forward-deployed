@@ -50,8 +50,8 @@ Use the host's authoring, analysis and coding capabilities to produce the reques
 
 ## Use Studio when shared state helps
 
-The optional Studio connects sources, opportunities, requirements, delivery work and Field Lab experiments. Reuse a relevant engagement. Selected-record context can anchor a discussion; proposals can show linked changes; native forms can collect review or experiment choices when supported. Field Lab can rehearse behavior against a defined scenario and outcome checks.
+When Studio's tools are available, it connects sources, opportunities, requirements, delivery work and Field Lab experiments. Without them, keep this state in the conversation and the user's existing tools. Reuse a relevant engagement. Selected-record context can anchor a discussion; proposals can show linked changes; native forms can collect review or experiment choices when supported. Field Lab can rehearse behavior against a defined scenario and outcome checks.
 
-When invoked after installation with no assignment, offer useful starting points: bring discovery notes, continue an engagement or try Studio's editable sample. Start the sample without requiring sign-in or saved storage. A focused skill task can proceed in the conversation and the user's existing tools.
+When invoked after installation with no assignment, offer useful starting points: bring discovery notes, continue an engagement or, when Studio's tools are available, try its editable sample. Start the sample without requiring sign-in or saved storage. A focused skill task can proceed in the conversation and the user's existing tools.
 
 Finish with a recommendation and usable work: a developed opportunity, a tested design, an engineering brief, a working practice or a decision-ready artifact. Explain what the result changes and the next consequential step.
