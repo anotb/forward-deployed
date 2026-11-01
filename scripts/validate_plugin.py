@@ -88,6 +88,9 @@ def validate_plugin(root: Path) -> list[str]:
             check(wrapper.get('skills') == './skills/', f'{relative}: invalid skills discovery path')
             check(wrapper.get('interface') == interface, f'{relative}: interface differs from portable manifest')
 
+    # Anthropic's directory rejects a repository whose clone could differ from its download.
+    check(not (root / '.gitattributes').exists(), '.gitattributes: the Claude directory rejects text and related attributes')
+
     # Claude loads a root .mcp.json whether or not its manifest declares it.
     check(not (root / '.mcp.json').exists(), '.mcp.json: a root file would add the Studio connection to the Claude plugin')
     icon = root / '.claude-plugin/icon.png'

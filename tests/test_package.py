@@ -73,6 +73,11 @@ class PackageTests(unittest.TestCase):
         self.assertTrue(any('add the Studio connection to the Claude plugin' in value for value in errors))
         self.assertTrue(any(value.startswith('.claude-plugin/plugin.json: unexpected fields') for value in errors))
 
+    def test_gitattributes_are_rejected_for_directory_validation(self):
+        self.write('.gitattributes', '* text=auto
+')
+        self.assertTrue(any('.gitattributes: the Claude directory rejects' in value for value in validate_plugin(self.root)))
+
     def test_claude_icon_must_be_a_square_png(self):
         self.write('.claude-plugin/icon.png', '<svg></svg>')
         self.assertTrue(any('must be a square PNG' in value for value in validate_plugin(self.root)))
