@@ -7,7 +7,7 @@ The skills are shared across hosts. The ChatGPT and Codex packages also declare 
 | Package | Contents |
 |---|---|
 | `forward-deployed-<version>-chatgpt.zip` | Portable `plugin.json`, `mcp.json`, OpenAI metadata and icon, skills and references, user guides, license and policies |
-| `forward-deployed-<version>-cowork.zip` | `.claude-plugin/plugin.json` and its icon, the same skills and references, user guides, license and policies. No MCP configuration |
+| `forward-deployed-<version>-cowork.zip` | The `plugin/` folder: `.claude-plugin/plugin.json` and its icon, the same skills and references, its README and license. No MCP configuration |
 | `forward-deployed-<version>-source.zip` | All host manifests and catalogs, shared content, documentation, Studio source, and build/validation tools |
 
 Each ZIP has one `forward-deployed/` root. Upload packages contain no server executable, marketplace catalogs, build scripts or tests. The source repository keeps the host wrappers together; each upload contains its host's manifest, and the ChatGPT upload adds its MCP configuration.

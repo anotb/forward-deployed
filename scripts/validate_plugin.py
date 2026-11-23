@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
-from package_files import RUNTIME_FIXED, RUNTIME_RESOURCES, SOURCE_FIXED, selected_files
+from package_files import PLUGIN_DIR, RUNTIME_FIXED, RUNTIME_RESOURCES, SOURCE_FIXED, selected_files
 
 SKILLS = {
     'get-started', 'enterprise-engagement', 'discovery', 'meeting-synthesis',
@@ -21,6 +21,9 @@ SKILLS = {
 BASE_FIELDS = {'name', 'version', 'description', 'author', 'homepage', 'repository', 'license', 'keywords'}
 CLAUDE_LISTING_FIELDS = {'displayName', 'icon', 'documentationUrl', 'supportUrl', 'privacyPolicyUrl', 'termsOfServiceUrl'}
 STUDIO_URL = 'https://forward-deployed.unsol.dev/connect/mcp'
+# Anthropic's directory accepts only these file types from organizations it has not verified.
+PLUGIN_SUFFIXES = {'.md', '.txt', '.json', '.yaml', '.yml', '.png', '.jpg', '.jpeg', '.gif', '.webp'}
+CLAUDE_MANIFEST = 'plugin/.claude-plugin/plugin.json'
 LINK = re.compile(r'!?\[[^\]\n]*\]\(([^)\n]+)\)')
 
 
@@ -44,11 +47,11 @@ def validate_plugin(root: Path) -> list[str]:
 
     for relative in sorted(SOURCE_FIXED | RUNTIME_RESOURCES):
         check((root / relative).is_file(), f'Missing package file: {relative}')
-    portable = read_json('plugin.json')
+    portable = read_json('chatgpt/plugin.json')
     check(set(portable) == BASE_FIELDS | {'$schema', 'extensions'}, 'Portable manifest fields differ from this package contract')
     check(portable.get('$schema') == 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json', 'Unexpected portable manifest schema')
     check(portable.get('name') == 'forward-deployed', 'Unexpected plugin name')
-    check(portable.get('version') == '0.6.9', 'Unexpected plugin version')
+    check(portable.get('version') == '0.7.0', 'Unexpected plugin version')
     check(portable.get('license') == 'MIT', 'Unexpected plugin license')
     for key in ('description',):
         check(isinstance(portable.get(key), str) and bool(portable.get(key)), f'Missing manifest {key}')
@@ -56,6 +59,8 @@ def validate_plugin(root: Path) -> list[str]:
     interface = extensions.get('com.openai', {}).get('interface', {}) if isinstance(extensions, dict) else {}
     openai = extensions.get('com.openai', {})
     compatibility_extensions = {'com.openai': {key: value for key, value in openai.items() if key != 'interface'}}
+    # Codex reads the repository, where the skills live in the plugin folder.
+    compatibility_extensions['com.openai']['onboardingSkill'] = './plugin/skills/get-started/SKILL.md'
     check(openai.get('onboardingSkill') == './skills/get-started/SKILL.md', 'Invalid OpenAI onboarding skill')
     review = openai.get('review', {})
     cases = review.get('test_cases', {})
@@ -71,13 +76,13 @@ def validate_plugin(root: Path) -> list[str]:
     prompts = interface.get('defaultPrompt', [])
     check(isinstance(prompts, list) and 1 <= len(prompts) <= 3 and all(isinstance(p, str) and 0 < len(p) <= 128 for p in prompts), 'Invalid OpenAI starter prompts')
 
-    for relative, extra in [('.claude-plugin/plugin.json', CLAUDE_LISTING_FIELDS), ('.codex-plugin/plugin.json', {'skills', 'interface', 'mcpServers', 'extensions'})]:
+    for relative, extra in [(CLAUDE_MANIFEST, CLAUDE_LISTING_FIELDS), ('.codex-plugin/plugin.json', {'skills', 'interface', 'mcpServers', 'extensions'})]:
         wrapper = read_json(relative)
         check(set(wrapper) == BASE_FIELDS | extra, f'{relative}: unexpected fields')
         # The Claude listing has its own homepage and keywords because it omits the workspace.
-        for key in BASE_FIELDS - ({'homepage', 'keywords'} if relative.startswith('.claude') else set()):
+        for key in BASE_FIELDS - ({'homepage', 'keywords'} if relative == CLAUDE_MANIFEST else set()):
             check(wrapper.get(key) == portable.get(key), f'{relative}: {key} differs from portable manifest')
-        if relative.startswith('.claude'):
+        if relative == CLAUDE_MANIFEST:
             check(isinstance(wrapper.get('name'), str) and bool(re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', wrapper['name'])) and len(wrapper['name']) <= 64, 'Invalid Claude plugin name')
             check(isinstance(wrapper.get('description'), str) and 0 < len(wrapper['description']) <= 500, 'Claude plugin description must contain 1-500 characters')
             check(wrapper.get('icon') == './.claude-plugin/icon.png', 'Claude icon must reference the bundled PNG')
@@ -85,24 +90,36 @@ def validate_plugin(root: Path) -> list[str]:
         if relative.startswith('.codex'):
             check(wrapper.get('mcpServers') == './.codex-plugin/mcp.json', f'{relative}: invalid MCP configuration path')
             check(wrapper.get('extensions') == compatibility_extensions, f'{relative}: OpenAI extensions differ from portable manifest')
-            check(wrapper.get('skills') == './skills/', f'{relative}: invalid skills discovery path')
+            check(wrapper.get('skills') == './plugin/skills/', f'{relative}: invalid skills discovery path')
             check(wrapper.get('interface') == interface, f'{relative}: interface differs from portable manifest')
+
+    # Codex reads a root portable manifest instead of .codex-plugin/plugin.json, and would then miss plugin/skills.
+    check(not (root / 'plugin.json').exists(), 'plugin.json: a root portable manifest hides the Codex manifest; keep it in chatgpt/')
 
     # Anthropic's directory rejects a repository whose clone could differ from its download.
     check(not (root / '.gitattributes').exists(), '.gitattributes: the Claude directory rejects text and related attributes')
 
-    # Claude loads a root .mcp.json whether or not its manifest declares it.
-    check(not (root / '.mcp.json').exists(), '.mcp.json: a root file would add the Studio connection to the Claude plugin')
-    icon = root / '.claude-plugin/icon.png'
+    plugin_root = root / PLUGIN_DIR
+    for path in sorted(p for p in plugin_root.rglob('*') if p.is_file() and '__pycache__' not in p.parts):
+        relative = path.relative_to(root).as_posix()
+        allowed = path.suffix.lower() in PLUGIN_SUFFIXES or relative == 'plugin/LICENSE'
+        check(allowed and not path.read_bytes().startswith(b'#!'), f'{relative}: the Claude directory accepts only Markdown, text, JSON, YAML and images in the plugin folder')
+        # Claude loads a .mcp.json at the plugin root whether or not its manifest declares it.
+        check(path.name not in {'.mcp.json', 'hooks.json', 'CLAUDE.md', 'AGENTS.md', 'package.json'}, f'{relative}: not allowed in the Claude plugin folder')
+    check(sorted(p.name for p in (plugin_root / '.claude-plugin').glob('*')) == ['icon.png', 'plugin.json'], 'plugin/.claude-plugin: expected only plugin.json and icon.png')
+    check((plugin_root / 'LICENSE').is_file() and (plugin_root / 'LICENSE').read_bytes() == (root / 'LICENSE').read_bytes(), 'plugin/LICENSE: must match the repository LICENSE')
+    listing = (plugin_root / 'README.md').read_text(encoding='utf-8') if (plugin_root / 'README.md').is_file() else ''
+    check(all(f'(skills/{skill}/SKILL.md)' in listing for skill in SKILLS), 'plugin/README.md: must link every skill')
+    icon = plugin_root / '.claude-plugin/icon.png'
     if icon.is_file():
         header = icon.read_bytes()[:24]
         size = struct.unpack('>II', header[16:24]) if header[:8] == b'\x89PNG\r\n\x1a\n' and len(header) == 24 else (0, 0)
-        check(size[0] == size[1] and 512 <= size[0] <= 2048, '.claude-plugin/icon.png: must be a square PNG of 512-2048 px')
+        check(size[0] == size[1] and 512 <= size[0] <= 2048, 'plugin/.claude-plugin/icon.png: must be a square PNG of 512-2048 px')
 
-    for relative, transport in [('mcp.json', 'streamable-http'), ('.codex-plugin/mcp.json', 'http')]:
+    for relative, transport in [('chatgpt/mcp.json', 'streamable-http'), ('.codex-plugin/mcp.json', 'http')]:
         config = read_json(relative)
         expected = {'mcpServers': {'forward-deployed-studio': {'type': transport, 'url': STUDIO_URL}}}
-        if relative == 'mcp.json':
+        if relative == 'chatgpt/mcp.json':
             expected['$schema'] = 'https://agent-plugins.org/schemas/1.0.0/mcp.schema.json'
             expected['mcpServers']['forward-deployed-studio']['extensions'] = {'com.openai': {'auth': {
                 'type': 'oauth',
@@ -126,16 +143,16 @@ def validate_plugin(root: Path) -> list[str]:
         entry = plugins[0]
         check(entry.get('name') == portable.get('name'), f'{relative}: plugin identity differs')
         if relative.startswith('.claude'):
-            check(entry.get('source') == './', f'{relative}: source must resolve to this plugin root')
+            check(entry.get('source') == './plugin', f'{relative}: source must resolve to the plugin folder')
             check(entry.get('version') == portable.get('version'), f'{relative}: version differs')
             check(entry.get('description') == portable.get('description'), f'{relative}: description differs')
         else:
             check(entry.get('source') == {'source': 'local', 'path': './'}, f'{relative}: source must resolve to this plugin root')
             check(entry.get('policy') == {'installation': 'AVAILABLE', 'authentication': 'ON_INSTALL'}, f'{relative}: unexpected registration policy')
 
-    discovered = {path.parent.name for path in (root / 'skills').glob('*/SKILL.md')}
+    discovered = {path.parent.name for path in (root / PLUGIN_DIR / 'skills').glob('*/SKILL.md')}
     check(discovered == SKILLS, f'Skill discovery differs: missing={sorted(SKILLS - discovered)} extra={sorted(discovered - SKILLS)}')
-    for path in sorted((root / 'skills').glob('*/SKILL.md')):
+    for path in sorted((root / PLUGIN_DIR / 'skills').glob('*/SKILL.md')):
         text = path.read_text(encoding='utf-8')
         blocks = text.split('---', 2)
         if len(blocks) != 3 or blocks[0].strip():

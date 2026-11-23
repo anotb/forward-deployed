@@ -2,7 +2,7 @@
 
 ## Releasing
 
-`main` is the only source. To release, raise the version in `plugin.json`, both host manifests, `.claude-plugin/marketplace.json` and `scripts/validate_plugin.py`, push to `main`, then push a matching tag such as `v0.7.0`. The Checks workflow validates each push. The Release workflow builds the ZIPs and publishes them, and fails if the tag and manifest differ.
+`main` is the only source. To release, raise the version in `chatgpt/plugin.json`, `.codex-plugin/plugin.json`, `plugin/.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` and `scripts/validate_plugin.py`, push to `main`, then push a matching tag such as `v0.7.0`. The Checks workflow validates each push. The Release workflow builds the ZIPs and publishes them, and fails if the tag and manifest differ.
 
 Anthropic's directory scans each new commit on `main` when GitHub's push webhook fires, and a passing version goes live under the listing's publish setting. Commits that change nothing for Claude users still create a new version to scan. OpenAI's listing does not follow GitHub: upload the `-chatgpt.zip` through its portal when you want that listing updated.
 
@@ -20,7 +20,7 @@ python scripts/build_release.py --output-dir dist
 
 `tests/test_package.py` tests those checks with valid and deliberately broken fixtures. It checks host manifest separation, identical shared skills, archive paths, missing resources and checksums. Runtime output excludes development material, and build output cannot become a subsequent build input. These tests do not evaluate the usefulness of a recommendation.
 
-`scripts/build_release.py` produces ChatGPT/Codex, Claude Cowork and source ZIPs. Each has one `forward-deployed/` root. The ChatGPT package uses portable `plugin.json` and `mcp.json` with OpenAI metadata and an icon; the Cowork package uses `.claude-plugin/plugin.json` with a PNG icon and no MCP configuration. Both include identical skills and references, README, user guides, license and policies. Source also includes all host wrappers and catalogs, the maintenance reading list, this verification guide, package scripts and tests, and the reviewed Studio source. Installed packages do not include server code or dependencies.
+`scripts/build_release.py` produces ChatGPT/Codex, Claude Cowork and source ZIPs. Each has one `forward-deployed/` root. The ChatGPT package uses portable `plugin.json` and `mcp.json` with OpenAI metadata and an icon; the Cowork package is the `plugin/` folder: `.claude-plugin/plugin.json` with a PNG icon, the skills, its README and license, and no MCP configuration. Both include identical skills and references, README, user guides, license and policies. Source also includes all host wrappers and catalogs, the maintenance reading list, this verification guide, package scripts and tests, and the reviewed Studio source. Installed packages do not include server code or dependencies.
 
 Fixed ZIP metadata and sorted paths make builds repeatable on the same Python/zlib toolchain. The build uses explicit allowlists. Add shared runtime files to `RUNTIME_FIXED` or `RUNTIME_RESOURCES`, host-specific selection to `HOST_FILES`, source-only public files to `SOURCE_FIXED`, and reviewed Studio files to `STUDIO_SOURCE` in `scripts/package_files.py`. New files are not packaged automatically. Generated outputs, screenshots, internal notes, dependencies, `.wrangler` state, environment files and databases are excluded.
 
@@ -32,10 +32,10 @@ Validate the Claude plugin and marketplace, including the directory checks the C
 
 ```text
 claude plugin validate --strict .
-claude plugin validate --strict .claude-plugin/plugin.json
+claude plugin validate --strict plugin
 ```
 
-The repository root is the plugin folder submitted to Anthropic's directory. A root `.mcp.json` would load in Claude whether or not its manifest declares it, so Codex's configuration stays in `.codex-plugin/mcp.json`. The portal's Validate step runs further checks.
+Anthropic's directory scans the submitted `plugin/` folder, and from organizations it has not verified it accepts only Markdown, text, JSON, YAML and images there. The shared skills therefore live in `plugin/skills`, which Codex reads directly and the ChatGPT package places at `skills/`; Studio, scripts and tests stay outside that folder. The ChatGPT package's portable `plugin.json` and `mcp.json` live in `chatgpt/`, because Codex reads a root portable manifest in preference to `.codex-plugin/plugin.json`. A root `.mcp.json` would load in Claude whether or not its manifest declares it, so Codex's configuration stays in `.codex-plugin/mcp.json`. The portal's Validate step runs further checks.
 
 Also validate the extracted Cowork package's manifest and check that its referenced resources are present. Claude Code validation checks manifest compatibility; a live Cowork import checks account installation and discovery. See [Claude's upload requirements](https://platform.claude.com/docs/en/manage-claude/plugins-api#upload-requirements).
 

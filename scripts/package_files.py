@@ -1,38 +1,45 @@
 """Explicit source and runtime selection; installed packages use a hosted MCP."""
 from pathlib import Path
 
+# The Claude directory scans this folder, so it holds only the plugin itself.
+PLUGIN_DIR = 'plugin'
+# Codex prefers a root portable manifest over its own, so the ChatGPT manifests live here.
+CHATGPT_DIR = 'chatgpt'
+
 RUNTIME_FIXED = {
-    'plugin.json', '.codex-plugin/plugin.json', '.claude-plugin/plugin.json',
+    'chatgpt/plugin.json', '.codex-plugin/plugin.json', 'plugin/.claude-plugin/plugin.json',
     'README.md', 'LICENSE', 'PRIVACY.md', 'TERMS.md',
     'docs/installation.md', 'docs/usage.md', 'docs/export.md', 'assets/icon.svg',
-    'mcp.json', '.codex-plugin/mcp.json', '.claude-plugin/icon.png',
+    'chatgpt/mcp.json', '.codex-plugin/mcp.json', 'plugin/.claude-plugin/icon.png',
+    'plugin/README.md', 'plugin/LICENSE',
 }
-HOST_MANIFESTS = {'plugin.json', '.codex-plugin/plugin.json', '.claude-plugin/plugin.json'}
-HOST_MCP_FILES = {'mcp.json', '.codex-plugin/mcp.json'}
-HOST_ICONS = {'assets/icon.svg', '.claude-plugin/icon.png'}
+HOST_MANIFESTS = {'chatgpt/plugin.json', '.codex-plugin/plugin.json', 'plugin/.claude-plugin/plugin.json'}
+HOST_MCP_FILES = {'chatgpt/mcp.json', '.codex-plugin/mcp.json'}
+HOST_ICONS = {'assets/icon.svg', 'plugin/.claude-plugin/icon.png'}
+CLAUDE_PLUGIN_FILES = {'plugin/.claude-plugin/plugin.json', 'plugin/.claude-plugin/icon.png', 'plugin/README.md', 'plugin/LICENSE'}
 HOST_FILES = {
-    'chatgpt': (RUNTIME_FIXED - HOST_MANIFESTS - HOST_MCP_FILES - HOST_ICONS) | {'plugin.json', 'mcp.json', 'assets/icon.svg'},
-    'cowork': (RUNTIME_FIXED - HOST_MANIFESTS - HOST_MCP_FILES - HOST_ICONS) | {'.claude-plugin/plugin.json', '.claude-plugin/icon.png'},
+    'chatgpt': (RUNTIME_FIXED - HOST_MANIFESTS - HOST_MCP_FILES - HOST_ICONS - CLAUDE_PLUGIN_FILES) | {'chatgpt/plugin.json', 'chatgpt/mcp.json', 'assets/icon.svg'},
+    'cowork': CLAUDE_PLUGIN_FILES,
 }
 RUNTIME_RESOURCES = {
-    'skills/adoption-and-scale/references/workforce-practice.md',
-    'skills/adoption-and-scale/references/workflow-adoption.md',
-    'skills/adoption-and-scale/references/expansion.md',
-    'skills/capability-exploration/references/engineering-migration.md',
-    'skills/context-design/references/enterprise-research.md',
-    'skills/discovery/references/release-planning-investigation.md',
-    'skills/enterprise-engagement/references/adoption-proposition.md',
-    'skills/enterprise-integration/references/uncertain-write.md',
-    'skills/evaluate-and-improve/references/diagnosis-from-traces.md',
-    'skills/evaluate-and-improve/references/optimization-loop.md',
-    'skills/executive-communication/references/evidence-to-decision.md',
-    'skills/field-productization/references/covenant-review-boundary.md',
-    'skills/meeting-synthesis/references/meeting-to-plan.md',
-    'skills/opportunity-design/references/enterprise-opportunities.md',
-    'skills/solution-design/references/incident-investigation.md',
-    'skills/technical-delivery/references/coding-agent-delivery.md',
-    'skills/use-case-portfolio/references/constrained-allocation.md',
-    'skills/value-case/references/new-service-economics.md',
+    'plugin/skills/adoption-and-scale/references/workforce-practice.md',
+    'plugin/skills/adoption-and-scale/references/workflow-adoption.md',
+    'plugin/skills/adoption-and-scale/references/expansion.md',
+    'plugin/skills/capability-exploration/references/engineering-migration.md',
+    'plugin/skills/context-design/references/enterprise-research.md',
+    'plugin/skills/discovery/references/release-planning-investigation.md',
+    'plugin/skills/enterprise-engagement/references/adoption-proposition.md',
+    'plugin/skills/enterprise-integration/references/uncertain-write.md',
+    'plugin/skills/evaluate-and-improve/references/diagnosis-from-traces.md',
+    'plugin/skills/evaluate-and-improve/references/optimization-loop.md',
+    'plugin/skills/executive-communication/references/evidence-to-decision.md',
+    'plugin/skills/field-productization/references/covenant-review-boundary.md',
+    'plugin/skills/meeting-synthesis/references/meeting-to-plan.md',
+    'plugin/skills/opportunity-design/references/enterprise-opportunities.md',
+    'plugin/skills/solution-design/references/incident-investigation.md',
+    'plugin/skills/technical-delivery/references/coding-agent-delivery.md',
+    'plugin/skills/use-case-portfolio/references/constrained-allocation.md',
+    'plugin/skills/value-case/references/new-service-economics.md',
 }
 STUDIO_SOURCE = {
     'studio/README.md', 'studio/package.json', 'studio/package-lock.json',
@@ -74,8 +81,25 @@ EXCLUDED_NAMES = {'.env', '.dev.vars', 'auth.json', 'credentials.json'}
 
 def is_runtime_path(path: Path) -> bool:
     return path.as_posix() in RUNTIME_FIXED | RUNTIME_RESOURCES or (
-        len(path.parts) == 3 and path.parts[0] == 'skills' and path.name == 'SKILL.md'
+        len(path.parts) == 4 and path.parts[:2] == (PLUGIN_DIR, 'skills') and path.name == 'SKILL.md'
     )
+
+
+def package_path(relative: Path, host: str | None) -> str:
+    """Host packages place the plugin and ChatGPT folders' contents at the package root."""
+    posix = relative.as_posix()
+    for folder in (PLUGIN_DIR, CHATGPT_DIR):
+        if host is not None and posix.startswith(folder + '/'):
+            return posix[len(folder) + 1:]
+    return posix
+
+
+def package_bytes(root: Path, relative: Path, host: str | None) -> bytes:
+    data = (root / relative).read_bytes()
+    if host == 'chatgpt' and relative.suffix == '.md' and relative.parts[0] != PLUGIN_DIR:
+        # Root documents link into plugin/skills, which the package places at skills/.
+        data = data.replace(b'plugin/skills/', b'skills/')
+    return data
 
 
 def selected_files(root: Path, *, source: bool = False, host: str | None = None) -> list[Path]:

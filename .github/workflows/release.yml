@@ -17,7 +17,7 @@ jobs:
           python-version: '3.12'
       - name: Check the tag matches the manifest
         run: |
-          version="$(python -c "import json; print(json.load(open('plugin.json'))['version'])")"
+          version="$(python -c "import json; print(json.load(open('chatgpt/plugin.json'))['version'])")"
           test "$GITHUB_REF_NAME" = "v$version"
       - run: python -m unittest discover -s tests
       - run: python scripts/build_release.py --output-dir dist

@@ -13,7 +13,7 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 from build_release import build_release
-from package_files import selected_files
+from package_files import package_bytes, package_path, selected_files
 from validate_plugin import validate_plugin
 
 
@@ -49,57 +49,76 @@ class PackageTests(unittest.TestCase):
         self.assertTrue(any('invalid skills discovery path' in value for value in errors))
 
     def test_portable_manifest_rejects_compatibility_mcp_field(self):
-        self.edit_json('plugin.json', lambda data: data.update(mcpServers={'unexpected': {}}))
+        self.edit_json('chatgpt/plugin.json', lambda data: data.update(mcpServers={'unexpected': {}}))
         self.assertTrue(any('manifest fields differ' in value for value in validate_plugin(self.root)))
 
     def test_hosted_mcp_configuration_rejects_commands_credentials_and_url_drift(self):
-        self.edit_json('mcp.json', lambda data: data['mcpServers']['forward-deployed-studio'].update(command='node', headers={'Authorization': 'example'}))
+        self.edit_json('chatgpt/mcp.json', lambda data: data['mcpServers']['forward-deployed-studio'].update(command='node', headers={'Authorization': 'example'}))
         self.edit_json('.codex-plugin/mcp.json', lambda data: data['mcpServers']['forward-deployed-studio'].update(url='http://localhost:3000/mcp'))
         errors = validate_plugin(self.root)
-        self.assertTrue(any(value.startswith('mcp.json: expected only') for value in errors))
+        self.assertTrue(any(value.startswith('chatgpt/mcp.json: expected only') for value in errors))
         self.assertTrue(any(value.startswith('.codex-plugin/mcp.json: expected only') for value in errors))
 
     def test_missing_mcp_configuration_and_wrong_wrapper_path_are_rejected(self):
-        (self.root / 'mcp.json').unlink()
+        (self.root / 'chatgpt/mcp.json').unlink()
         self.edit_json('.codex-plugin/plugin.json', lambda data: data.update(mcpServers='./other.json'))
         errors = validate_plugin(self.root)
-        self.assertTrue(any('Missing package file: mcp.json' in value for value in errors))
+        self.assertTrue(any('Missing package file: chatgpt/mcp.json' in value for value in errors))
         self.assertTrue(any('invalid MCP configuration path' in value for value in errors))
 
     def test_claude_plugin_cannot_gain_the_studio_connection(self):
-        self.write('.mcp.json', '{"mcpServers": {}}')
-        self.edit_json('.claude-plugin/plugin.json', lambda data: data.update(mcpServers='./.codex-plugin/mcp.json'))
+        self.write('plugin/.mcp.json', '{"mcpServers": {}}')
+        self.edit_json('plugin/.claude-plugin/plugin.json', lambda data: data.update(mcpServers='./.codex-plugin/mcp.json'))
         errors = validate_plugin(self.root)
-        self.assertTrue(any('add the Studio connection to the Claude plugin' in value for value in errors))
-        self.assertTrue(any(value.startswith('.claude-plugin/plugin.json: unexpected fields') for value in errors))
+        self.assertTrue(any('plugin/.mcp.json: not allowed' in value for value in errors))
+        self.assertTrue(any(value.startswith('plugin/.claude-plugin/plugin.json: unexpected fields') for value in errors))
+
+    def test_plugin_folder_accepts_only_directory_file_types(self):
+        self.write('plugin/scripts/run.py', 'print(1)\n')
+        self.write('plugin/skills/value-case/notes.md', '#!/bin/sh\n')
+        errors = validate_plugin(self.root)
+        self.assertTrue(any(value.startswith('plugin/scripts/run.py: the Claude directory accepts only') for value in errors))
+        self.assertTrue(any(value.startswith('plugin/skills/value-case/notes.md: the Claude directory accepts only') for value in errors))
+
+    def test_chatgpt_package_keeps_root_skill_layout_and_links(self):
+        outputs = build_release(self.root, Path(self.temp.name) / 'packages')
+        with zipfile.ZipFile(outputs[0]) as bundle:
+            readme = bundle.read('forward-deployed/README.md').decode()
+            self.assertIn('(skills/get-started/SKILL.md)', readme)
+            self.assertNotIn('plugin/skills/', readme)
+            self.assertIn('forward-deployed/skills/get-started/SKILL.md', bundle.namelist())
+
+    def test_root_portable_manifest_is_rejected(self):
+        shutil.copyfile(self.root / 'chatgpt/plugin.json', self.root / 'plugin.json')
+        self.assertTrue(any(value.startswith('plugin.json: a root portable manifest') for value in validate_plugin(self.root)))
 
     def test_gitattributes_are_rejected_for_directory_validation(self):
         self.write('.gitattributes', '* text=auto\n')
         self.assertTrue(any('.gitattributes: the Claude directory rejects' in value for value in validate_plugin(self.root)))
 
     def test_claude_icon_must_be_a_square_png(self):
-        self.write('.claude-plugin/icon.png', '<svg></svg>')
+        self.write('plugin/.claude-plugin/icon.png', '<svg></svg>')
         self.assertTrue(any('must be a square PNG' in value for value in validate_plugin(self.root)))
 
     def test_connector_path_cannot_be_replaced_with_the_native_mcp_path(self):
-        for path in ['mcp.json', '.codex-plugin/mcp.json']:
+        for path in ['chatgpt/mcp.json', '.codex-plugin/mcp.json']:
             self.edit_json(path, lambda data: data['mcpServers']['forward-deployed-studio'].update(url='https://forward-deployed.unsol.dev/mcp'))
         errors = validate_plugin(self.root)
-        self.assertTrue(any(value.startswith('mcp.json: expected only') for value in errors))
+        self.assertTrue(any(value.startswith('chatgpt/mcp.json: expected only') for value in errors))
         self.assertTrue(any(value.startswith('.codex-plugin/mcp.json: expected only') for value in errors))
 
     def test_connector_oauth_requires_registered_public_client_and_exact_scopes(self):
-        path = 'mcp.json'
+        path = 'chatgpt/mcp.json'
         original = (self.root / path).read_text(encoding='utf-8')
         for overrides in [{'type': 'mixed'}, {'type': 'none'}, {'clientSecret': 'not-a-real-secret'}, {'unexpected': True}, {'client': {'mode': 'provided', 'clientId': 'guessed'}}, {'oidcEnabled': True}, {'defaultScopes': ['workspace', 'admin']}]:
             with self.subTest(overrides=overrides):
                 self.write(path, original)
                 self.edit_json(path, lambda data: data['mcpServers']['forward-deployed-studio']['extensions']['com.openai']['auth'].update(overrides))
-                self.assertTrue(any(value.startswith('mcp.json: expected only') for value in validate_plugin(self.root)))
+                self.assertTrue(any(value.startswith('chatgpt/mcp.json: expected only') for value in validate_plugin(self.root)))
 
     def test_host_metadata_limits_and_missing_icon_are_rejected(self):
-        self.edit_json('plugin.json', lambda data: data['extensions']['com.openai']['interface'].update(shortDescription='x' * 31))
-        self.edit_json('.claude-plugin/plugin.json', lambda data: data.update(description='x' * 501))
+        self.edit_json('chatgpt/plugin.json', lambda data: data['extensions']['com.openai']['interface'].update(shortDescription='x' * 31))
+        self.edit_json('plugin/.claude-plugin/plugin.json', lambda data: data.update(description='x' * 501))
         (self.root / 'assets/icon.svg').unlink()
         errors = validate_plugin(self.root)
         self.assertTrue(any('OpenAI shortDescription' in value for value in errors))
@@ -107,7 +126,7 @@ class PackageTests(unittest.TestCase):
         self.assertTrue(any('Missing package file: assets/icon.svg' in value for value in errors))
 
     def test_skill_frontmatter_rejects_xml_tags(self):
-        self.write('skills/value-case/SKILL.md', '---\nname: value-case\ndescription: Use <example> tags.\n---\nBody.\n')
+        self.write('plugin/skills/value-case/SKILL.md', '---\nname: value-case\ndescription: Use <example> tags.\n---\nBody.\n')
         self.assertTrue(any('XML tags in skill frontmatter' in value for value in validate_plugin(self.root)))
 
     def test_catalog_target_drift_is_rejected(self):
@@ -115,38 +134,38 @@ class PackageTests(unittest.TestCase):
         self.assertTrue(any('source must resolve' in value for value in validate_plugin(self.root)))
 
     def test_missing_skill_and_mismatched_name_are_rejected(self):
-        (self.root / 'skills/discovery/SKILL.md').unlink()
-        self.write('skills/value-case/SKILL.md', '---\nname: wrong\ndescription: Example.\n---\nBody.\n')
+        (self.root / 'plugin/skills/discovery/SKILL.md').unlink()
+        self.write('plugin/skills/value-case/SKILL.md', '---\nname: wrong\ndescription: Example.\n---\nBody.\n')
         errors = validate_plugin(self.root)
         self.assertTrue(any('Skill discovery differs' in value for value in errors))
         self.assertTrue(any('name differs from directory' in value for value in errors))
 
     def test_duplicate_metadata_and_empty_skill_are_rejected(self):
-        self.write('skills/value-case/SKILL.md', '---\nname: value-case\nname: value-case\ndescription: Example.\n---\n')
+        self.write('plugin/skills/value-case/SKILL.md', '---\nname: value-case\nname: value-case\ndescription: Example.\n---\n')
         errors = validate_plugin(self.root)
         self.assertTrue(any('duplicate frontmatter' in value for value in errors))
         self.assertTrue(any('empty skill body' in value for value in errors))
 
     def test_missing_and_escaping_links_are_rejected(self):
-        self.write('skills/value-case/SKILL.md', '---\nname: value-case\ndescription: Example.\n---\n[missing](missing.md)\n[outside](../../../outside.md)\n')
+        self.write('plugin/skills/value-case/SKILL.md', '---\nname: value-case\ndescription: Example.\n---\n[missing](missing.md)\n[outside](../../../../outside.md)\n')
         errors = validate_plugin(self.root)
         self.assertTrue(any('link does not exist' in value for value in errors))
         self.assertTrue(any('link escapes package root' in value for value in errors))
 
     def test_skill_cannot_depend_on_source_docs_or_unlinked_research(self):
-        self.write('skills/value-case/SKILL.md', '---\nname: value-case\ndescription: Example.\n---\n[guide](../../docs/verification.md)\nRead `research/field-guide.md`.\n')
+        self.write('plugin/skills/value-case/SKILL.md', '---\nname: value-case\ndescription: Example.\n---\n[guide](../../../docs/verification.md)\nRead `research/field-guide.md`.\n')
         errors = validate_plugin(self.root)
         self.assertTrue(any('link excluded from runtime' in value for value in errors))
         self.assertTrue(any('source-only resource dependency' in value for value in errors))
 
     def test_missing_runtime_reference_is_rejected(self):
-        (self.root / 'skills/adoption-and-scale/references/workforce-practice.md').unlink()
+        (self.root / 'plugin/skills/adoption-and-scale/references/workforce-practice.md').unlink()
         errors = validate_plugin(self.root)
-        self.assertTrue(any('Missing package file: skills/adoption-and-scale/references/workforce-practice.md' in value for value in errors))
+        self.assertTrue(any('Missing package file: plugin/skills/adoption-and-scale/references/workforce-practice.md' in value for value in errors))
 
     def test_unlisted_skill_reference_is_not_an_installed_dependency(self):
-        self.write('skills/value-case/references/unlisted.md', 'Unlisted guidance.\n')
-        self.write('skills/value-case/SKILL.md', '---\nname: value-case\ndescription: Example.\n---\n[guide](references/unlisted.md)\n')
+        self.write('plugin/skills/value-case/references/unlisted.md', 'Unlisted guidance.\n')
+        self.write('plugin/skills/value-case/SKILL.md', '---\nname: value-case\ndescription: Example.\n---\n[guide](references/unlisted.md)\n')
         errors = validate_plugin(self.root)
         self.assertTrue(any('link excluded from runtime' in value for value in errors))
 
@@ -159,7 +178,7 @@ class PackageTests(unittest.TestCase):
         self.write('docs/unlisted.md', 'unlisted document\n')
         self.write('examples/sample.md', 'unlisted example\n')
         self.write('tests/notes.md', 'unlisted notes\n')
-        self.write('skills/adoption-and-scale/references/unlisted.md', 'unlisted skill material\n')
+        self.write('plugin/skills/adoption-and-scale/references/unlisted.md', 'unlisted skill material\n')
         for relative in ['studio/.env', 'studio/.dev.vars', 'studio/.wrangler/state.sqlite', 'studio/node_modules/package/index.js', 'studio/dist/server.js', 'studio/workspace.sqlite', 'studio/workspace.sqlite-wal', 'studio/screenshot.png', 'studio/launch-notes.md', 'studio/server/unreviewed.ts']:
             self.write(relative, 'not packaged\n')
         outputs = build_release(self.root, Path(self.temp.name) / 'packages')
@@ -167,23 +186,23 @@ class PackageTests(unittest.TestCase):
         for host, archive, manifest in [('chatgpt', chatgpt, 'plugin.json'), ('cowork', cowork, '.claude-plugin/plugin.json')]:
             with zipfile.ZipFile(archive) as bundle:
                 names = bundle.namelist()
-                expected = {'forward-deployed/' + p.as_posix() for p in selected_files(self.root, host=host)}
+                expected = {'forward-deployed/' + package_path(p, host) for p in selected_files(self.root, host=host)}
                 self.assertEqual(set(names), expected)
                 self.assertEqual(len(names), len(expected))
                 self.assertTrue(all(name.startswith('forward-deployed/') for name in names))
                 self.assertEqual([name for name in names if name.endswith('/plugin.json')], ['forward-deployed/' + manifest])
                 self.assertFalse(any(part in name for name in names for part in ['/scripts/', '/tests/', '/examples/', '/research/', '/schemas/', '/templates/', '/marketplace.json', '/studio/']))
-                self.assertIn('forward-deployed/docs/installation.md', names)
-                self.assertIn('forward-deployed/docs/usage.md', names)
-                self.assertIn('forward-deployed/docs/export.md', names)
+                for doc in ['installation', 'usage', 'export']:
+                    self.assertEqual(f'forward-deployed/docs/{doc}.md' in names, host == 'chatgpt')
                 self.assertEqual('forward-deployed/mcp.json' in names, host == 'chatgpt')
                 self.assertFalse(any(name.endswith('/.mcp.json') or name.endswith('.codex-plugin/mcp.json') for name in names))
                 self.assertNotIn('forward-deployed/docs/verification.md', names)
                 self.assertNotIn('forward-deployed/docs/practice.md', names)
                 self.assertIn('forward-deployed/skills/adoption-and-scale/references/workforce-practice.md', names)
                 self.assertNotIn('forward-deployed/skills/adoption-and-scale/references/unlisted.md', names)
+                self.assertFalse(any('/plugin/' in name for name in names))
                 for relative in selected_files(self.root, host=host):
-                    self.assertEqual(bundle.read('forward-deployed/' + relative.as_posix()), (self.root / relative).read_bytes())
+                    self.assertEqual(bundle.read('forward-deployed/' + package_path(relative, host)), package_bytes(self.root, relative, host))
         with zipfile.ZipFile(chatgpt) as left, zipfile.ZipFile(cowork) as right:
             skill_paths = {name for name in left.namelist() if '/skills/' in name}
             self.assertEqual(skill_paths, {name for name in right.namelist() if '/skills/' in name})
@@ -204,6 +223,7 @@ class PackageTests(unittest.TestCase):
             self.assertIn('forward-deployed/studio/server/mcp.ts', names)
             self.assertIn('forward-deployed/studio/package-lock.json', names)
             self.assertIn('forward-deployed/docs/export.md', names)
+            self.assertIn('forward-deployed/plugin/skills/get-started/SKILL.md', names)
             self.assertFalse(any(part in name for name in names for part in ['/.wrangler/', '/node_modules/', '/dist/', '/.dev.vars', '.sqlite', '/screenshot.png', '/launch-notes.md', '/unreviewed.ts']))
         for archive, checksum in zip(outputs[::2], outputs[1::2]):
             self.assertEqual(checksum.read_text().split()[0], hashlib.sha256(archive.read_bytes()).hexdigest())

@@ -8,22 +8,22 @@ Invoke a skill by name or describe the assignment. Use get-started when the work
 
 | Skill | Example assignment |
 | --- | --- |
-| [get-started](../skills/get-started/SKILL.md) | "Here are our interviews and current AI proposal. Develop the next version and recommend what to do." |
-| [enterprise-engagement](../skills/enterprise-engagement/SKILL.md) | "Prepare a customer conversation about moving from AI licenses to a different way of running product releases." |
-| [discovery](../skills/discovery/SKILL.md) | "Study these release decisions and interviews. Find the work an AI agent could take on and the context it would need." |
-| [meeting-synthesis](../skills/meeting-synthesis/SKILL.md) | "Reconcile today's interview with the AI design. Update the affected decisions and engineering work." |
-| [opportunity-design](../skills/opportunity-design/SKILL.md) | "Our researchers can study only a fraction of customer feedback. Develop a more valuable research service." |
-| [use-case-portfolio](../skills/use-case-portfolio/SKILL.md) | "Choose this quarter's AI investments across workforce tools, shared capabilities and integrated agents." |
-| [value-case](../skills/value-case/SKILL.md) | "Work through the economics of broader AI-assisted coverage, including the new work it enables." |
-| [capability-exploration](../skills/capability-exploration/SKILL.md) | "Test whether our current coding environment can complete a representative migration. Use the result to choose the approach." |
-| [solution-design](../skills/solution-design/SKILL.md) | "Design an incident investigator that follows evidence across logs, changes and runbooks, then carries useful findings into the incident." |
-| [enterprise-integration](../skills/enterprise-integration/SKILL.md) | "Design an IT agent that provisions an approved development environment and recovers correctly after a lost response." |
-| [context-design](../skills/context-design/SKILL.md) | "Give the research agent the business definitions, source access and memory needed to maintain its analysis as evidence changes." |
-| [evaluate-and-improve](../skills/evaluate-and-improve/SKILL.md) | "Our automated reviewer finds plenty of issues. Test which findings improve the work, then fix the review process." |
-| [technical-delivery](../skills/technical-delivery/SKILL.md) | "Coding is faster, but releases aren't. Find the constraint and prepare the next engineering change." |
-| [adoption-and-scale](../skills/adoption-and-scale/SKILL.md) | "We have broad AI access and a few excellent users. Turn their methods into a practice other teams can use and extend." |
-| [executive-communication](../skills/executive-communication/SKILL.md) | "Make the proposed AI service and investment choice clear in a sponsor presentation." |
-| [field-productization](../skills/field-productization/SKILL.md) | "Turn what worked in these deployments into reusable skills, integrations and product behavior." |
+| [get-started](../plugin/skills/get-started/SKILL.md) | "Here are our interviews and current AI proposal. Develop the next version and recommend what to do." |
+| [enterprise-engagement](../plugin/skills/enterprise-engagement/SKILL.md) | "Prepare a customer conversation about moving from AI licenses to a different way of running product releases." |
+| [discovery](../plugin/skills/discovery/SKILL.md) | "Study these release decisions and interviews. Find the work an AI agent could take on and the context it would need." |
+| [meeting-synthesis](../plugin/skills/meeting-synthesis/SKILL.md) | "Reconcile today's interview with the AI design. Update the affected decisions and engineering work." |
+| [opportunity-design](../plugin/skills/opportunity-design/SKILL.md) | "Our researchers can study only a fraction of customer feedback. Develop a more valuable research service." |
+| [use-case-portfolio](../plugin/skills/use-case-portfolio/SKILL.md) | "Choose this quarter's AI investments across workforce tools, shared capabilities and integrated agents." |
+| [value-case](../plugin/skills/value-case/SKILL.md) | "Work through the economics of broader AI-assisted coverage, including the new work it enables." |
+| [capability-exploration](../plugin/skills/capability-exploration/SKILL.md) | "Test whether our current coding environment can complete a representative migration. Use the result to choose the approach." |
+| [solution-design](../plugin/skills/solution-design/SKILL.md) | "Design an incident investigator that follows evidence across logs, changes and runbooks, then carries useful findings into the incident." |
+| [enterprise-integration](../plugin/skills/enterprise-integration/SKILL.md) | "Design an IT agent that provisions an approved development environment and recovers correctly after a lost response." |
+| [context-design](../plugin/skills/context-design/SKILL.md) | "Give the research agent the business definitions, source access and memory needed to maintain its analysis as evidence changes." |
+| [evaluate-and-improve](../plugin/skills/evaluate-and-improve/SKILL.md) | "Our automated reviewer finds plenty of issues. Test which findings improve the work, then fix the review process." |
+| [technical-delivery](../plugin/skills/technical-delivery/SKILL.md) | "Coding is faster, but releases aren't. Find the constraint and prepare the next engineering change." |
+| [adoption-and-scale](../plugin/skills/adoption-and-scale/SKILL.md) | "We have broad AI access and a few excellent users. Turn their methods into a practice other teams can use and extend." |
+| [executive-communication](../plugin/skills/executive-communication/SKILL.md) | "Make the proposed AI service and investment choice clear in a sponsor presentation." |
+| [field-productization](../plugin/skills/field-productization/SKILL.md) | "Turn what worked in these deployments into reusable skills, integrations and product behavior." |
 
 The worked references illustrate decisions, including which changed facts would change the recommendation. Read the ones that help with the current assignment.
 

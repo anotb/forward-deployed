@@ -9,7 +9,7 @@ from pathlib import Path
 import sys
 import zipfile
 
-from package_files import selected_files
+from package_files import package_bytes, package_path, selected_files
 from validate_plugin import validate_plugin
 
 
@@ -20,23 +20,23 @@ def build_release(root: Path, output_dir: Path) -> list[Path]:
     errors = validate_plugin(root)
     if errors:
         raise ValueError('Package validation failed:\n' + '\n'.join(errors))
-    manifest = json.loads((root / 'plugin.json').read_text(encoding='utf-8'))
+    manifest = json.loads((root / 'chatgpt/plugin.json').read_text(encoding='utf-8'))
     name, version = manifest['name'], manifest['version']
     # Select all file sets before writing output.
-    sets = [('-chatgpt', selected_files(root, host='chatgpt')),
-            ('-cowork', selected_files(root, host='cowork')),
-            ('-source', selected_files(root, source=True))]
+    sets = [('-chatgpt', 'chatgpt', selected_files(root, host='chatgpt')),
+            ('-cowork', 'cowork', selected_files(root, host='cowork')),
+            ('-source', None, selected_files(root, source=True))]
     output_dir.mkdir(parents=True, exist_ok=True)
     outputs = []
-    for suffix, paths in sets:
+    for suffix, host, paths in sets:
         archive = output_dir / f'{name}-{version}{suffix}.zip'
         with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as bundle:
             for relative in paths:
-                info = zipfile.ZipInfo(f'{name}/{relative.as_posix()}', date_time=(1980, 1, 1, 0, 0, 0))
+                info = zipfile.ZipInfo(f'{name}/{package_path(relative, host)}', date_time=(1980, 1, 1, 0, 0, 0))
                 info.create_system = 3
                 info.external_attr = 0o100644 << 16
                 info.compress_type = zipfile.ZIP_DEFLATED
-                bundle.writestr(info, (root / relative).read_bytes(), compresslevel=9)
+                bundle.writestr(info, package_bytes(root, relative, host), compresslevel=9)
         checksum = archive.with_suffix('.zip.sha256')
         checksum.write_text(f'{hashlib.sha256(archive.read_bytes()).hexdigest()}  {archive.name}\n', encoding='ascii', newline='\n')
         outputs.extend([archive, checksum])
